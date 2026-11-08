@@ -262,6 +262,15 @@ body.in footer{display:none}
 .ms-docwrap.ms-full{position:fixed;inset:0;z-index:1000;background:#F6F8FB;overflow:auto;padding:12px}
 .ms-docwrap.ms-full .ms-doc{max-width:900px;margin:0 auto;font-size:18px}
 body.ms-noscroll{overflow:hidden}
+.ms-calside{display:grid;gap:20px}
+.ms-cd u{position:absolute;left:7px;bottom:8px;width:8px;height:8px;border-radius:50%;background:#2F6FDB;text-decoration:none}.ms-cd.sel u{background:#9CC0FF}
+.ms-evtag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#2F6FDB;margin-bottom:3px}
+.ms-cb.ev .ms-cbt b{color:#2F6FDB}
+.ms-evnext{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#fff;border:1px solid #E1E6ED;border-left:4px solid #2F6FDB;border-radius:18px;padding:16px 20px;margin-top:20px}
+.ms-evnext.live{border-left-color:var(--accent);background:#FFF7F3}
+.ms-evic{width:44px;height:44px;border-radius:12px;background:#EAF1FD;color:#2F6FDB;display:grid;place-items:center;flex:none}.ms-evnext.live .ms-evic{background:#FDE7DD;color:var(--accent)}
+.ms-evtx{flex:1;min-width:180px;display:grid;gap:2px}.ms-evtx small{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#2F6FDB}.ms-evnext.live .ms-evtx small{color:var(--accent)}.ms-evtx b{font-size:17px;color:var(--ink)}.ms-evtx span{font-size:14px;color:var(--soft)}
+@media(max-width:520px){.ms-cd u{left:4px;bottom:4px;width:6px;height:6px}.ms-evnext .ms-btn{flex:1}}
 .ms-calwrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;align-items:start}
 .ms-calhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.ms-calhd h3{margin:0}
 .ms-arrow2{width:38px;height:38px;border-radius:50%;border:1px solid #E1E6ED;background:#fff;font:400 22px/1 var(--body);color:var(--ink);cursor:pointer;padding-bottom:3px}
@@ -374,6 +383,7 @@ body.ms-noscroll{overflow:hidden}
       <button role="tab" aria-selected="false" data-tab="partners">Partners</button>
       <button role="tab" aria-selected="false" data-tab="sales">Sales</button>
       <button role="tab" aria-selected="false" data-tab="training">Training</button>
+      <button role="tab" aria-selected="false" data-tab="events">Group calls</button>
       <button role="tab" aria-selected="false" data-tab="myview">What reps see</button>
     </div>
 
@@ -466,6 +476,28 @@ body.ms-noscroll{overflow:hidden}
       </details>
       <p class="note" style="margin-bottom:12px">Each role sees its own training and everything below it (a Coach also sees the Rep training). New reps are given view access to the Drive files when their login is created.</p>
       <div class="list" id="a-training"></div>
+    </div>
+
+    <div data-pane="events" hidden>
+      <details class="add" id="d-event">
+        <summary class="btn acc">+ Add a group call</summary>
+        <div class="panel">
+          <h2 id="e-head">Add a group call</h2>
+          <form id="f-event" class="form" style="margin-top:14px" novalidate>
+            <input type="hidden" id="e-id">
+            <label class="wide" for="e-title">Name<input id="e-title" autocomplete="off" placeholder="e.g. Monday team call"></label>
+            <label for="e-date">Date<input id="e-date" type="date"></label>
+            <label for="e-time">Start time<input id="e-time" type="time" step="300"></label>
+            <label for="e-min">Length (minutes)<input id="e-min" type="number" min="5" max="600" step="5" value="60"></label>
+            <label for="e-role">Who sees it<select id="e-role"></select></label>
+            <label class="wide" for="e-link">Join link (Zoom, Google Meet…, optional)<input id="e-link" type="url" autocomplete="off" placeholder="https://"></label>
+            <label class="wide" for="e-details">What it covers (optional)<input id="e-details" autocomplete="off"></label>
+            <div class="row wide"><button class="btn acc" type="submit" id="e-save">Add group call</button><button class="btn out" type="button" id="e-cancel" hidden>Cancel edit</button></div>
+          </form>
+        </div>
+      </details>
+      <p class="note" style="margin-bottom:12px">Group calls show on every rep's Calendar and on their Home page. Each role sees calls set for its level and below.</p>
+      <div class="list" id="a-events"></div>
     </div>
 
     <div data-pane="myview" hidden>
@@ -561,7 +593,7 @@ body.ms-noscroll{overflow:hidden}
   };
   var NAV = [['home', 'Home', '<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>'],
              ['tasks', 'Academy', '<path d="M9 11l3 3 8-8M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/>'],
-             ['calls', 'Call-backs', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h2M14 14h2M8 17h2"/>'],
+             ['calls', 'Calendar', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h2M14 14h2M8 17h2"/>'],
              ['board', 'Leaderboard', '<path d="M4 20h4v-6H4zM10 20h4V9h-4zM16 20h4V4h-4z"/>'],
              ['pay', 'Earnings', '<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.7 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.6-.6-3-1.6M12 6v2M12 16v2"/>'],
              ['help', 'Help', '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/>']];
@@ -620,7 +652,7 @@ body.ms-noscroll{overflow:hidden}
       home:
         '<div class="ms-hero"><div class="ms-hgrid"></div><div class="ms-hl"><p class="ms-kick">' + greet + '</p><h1>Welcome back, ' + esc(first) + '.</h1><p class="ms-sub">' + (next.length ? 'You have <b>' + next.length + ' Academy module' + (next.length === 1 ? '' : 's') + '</b> to complete. Up next: <b>' + esc(next[0].title) + '</b>.' : (open.length ? 'You have completed every module. Time to get on the phones.' : 'Your Academy modules will appear here soon.')) + '</p>' +
           (next.length ? '<button class="ms-btn acc" data-go="tasks">Continue the Academy →</button>' : '<button class="ms-btn acc" data-go="board">See the leaderboard →</button>') + '</div>' +
-          '<div class="ms-card"><div class="ms-cardtop"><span class="ms-cmark"><i></i><i></i><i></i></span><span>MAYSTONE</span></div><div class="ms-cname">' + esc(m.user.name || first) + '</div><div class="ms-crow"><div><small>Level</small><b>' + esc(m.user.role) + '</b></div><div><small>Member no.</small><b>' + memberNo + '</b></div><div><small>Since</small><b>' + esc(m.joined || '–') + '</b></div></div><div class="ms-cfoot">Selling for ' + esc(m.user.partner || 'Maystone') + '</div></div></div>' +
+          '<div class="ms-card"><div class="ms-cardtop"><span class="ms-cmark"><i></i><i></i><i></i></span><span>MAYSTONE</span></div><div class="ms-cname">' + esc(m.user.name || first) + '</div><div class="ms-crow"><div><small>Level</small><b>' + esc(m.user.role) + '</b></div><div><small>Member no.</small><b>' + memberNo + '</b></div><div><small>Since</small><b>' + esc(m.joined || '–') + '</b></div></div><div class="ms-cfoot">Selling for ' + esc(m.user.partner || 'Maystone') + '</div></div></div>' + nextEventHTML(m) +
         '<div class="ms-stats"><div class="ms-stat"><small>Sales</small><b>' + m.mine.sales + '</b><span>all time</span></div><div class="ms-stat"><small>Previews booked</small><b>' + m.mine.previews + '</b><span>from your call list</span></div><div class="ms-stat"><small>Earned</small><b>' + money(earned) + '</b><span>' + money(m.mine.paidOut) + ' paid out so far</span></div><div class="ms-stat"><small>Leaderboard</small><b>' + (m.rank ? '#' + m.rank : '–') + '</b><span>' + (m.rank ? 'of ' + (m.boardSize || m.leaderboard.length) + ' reps' : 'make a sale to get on it') + '</span></div></div>' +
         '<div class="ms-two"><div class="ms-panel dark"><div class="ms-phd"><h3>Maystone Academy</h3><button class="ms-link" data-go="tasks">All modules →</button></div><div class="ms-prog">' + ring(pct, 120, Math.round(pct * 100) + '%') + '<div><b>' + done + ' of ' + open.length + ' modules complete</b><p>' + (next.length ? 'Up next:' : 'Nice work. New modules unlock as you level up.') + '</p>' + next.slice(0, 3).map(function (t) { return '<button class="ms-next" data-view="' + esc(t.title) + '"><span>' + (ICON[t.type] || ICON.Link) + '</span>' + esc(t.title) + '</button>'; }).join('') + '</div></div></div>' +
         '<div class="ms-panel"><div class="ms-phd"><h3>Your level</h3></div>' + ladderHTML + '<div class="ms-nextlvl">' + (nx[0] ? '<small>Next level: <b>' + nx[0] + '</b></small>' : '') + '<p>' + nx[1] + '</p></div></div></div>' +
@@ -628,7 +660,7 @@ body.ms-noscroll{overflow:hidden}
       tasks:
         '<div class="ms-phead"><div><p class="ms-kick dark">Maystone Academy</p><h2>Your training, step by step.</h2><p class="ms-lead">Work through the modules in order. Each one opens right here. When you have finished it, mark it complete. New modules unlock as you move up the ladder.</p></div><div class="ms-bigbar"><div class="ms-bartop"><b>' + done + ' / ' + open.length + '</b><span>' + Math.round(pct * 100) + '% complete</span></div><div class="ms-bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div></div></div>' + tasksHTML,
       calls:
-        '<div class="ms-phead"><div><p class="ms-kick dark">Call-backs</p><h2>Never miss a call-back.</h2><p class="ms-lead">When someone says "call me back", book it here straight away. Only you can see your call-backs.</p></div><button class="ms-btn acc" data-cbnew>+ Book a call-back</button></div><div id="ms-cal"><div class="ms-load"><i></i><i></i><i></i><span>Loading your calendar…</span></div></div>',
+        '<div class="ms-phead"><div><p class="ms-kick dark">Calendar</p><h2>Group calls and your call-backs.</h2><p class="ms-lead">Team group calls and trainings show here for everyone. When a lead says "call me back", book it straight away. Only you can see your call-backs.</p></div><button class="ms-btn acc" data-cbnew>+ Book a call-back</button></div><div id="ms-cal"><div class="ms-load"><i></i><i></i><i></i><span>Loading your calendar…</span></div></div>',
       board:
         '<div class="ms-phead"><div><p class="ms-kick dark">Leaderboard</p><h2>Who is leading right now.</h2><p class="ms-lead">Ranked on sales, then previews booked. Updated every hour from the call lists. Top reps each month get first pick of new roles.</p></div></div>' + boardHTML,
       pay:
@@ -644,7 +676,7 @@ body.ms-noscroll{overflow:hidden}
     el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab === 'tasks' && viewing ? 'viewer' : repTab] + '</div></div>';
     el.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.complete) complete(b.dataset.complete); repView = null; repTab = b.dataset.go; renderRep(m, el, preview); try { el.querySelector('.ms-main').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); } catch (e) {} }); });
     if (repTab === 'tasks' && viewing) loadLesson(m, viewing, el, preview);
-    if (repTab === 'calls') loadCalendar(el, preview);
+    if (repTab === 'calls') loadCalendar(el, preview, m);
     function complete(title) {
       var t = m.training.filter(function (x) { return x.title === title; })[0]; if (!t || t.done) return;
       t.done = true; if (!preview) api('markDone', { title: t.title, done: true });
@@ -727,13 +759,14 @@ body.ms-noscroll{overflow:hidden}
     go(0);
   }
   /* ---------- call-backs calendar ---------- */
-  var CB = { list: null, month: null, day: null, edit: null };
+  var CB = { list: null, month: null, day: null, edit: null, events: [] };
   var DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function dkey(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function hm(ms) { var d = new Date(ms); return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
   function dayLabel(d) { var t = new Date(), y = new Date(); y.setDate(t.getDate() + 1); if (dkey(d) === dkey(t)) return 'Today'; if (dkey(d) === dkey(y)) return 'Tomorrow'; return DAYS[(d.getDay() + 6) % 7] + ' ' + d.getDate() + ' ' + MONTHS[d.getMonth()].slice(0, 3); }
-  function loadCalendar(el, preview) {
+  function loadCalendar(el, preview, m) {
+    CB.events = (m && m.events) || [];
     var nb = el.querySelector('[data-cbnew]'); if (nb) nb.onclick = function () { cbForm(el, preview, null); };
     if (!CB.month) { var n = new Date(); CB.month = new Date(n.getFullYear(), n.getMonth(), 1); CB.day = dkey(n); }
     if (CB.list) return drawCal(el, preview);
@@ -743,6 +776,20 @@ body.ms-noscroll{overflow:hidden}
   function cbSave(el, preview, action, data) {
     if (preview) { if (action === 'saveCallback') { if (data.cb.id) CB.list = CB.list.map(function (x) { return x.id === data.cb.id ? Object.assign({}, x, data.cb) : x; }); else CB.list.push(Object.assign({ id: 'p' + Date.now(), status: 'Open' }, data.cb)); } else CB.list = CB.list.filter(function (x) { return x.id !== data.id; }); CB.list.sort(function (a, b) { return a.when - b.when; }); return Promise.resolve({ ok: true }); }
     return api(action, data).then(function (r) { if (r.ok) CB.list = r.callbacks; return r; });
+  }
+  function evWhen(e) { var d = new Date(e.when), end = new Date(e.when + e.minutes * 60000); return dayLabel(d) + ' · ' + hm(e.when) + '–' + hm(end.getTime()); }
+  function evLive(e) { var n = Date.now(); return n >= e.when - 10 * 60000 && n <= e.when + e.minutes * 60000; }
+  function evRow(e, showDay) {
+    var live = evLive(e), past = Date.now() > e.when + e.minutes * 60000;
+    return '<div class="ms-cb ev' + (past ? ' done' : '') + '"><div class="ms-cbt"><b>' + hm(e.when) + '</b>' + (showDay ? '<small>' + dayLabel(new Date(e.when)) + '</small>' : '<small>' + e.minutes + ' min</small>') + '</div>' +
+      '<div class="ms-cbm"><span class="ms-evtag">' + (live ? '● Live now' : 'Group call') + '</span><b>' + esc(e.title) + '</b>' + (e.details ? '<p>' + esc(e.details) + '</p>' : '') +
+      (e.link && !past ? '<div class="ms-cba"><a class="ms-chip ' + (live ? 'call' : '') + '" href="' + esc(e.link) + '" target="_blank" rel="noopener">' + (live ? 'Join now →' : 'Join link →') + '</a></div>' : '') + '</div></div>';
+  }
+  function nextEventHTML(m) {
+    var e = (m.events || []).filter(function (x) { return Date.now() <= x.when + x.minutes * 60000; })[0]; if (!e) return '';
+    var live = evLive(e);
+    return '<div class="ms-evnext' + (live ? ' live' : '') + '"><div class="ms-evic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 20h5v-2a4 4 0 00-5-3.9M9 20H2v-2a4 4 0 014-4h3a4 4 0 014 4v2M8 10a3 3 0 100-6 3 3 0 000 6zM17 10a3 3 0 100-6 3 3 0 000 6z"/></svg></div><div class="ms-evtx"><small>' + (live ? 'Live now' : 'Next group call') + '</small><b>' + esc(e.title) + '</b><span>' + evWhen(e) + '</span></div>' +
+      (e.link ? '<a class="ms-btn ' + (live ? 'acc' : 'ghost') + '" href="' + esc(e.link) + '" target="_blank" rel="noopener">' + (live ? 'Join now' : 'Join link') + '</a>' : '') + '<button class="ms-link" data-go="calls">Calendar →</button></div>';
   }
   function cbRow(c, showDay) {
     var d = new Date(c.when), late = c.status === 'Open' && c.when < Date.now();
@@ -754,19 +801,20 @@ body.ms-noscroll{overflow:hidden}
   }
   function drawCal(el, preview) {
     var box = el.querySelector('#ms-cal'); if (!box) return;
-    var L = CB.list, by = {}; L.forEach(function (c) { var k = dkey(new Date(c.when)); (by[k] = by[k] || []).push(c); });
+    var L = CB.list, by = {}, ev = {}; L.forEach(function (c) { var k = dkey(new Date(c.when)); (by[k] = by[k] || []).push(c); });
+    CB.events.forEach(function (e) { var k = dkey(new Date(e.when)); (ev[k] = ev[k] || []).push(e); });
     var mo = CB.month, first = (mo.getDay() + 6) % 7, dim = new Date(mo.getFullYear(), mo.getMonth() + 1, 0).getDate(), today = dkey(new Date());
     var cells = ''; for (var i = 0; i < first; i++) cells += '<span class="ms-cd empty"></span>';
     for (var dd = 1; dd <= dim; dd++) {
       var k = mo.getFullYear() + '-' + (mo.getMonth() + 1) + '-' + dd, its = by[k] || [], open = its.filter(function (c) { return c.status === 'Open'; }).length;
-      cells += '<button class="ms-cd' + (k === today ? ' today' : '') + (k === CB.day ? ' sel' : '') + '" data-day="' + k + '"><span>' + dd + '</span>' + (its.length ? '<i class="' + (open ? '' : 'all') + '">' + its.length + '</i>' : '') + '</button>';
+      cells += '<button class="ms-cd' + (k === today ? ' today' : '') + (k === CB.day ? ' sel' : '') + '" data-day="' + k + '"><span>' + dd + '</span>' + (its.length ? '<i class="' + (open ? '' : 'all') + '">' + its.length + '</i>' : '') + (ev[k] ? '<u title="Group call"></u>' : '') + '</button>';
     }
     var sel = CB.day.split('-'), selD = new Date(+sel[0], +sel[1] - 1, +sel[2]), dayList = by[CB.day] || [];
     var upcoming = L.filter(function (c) { return c.status === 'Open'; }), late = upcoming.filter(function (c) { return c.when < Date.now(); });
     box.innerHTML = '<div class="ms-calwrap"><div class="ms-panel ms-calp"><div class="ms-calhd"><button class="ms-arrow2" data-mon="-1" aria-label="Previous month">‹</button><h3>' + MONTHS[mo.getMonth()] + ' ' + mo.getFullYear() + '</h3><button class="ms-arrow2" data-mon="1" aria-label="Next month">›</button></div>' +
       '<div class="ms-cgrid">' + DAYS.map(function (d) { return '<small>' + d.charAt(0) + '<span>' + d.slice(1) + '</span></small>'; }).join('') + cells + '</div>' +
-      '<div class="ms-dayhd"><h4>' + dayLabel(selD) + '</h4><button class="ms-link" data-cbnew2>+ Add on this day</button></div>' + (dayList.map(function (c) { return cbRow(c, false); }).join('') || '<p class="ms-empty sm">Nothing booked for this day.</p>') + '</div>' +
-      '<div class="ms-panel"><div class="ms-phd"><h3>Up next</h3><span class="ms-pill">' + upcoming.length + ' open' + (late.length ? ' · ' + late.length + ' overdue' : '') + '</span></div>' + (upcoming.slice(0, 12).map(function (c) { return cbRow(c, true); }).join('') || '<div class="ms-empty">No call-backs booked yet. When a lead says "call me back", tap <b>Book a call-back</b>.</div>') + '</div></div>';
+      '<div class="ms-dayhd"><h4>' + dayLabel(selD) + '</h4><button class="ms-link" data-cbnew2>+ Add on this day</button></div>' + ((ev[CB.day] || []).map(function (e) { return evRow(e, false); }).join('') + dayList.map(function (c) { return cbRow(c, false); }).join('') || '<p class="ms-empty sm">Nothing booked for this day.</p>') + '</div>' +
+      '<div class="ms-calside">' + (function () { var up = CB.events.filter(function (e) { return Date.now() <= e.when + e.minutes * 60000; }); return '<div class="ms-panel"><div class="ms-phd"><h3>Group calls</h3><span class="ms-pill">' + up.length + ' coming up</span></div>' + (up.slice(0, 5).map(function (e) { return evRow(e, true); }).join('') || '<div class="ms-empty sm">No group calls booked yet. They will show here when the team schedules one.</div>') + '</div>'; })() + '<div class="ms-panel"><div class="ms-phd"><h3>Your call-backs</h3><span class="ms-pill">' + upcoming.length + ' open' + (late.length ? ' · ' + late.length + ' overdue' : '') + '</span></div>' + (upcoming.slice(0, 12).map(function (c) { return cbRow(c, true); }).join('') || '<div class="ms-empty">No call-backs booked yet. When a lead says "call me back", tap <b>Book a call-back</b>.</div>') + '</div></div></div>';
     box.querySelectorAll('[data-mon]').forEach(function (b) { b.onclick = function () { CB.month = new Date(mo.getFullYear(), mo.getMonth() + +b.dataset.mon, 1); drawCal(el, preview); }; });
     box.querySelectorAll('[data-day]').forEach(function (b) { b.onclick = function () { CB.day = b.dataset.day; drawCal(el, preview); }; });
     box.querySelector('[data-cbnew2]').onclick = function () { cbForm(el, preview, null, selD); };
@@ -837,6 +885,9 @@ body.ms-noscroll{overflow:hidden}
       var sel = '<select data-sale="' + esc(s.id) + '" aria-label="Status" style="min-height:36px;padding:6px 10px;width:auto">' + o.saleStatus.map(function (x) { return '<option' + (x === s.status ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select>';
       return '<tr><td>' + esc(s.date) + '</td><td>' + esc(repName[s.rep] || s.rep) + '</td><td>' + esc(s.partner) + '</td><td>' + esc(s.customer) + (s.notes ? '<small>' + esc(s.notes) + '</small>' : '') + '</td><td class="num">' + money(s.amount) + '</td><td class="num">' + money(s.commission) + '</td><td>' + sel + '</td><td><small>' + esc(s.source) + '</small></td></tr>';
     }).join('') || '<tr><td colspan="8" class="empty">No sales yet.</td></tr>';
+    state.events = o.events || [];
+    $('a-events').innerHTML = state.events.map(function (e) { var d = new Date(e.when); return '<div class="item"><span><b>' + esc(e.title) + '</b><small>' + d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) + ' · ' + e.minutes + ' min · ' + esc(e.role === 'All' ? 'Everyone' : e.role + ' and up') + (e.link ? ' · has join link' : '') + '</small></span><span class="row" style="flex-wrap:nowrap"><button class="btn out sm" type="button" data-evedit="' + esc(e.id) + '">Edit</button><button class="btn out sm" type="button" data-evdel="' + esc(e.id) + '">Delete</button></span></div>'; }).join('') || '<p class="empty">No group calls coming up. Add one above.</p>';
+    if (!$('e-role').options.length) fillSelect($('e-role'), [{ value: 'All', label: 'Everyone' }].concat((o.roles || []).filter(function (r) { return r !== 'Admin'; }).map(function (r) { return { value: r, label: r + ' and up' }; })), 'All');
     $('a-training').innerHTML = o.training.map(function (t) { return '<a class="item" href="' + esc(t.link) + '" target="_blank" rel="noopener"><span><b>' + esc(t.title) + '</b><small>' + esc(t.role === 'All' ? 'Everyone' : t.role) + ' · ' + esc(t.type) + '</small></span><span aria-hidden="true">→</span></a>'; }).join('') || '<p class="empty">No training yet.</p>';
     // selects
     var partnerNames = o.partners.map(function (p) { return p.name; });
@@ -911,6 +962,24 @@ body.ms-noscroll{overflow:hidden}
     var btn = $('t-save'); busy(btn, true, 'Saving…');
     api('adminSaveTraining', { item: { role: $('t-role').value, type: $('t-type').value, title: $('t-title').value, link: $('t-link').value } })
       .then(function (r) { busy(btn, false); adminSay(r); if (r.ok) { $('f-train').reset(); $('d-train').open = false; } });
+  });
+  function evPad(n) { return (n < 10 ? '0' : '') + n; }
+  function evReset() { $('f-event').reset(); $('e-id').value = ''; $('e-min').value = 60; $('e-head').textContent = 'Add a group call'; $('e-save').textContent = 'Add group call'; $('e-cancel').hidden = true; }
+  $('e-cancel').addEventListener('click', function () { evReset(); $('d-event').open = false; });
+  $('f-event').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var dp = $('e-date').value.split('-'), tp = $('e-time').value.split(':');
+    if (dp.length < 3 || tp.length < 2) return adminSay({ ok: false, error: 'Pick a date and a start time.' });
+    var btn = $('e-save'); busy(btn, true, 'Saving…');
+    api('adminSaveEvent', { event: { id: $('e-id').value, title: $('e-title').value, when: new Date(+dp[0], +dp[1] - 1, +dp[2], +tp[0], +tp[1]).getTime(), minutes: $('e-min').value, role: $('e-role').value, link: $('e-link').value.trim(), details: $('e-details').value } })
+      .then(function (r) { busy(btn, false); adminSay(r); if (r.ok) { evReset(); $('d-event').open = false; } });
+  });
+  $('a-events').addEventListener('click', function (e) {
+    var ed = e.target.closest('[data-evedit]'), dl = e.target.closest('[data-evdel]');
+    if (ed) { var x = (state.events || []).filter(function (v) { return v.id === ed.dataset.evedit; })[0]; if (!x) return; var d = new Date(x.when);
+      $('e-id').value = x.id; $('e-title').value = x.title; $('e-date').value = d.getFullYear() + '-' + evPad(d.getMonth() + 1) + '-' + evPad(d.getDate()); $('e-time').value = evPad(d.getHours()) + ':' + evPad(d.getMinutes()); $('e-min').value = x.minutes; $('e-role').value = x.role; $('e-link').value = x.link; $('e-details').value = x.details;
+      $('e-head').textContent = 'Edit group call'; $('e-save').textContent = 'Save changes'; $('e-cancel').hidden = false; $('d-event').open = true; $('d-event').scrollIntoView({ block: 'start' }); }
+    if (dl) { if (!dl.dataset.sure) { dl.dataset.sure = 1; dl.textContent = 'Tap again'; return; } busy(dl, true, '…'); api('adminDeleteEvent', { id: dl.dataset.evdel }).then(adminSay); }
   });
   $('sync-btn').addEventListener('click', function () { var b = $('sync-btn'); busy(b, true, 'Syncing…'); api('adminSync', {}).then(function (r) { busy(b, false); adminSay(r.ok ? Object.assign(r, { message: 'Synced from the Call Lists sheet.' }) : r); }); });
 

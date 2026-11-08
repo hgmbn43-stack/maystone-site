@@ -42,7 +42,7 @@ section{padding:clamp(64px,9vw,112px) 0}
 .kicker{font:600 .74rem/1.2 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--label);margin-bottom:14px;display:block}
 .lede{color:var(--soft);font-size:1.06rem;max-width:62ch;margin-top:16px}
 .small{font-size:.86rem;color:var(--muted)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font:600 .98rem Inter,sans-serif;text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .15s}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font:600 .98rem Inter,sans-serif;text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .15s}
 .btn:active{transform:scale(.98)}
 .btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent-dark)}
 .btn-line{border-color:var(--line-2);color:var(--ink);background:#fff}.btn-line:hover{border-color:var(--ink)}
@@ -65,8 +65,9 @@ section{padding:clamp(64px,9vw,112px) 0}
 .nav a.l{padding:10px 12px;font-weight:500;font-size:.93rem;text-decoration:none;color:var(--soft);border-radius:999px}
 .nav a.l:hover{color:var(--ink);background:var(--stone)}
 @media(max-width:960px){.nav a.hide-m{display:none}}
-@media(max-width:640px){.nav a.l{display:none}.nav a.login-m{display:inline-flex}}
 .nav a.login-m{display:none}
+.xs-hide{display:inline}@media(max-width:420px){.xs-hide{display:none}}
+@media(max-width:640px){.hdr .wrap{gap:8px}.nav{gap:6px}.nav .btn-sm{padding:0 14px}.nav a.l{display:none}.nav a.login-m{display:inline-flex;font-weight:600;color:var(--ink);border:1.5px solid var(--line-2);min-height:44px;align-items:center;padding:0 14px;border-radius:999px;white-space:nowrap}}
 
 /* ticker */
 .ticker{background:var(--ink);color:#fff;font-size:.86rem;overflow:hidden;display:flex;align-items:center}
@@ -534,7 +535,7 @@ body.lock{overflow:hidden}
       <a class="l" href="#for-businesses">For businesses</a>
       <a class="l" href="/login/">Team login</a>
       <a class="l login-m" href="/login/">Log in</a>
-      <a class="btn btn-accent btn-sm" href="#apply">Join the team</a>
+      <a class="btn btn-accent btn-sm" href="#apply">Join<span class="xs-hide">&nbsp;the team</span></a>
     </nav>
   </div>
 </header>
@@ -667,7 +668,7 @@ body.lock{overflow:hidden}
 <footer>
   <div class="wrap">
     <p>© 2026 Maystone Sales Group · A trading name of Harvey-George Matthews, sole trader (no company number) · Near Shoreham-by-Sea, West Sussex</p>
-    <nav aria-label="Footer"><a href="#privacy">Privacy</a><a href="mailto:hello@maystone.uk">Contact</a><a href="#" id="li" title="LinkedIn link to add">LinkedIn</a></nav>
+    <nav aria-label="Footer"><a href="/login/">Team login</a><a href="#questions">Privacy</a><a href="mailto:hello@maystone.uk">Contact</a><a href="#" id="li" title="LinkedIn link to add">LinkedIn</a></nav>
   </div>
 </footer>
 

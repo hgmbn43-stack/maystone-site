@@ -65,6 +65,7 @@ function doPost(e) {
     if (a === 'module') return json_(module_(me, req.title));
     if (a === 'slide') return json_(slide_(me, req.title, req.n));
     if (a === 'leads') return json_(leads_(me, req.tab));
+    if (a === 'adminPreviews') { if (!isAdmin_(me)) return json_({ ok: false, error: 'Admins only.' }); return json_(adminPreviews_()); }
     if (a === 'saveLead') { lock.waitLock(20000); return json_(saveLead_(me, req.tab, req.row, req.id, req.fields || {})); }
     if (a === 'callbacks') return json_(callbacks_(me));
     if (a === 'saveCallback') { lock.waitLock(20000); return json_(saveCallback_(me, req.cb || {})); }
@@ -456,7 +457,8 @@ function adminSaveUser_(me, d, invite) {
   var commission = Math.max(0, Math.min(100000, Number(d.commission) || 0));
   var rowData = { 'Email': email, 'Name': name, 'Role': role, 'Partner': str_(d.partner, 80), 'Status': status,
                   'Call list tab': str_(d.callListTab, 60), 'Commission per sale': commission, 'Phone': str_(d.phone, 30), 'Notes': str_(d.notes, 500) };
-  var existing = findUser_(email), isNew = !existing;
+  var existing = findUser_(email), isNew = !existing, madeTab = '';
+  if (!rowData['Call list tab'] && role !== 'Admin' && status === 'Active') { try { madeTab = createRepTab_(name); rowData['Call list tab'] = madeTab; } catch (e) { log_('system', 'could not make call list tab', name + ': ' + e.message); } }
   if (isNew) {
     rowData.Joined = new Date();
     appendObj_('Users', rowData);
@@ -468,7 +470,7 @@ function adminSaveUser_(me, d, invite) {
   if (isNew && status === 'Active') shared = shareTraining_(email, role);
   if (invite && status === 'Active') sendLoginLink_(findUser_(email), isNew);
   var out = adminOverview_();
-  out.message = (isNew ? 'Login created for ' + name + '.' : 'Saved.') + (invite && status === 'Active' ? ' Login email sent to ' + email + '.' : '') +
+  out.message = (isNew ? 'Login created for ' + name + '.' : 'Saved.') + (madeTab ? ' Call list tab "' + madeTab + '" made.' : '') + (invite && status === 'Active' ? ' Login email sent to ' + email + '.' : '') +
                 (shared.length ? ' Shared ' + shared.length + ' training file' + (shared.length === 1 ? '' : 's') + '.' : '');
   return out;
 }
@@ -677,6 +679,34 @@ function leads_(me, tab) {
   var tabs = isAdmin_(me) ? SpreadsheetApp.openById(CALL_LISTS_ID).getSheets().map(function (s) { return s.getName(); }).filter(function (n) { return n !== 'Summary'; }) : [];
   return { ok: true, tab: t.name, tabs: tabs, head: head, editable: Object.keys(LEAD_EDIT), leads: out };
 }
+function repTabs_() {
+  return SpreadsheetApp.openById(CALL_LISTS_ID).getSheets().filter(function (s) { return String(s.getRange(1, 1).getValue()).trim() === 'Lead ID'; });
+}
+/** Every lead that has a preview (or a yes), across all rep tabs, for the admin Previews list. */
+function adminPreviews_() {
+  var out = [];
+  repTabs_().forEach(function (sh) {
+    var lr = sh.getLastRow(), lc = sh.getLastColumn(); if (lr < 2) return;
+    var v = sh.getRange(1, 1, lr, lc).getValues(), head = v[0].map(String), col = function (h) { return head.indexOf(h); };
+    for (var i = 1; i < v.length; i++) {
+      var r = v[i], id = String(r[0]).trim(); if (!id) continue;
+      var prev = String(r[col('Preview link')] || '').trim(), out1 = String(r[col('Outcome')] || '');
+      if (!prev && !/^\s*yes/i.test(out1)) continue;
+      var o = { tab: sh.getName(), _row: i + 1 }; head.forEach(function (h, c) { if (h) o[h] = leadVal_(r[c]); }); out.push(o);
+    }
+  });
+  return { ok: true, previews: out };
+}
+/** Makes a new rep's Call Lists tab: a copy of the first rep tab's headings, checkboxes and dropdowns, with no leads. */
+function createRepTab_(name) {
+  var ss = SpreadsheetApp.openById(CALL_LISTS_ID), tpl = repTabs_()[0]; if (!tpl) return '';
+  var base = str_(String(name).split(/\s+/)[0], 30).replace(/[^\w '-]/g, '') || 'Rep', tab = base.charAt(0).toUpperCase() + base.slice(1), n = 2;
+  while (ss.getSheetByName(tab)) tab = base + ' ' + (n++);
+  var sh = tpl.copyTo(ss).setName(tab);
+  if (sh.getLastRow() > 1) sh.getRange(2, 1, sh.getLastRow() - 1, sh.getLastColumn()).clearContent().clearNote();
+  try { sh.getProtections(SpreadsheetApp.ProtectionType.RANGE).concat(sh.getProtections(SpreadsheetApp.ProtectionType.SHEET)).forEach(function (p) { p.remove(); }); } catch (e) {}
+  return tab;
+}
 function saveLead_(me, tab, row, id, f) {
   var t = leadTab_(me, tab); if (t.error) return { ok: false, error: t.error };
   var sh = t.sh, lc = sh.getLastColumn(), head = sh.getRange(1, 1, 1, lc).getValues()[0].map(String);
@@ -688,7 +718,7 @@ function saveLead_(me, tab, row, id, f) {
   }
   var cur = sh.getRange(row, 1, 1, lc).getValues()[0], changed = [];
   Object.keys(f).forEach(function (h) {
-    var rule = LEAD_EDIT[h], c = head.indexOf(h); if (!rule || c === -1) return;
+    var rule = LEAD_EDIT[h] || (h === 'Approved (Harvey)' && isAdmin_(me) ? 'bool' : null), c = head.indexOf(h); if (!rule || c === -1) return;
     var val = f[h];
     if (rule === 'bool') val = val === true || val === 'true';
     else if (rule === 'date') { var m = String(val || '').match(/^(\d{4})-(\d{2})-(\d{2})$/); val = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : ''; }

@@ -28,6 +28,8 @@ var SHEETS = {
   Training: ['Role', 'Title', 'Link', 'Type', 'Order'],
   Links: ['Token hash', 'Email', 'Expires', 'Used'],
   Sessions: ['Session hash', 'Email', 'Expires', 'Created'],
+  Applications: ['Date', 'First name', 'Last name', 'Email', 'Mobile', 'Based', 'Experience', 'Best time', 'Note', 'Status'],
+  Enquiries: ['Date', 'First name', 'Last name', 'Business', 'Email', 'Phone', 'Website', 'What they sell', 'Who buys it', 'Sale price', 'Commission', 'Reps wanted', 'Note', 'Status'],
   Log: ['Time', 'Who', 'Action', 'Details']
 };
 var ROLES = ['Rep', 'Top Rep', 'Coach', 'Team Lead', 'Admin'];
@@ -49,6 +51,7 @@ function doPost(e) {
     var a = String(req.action || '');
     if (a === 'requestLink') return json_(requestLink_(req.email));
     if (a === 'verify') return json_(verify_(req.token));
+    if (a === 'apply' || a === 'enquiry') { lock.waitLock(20000); return json_(publicForm_(a, req.form || {})); }
     var me = auth_(req.session);
     if (!me) return json_({ ok: false, error: 'Please log in again.', auth: false });
     if (a === 'me') return json_(mePayload_(me));
@@ -70,6 +73,44 @@ function doPost(e) {
   } finally {
     try { lock.releaseLock(); } catch (e2) {}
   }
+}
+
+/* ---------------- public forms: Apply to join, Find reps ---------------- */
+
+function ensureSheet_(name) {
+  var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName(name);
+  if (!sh) { sh = ss.insertSheet(name); sh.appendRow(SHEETS[name]); sh.setFrozenRows(1); sh.getRange(1, 1, 1, SHEETS[name].length).setFontWeight('bold'); }
+  return sh;
+}
+
+function publicForm_(kind, f) {
+  ensureSheet_('Applications'); ensureSheet_('Enquiries');
+  if (str_(f.website)) return { ok: true };                            // honeypot filled: quietly ignore bots
+  var cache = CacheService.getScriptCache(), key = 'form_' + sha_(kind + cleanEmail_(f.email));
+  var n = Number(cache.get(key) || 0); if (n >= 3) return { ok: false, error: 'You have already sent this. We will be in touch soon.' };
+  var email = cleanEmail_(f.email), phone = str_(f.phone, 30);
+  if (!str_(f.first) || !email || phone.replace(/\D/g, '').length < 10 || !f.consent) return { ok: false, error: 'Please fill in all the required fields.' };
+  var lines;
+  if (kind === 'apply') {
+    var row = { 'Date': new Date(), 'First name': str_(f.first, 60), 'Last name': str_(f.last, 60), 'Email': email, 'Mobile': phone, 'Based': str_(f.based, 80),
+      'Experience': str_(f.experience, 30), 'Best time': str_(f.time, 30), 'Note': str_(f.note, 1000), 'Status': 'New' };
+    appendObj_('Applications', row);
+    lines = ['New rep application', '', 'Name: ' + row['First name'] + ' ' + row['Last name'], 'Mobile: ' + phone, 'Email: ' + email, 'Based: ' + row.Based,
+      'Experience: ' + row.Experience, 'Best time to call: ' + row['Best time'], 'Note: ' + (row.Note || '-')];
+  } else {
+    var e = { 'Date': new Date(), 'First name': str_(f.first, 60), 'Last name': str_(f.last, 60), 'Business': str_(f.business, 120), 'Email': email, 'Phone': phone,
+      'Website': str_(f.web, 200), 'What they sell': str_(f.sells, 300), 'Who buys it': str_(f.buyers, 300), 'Sale price': str_(f.price, 30),
+      'Commission': str_(f.commission, 30), 'Reps wanted': str_(f.reps, 30), 'Note': str_(f.note, 1000), 'Status': 'New' };
+    if (!e.Business) return { ok: false, error: 'Please fill in all the required fields.' };
+    appendObj_('Enquiries', e);
+    lines = ['New business enquiry', '', 'Business: ' + e.Business, 'Contact: ' + e['First name'] + ' ' + e['Last name'], 'Phone: ' + phone, 'Email: ' + email,
+      'Website: ' + (e.Website || '-'), 'Sells: ' + e['What they sell'], 'Buyers: ' + e['Who buys it'], 'Sale price: ' + e['Sale price'],
+      'Commission: ' + (e.Commission || '-'), 'Reps wanted: ' + e['Reps wanted'], 'Note: ' + (e.Note || '-')];
+  }
+  cache.put(key, String(n + 1), 3600);
+  try { MailApp.sendEmail({ to: ADMIN_EMAIL, subject: (kind === 'apply' ? 'New application: ' : 'New enquiry: ') + str_(f.first, 60) + ' ' + str_(f.last, 60), body: lines.join('\n') + '\n\nOpen the Team Portal sheet to update the status.', name: FROM_NAME }); } catch (err) { log_('system', 'form email failed', err.message); }
+  log_(email, kind, 'received');
+  return { ok: true };
 }
 
 /* ---------------- login: one-time email links ---------------- */

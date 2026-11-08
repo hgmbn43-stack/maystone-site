@@ -300,6 +300,51 @@ body.ms-noscroll{overflow:hidden}
   .ms-dbox{border-radius:0;width:100%}.ms-lstats{display:grid;grid-template-columns:repeat(4,1fr);width:100%;gap:6px}.ms-lstats div{min-width:0;padding:8px 10px}.ms-lstats small{font-size:11px;white-space:nowrap}.ms-search{min-width:0;flex-basis:100%}
   .ms-dbox .ms-mact{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ms-dbox .ms-mact .ms-sp{display:none}.ms-dbox .ms-mact .ms-btn{padding:0 10px}.ms-dbox .ms-mact .ms-btn.acc{grid-column:1/-1}.ms-lstats b{font-size:18px}.ms-dinfo,.ms-pipe{grid-template-columns:1fr}.ms-ltools select{flex:1}}
 
+
+/* ---- settings ---- */
+.st-grid{margin-top:20px}.st-grid .ms-panel h3{margin:0 0 4px}
+.st-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.st-seg button{display:grid;gap:6px;justify-items:center;border:1.5px solid var(--line);background:transparent;border-radius:16px;padding:16px 8px;font:600 14px var(--body);color:var(--ink);cursor:pointer}
+.st-seg button span{font-size:22px}.st-seg button.on{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,74,18,.18)}
+.st-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}.st-row input{font:600 16px var(--body);color:var(--ink);background:transparent;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;min-width:0;flex:1}.st-row input[type=number]{flex:0 0 100px}.st-row span{color:var(--soft)}
+.st-ok{margin:10px 0 0;font-weight:600;color:var(--good)}
+.st-acc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.st-acc small{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}.st-acc b{color:var(--ink);overflow-wrap:anywhere}
+#logout{white-space:nowrap}.pwi{display:none;font-size:17px;line-height:1}@media(max-width:520px){.pwt{display:none}.pwi{display:inline}#pw-open{width:40px;padding:0!important}}
+.ms-setl{margin-top:auto}.thm{width:40px;padding:0!important;display:inline-grid;place-items:center}.thm .sun{display:none}
+html[data-theme=dark] .thm .moon{display:none}html[data-theme=dark] .thm .sun{display:inline}
+@media(max-width:820px){.ms-setl{display:none}}
+
+/* ---- dark theme ---- */
+html[data-theme=dark]{color-scheme:dark;--ink:#EAF0F7;--soft:#9DAEC2;--muted:#8394A8;--label:#9DAEC2;--bg:#0F1D30;--stone:#08121F;--line:#22364F;--line-2:#2C4361;--chip:#1A2C44;--accent:#F0622A}
+html[data-theme=dark] body{background:#08121F;color:var(--ink)}
+html[data-theme=dark] header.top{background:#0A1626;border-color:#1A2C44}
+html[data-theme=dark] header.top .mark i{background:#EAF0F7}html[data-theme=dark] header.top .mark i.a{background:var(--accent)}
+html[data-theme=dark] .ms-panel,html[data-theme=dark] .ms-phead,html[data-theme=dark] .ms-stat,html[data-theme=dark] .dx-stat,html[data-theme=dark] .dx-panel:not(.dark),html[data-theme=dark] .ms-evnext,html[data-theme=dark] .ms-task,html[data-theme=dark] .ms-rung,html[data-theme=dark] .ms-list,html[data-theme=dark] .ms-doc,html[data-theme=dark] .ms-notes,html[data-theme=dark] .ms-mbox,html[data-theme=dark] .ms-lrow2,html[data-theme=dark] .panel,html[data-theme=dark] .tile,html[data-theme=dark] .ms-btn.ghost,html[data-theme=dark] .btn.out,html[data-theme=dark] .tabs button,html[data-theme=dark] .ms-chip,html[data-theme=dark] .ms-lfil button,html[data-theme=dark] .ms-search,html[data-theme=dark] .ms-arrow2{background:#0F1D30;border-color:#1F334B;color:var(--ink)}
+html[data-theme=dark] .dx-panel.dark,html[data-theme=dark] .ms-panel.dark,html[data-theme=dark] .ms-side{background:#0B1A2C;border:1px solid #1F334B}
+html[data-theme=dark] .ms-lrow2:hover,html[data-theme=dark] .ms-dinfo,html[data-theme=dark] .ms-pipe,html[data-theme=dark] .ms-cd,html[data-theme=dark] .ms-lstats div,html[data-theme=dark] .ms-x,html[data-theme=dark] .ms-docwrap .ms-full-btn,html[data-theme=dark] .ms-docwrap.ms-full,html[data-theme=dark] .ms-task.locked,html[data-theme=dark] .ms-rung.past,html[data-theme=dark] .dx-prog .ms-next,html[data-theme=dark] th{background:#13243A;border-color:#1F334B;color:var(--ink)}
+html[data-theme=dark] .ms-pill,html[data-theme=dark] .ms-st,html[data-theme=dark] .ms-st.todo,html[data-theme=dark] .ms-pri,html[data-theme=dark] .dx-av,html[data-theme=dark] .ms-chip.st,html[data-theme=dark] .dx-bar i{background:#1A2C44;color:#C9D5E3}
+html[data-theme=dark] .dx-bar.now i{background:linear-gradient(180deg,#FFB18F,#E0531F)}html[data-theme=dark] .dx-bar.hit i{background:linear-gradient(180deg,#5BE39A,#1A7F43)}
+html[data-theme=dark] .ms-st.callback,html[data-theme=dark] .ms-pri.pB,html[data-theme=dark] .ms-evic{background:rgba(47,111,219,.18);color:#8DB6FF}
+html[data-theme=dark] .ms-st.yes,html[data-theme=dark] .dx-livepill{background:rgba(26,127,67,.22);color:#6EE7A2}
+html[data-theme=dark] .ms-st.called{background:rgba(154,103,0,.22);color:#F5C66B}
+html[data-theme=dark] .ms-st.dnc,html[data-theme=dark] .ms-warn{background:rgba(180,35,24,.22);color:#FF9A91}
+html[data-theme=dark] .ms-st.no{background:#1A2C44;color:#8394A8}
+html[data-theme=dark] .ms-pri.pA,html[data-theme=dark] .ms-evnext.live .ms-evic{background:rgba(240,98,42,.18);color:#FF9466}
+html[data-theme=dark] .ms-evnext.live{background:#1A1A22}
+html[data-theme=dark] tr.me td,html[data-theme=dark] .ms-lrow.me,html[data-theme=dark] .ms-ti,html[data-theme=dark] .ms-rung.now{background:rgba(240,98,42,.12)}
+html[data-theme=dark] .ms-lfil button.on,html[data-theme=dark] .ms-chip.on,html[data-theme=dark] .ms-chip.call,html[data-theme=dark] .ms-cd.sel,html[data-theme=dark] .tabs button[aria-selected="true"],html[data-theme=dark] .chip{background:var(--accent);border-color:var(--accent);color:#fff}
+html[data-theme=dark] .ms-nav.on{background:#EAF0F7;color:#0B1A2C}
+html[data-theme=dark] .dx-member .ms-cmark i{background:#EAF0F7}
+html[data-theme=dark] .ms-lhead,html[data-theme=dark] .ms-lrow2,html[data-theme=dark] .dx-feed,html[data-theme=dark] .ms-cb,html[data-theme=dark] .dx-member,html[data-theme=dark] .ms-dayhd,html[data-theme=dark] .ms-nextlvl,html[data-theme=dark] td{border-color:#1A2C44}
+html[data-theme=dark] input,html[data-theme=dark] select,html[data-theme=dark] textarea{background:#0B1828;border-color:#2C4361;color:var(--ink)}
+html[data-theme=dark] .ms-modal{background:rgba(2,8,16,.7)}
+html[data-theme=dark] .ms-dbox .ms-mact{background:#0F1D30}
+html[data-theme=dark] .ms-empty{border-color:#2C4361;color:var(--soft)}
+html[data-theme=dark] .dx-ticker{background:#0B1A2C;border:1px solid #1F334B}
+html[data-theme=dark] .ms-dots button{background:#2C4361}
+html[data-theme=dark] .ms-stat::after,html[data-theme=dark] .dx-stat::after{background:radial-gradient(circle,rgba(240,98,42,.22),transparent 70%)}
+html[data-theme=dark] .ms-pwb,html[data-theme=dark] .pwb{background:#13243A;color:var(--ink)}
+html[data-theme=dark] .dx-rw.light .dx-rl b{color:var(--ink)}html[data-theme=dark] .dx-rw.light circle:first-of-type{stroke:#1A2C44}
 /* ---- home dashboard (dx) ---- */
 .dx-rw{position:relative;flex:none}.dx-rw svg{display:block}.dx-rl{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.dx-rw.light .dx-rl b{color:var(--ink);font-size:24px}
 .dx-arc{animation:dxArc 1.2s cubic-bezier(.2,.8,.2,1) both .2s}@keyframes dxArc{from{stroke-dashoffset:var(--c)}}
@@ -434,12 +479,14 @@ body.ms-noscroll{overflow:hidden}
 </style>
 </head>
 <body>
+<script>(function(){var t='dark';try{t=localStorage.getItem('maystone.theme')||'dark'}catch(e){}if(t==='auto')t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)})();</script>
 <header class="top"><div class="wrap">
   <a class="brand" href="../" aria-label="Maystone Sales Group website">
     <span class="mark" aria-hidden="true"><span><i></i></span><span><i></i><i></i></span><span><i></i><i></i><i class="a"></i></span></span>
     <span class="word"><b>MAYSTONE</b><small>SALES GROUP</small></span>
   </a>
-  <div class="who" id="who" hidden><span id="who-name"></span><span class="chip" id="who-role"></span><button class="btn out sm" id="pw-open" type="button">Password</button><button class="btn out sm" id="logout" type="button">Log out</button></div>
+  <div class="who" id="who" hidden><span id="who-name"></span><span class="chip" id="who-role"></span><button class="btn out sm" id="pw-open" type="button" aria-label="Settings"><span class="pwt">Settings</span><span class="pwi">⚙</span></button><button class="btn out sm" id="logout" type="button">Log out</button></div>
+  <button class="btn out sm thm" id="thm" type="button" aria-label="Switch light or dark"><span class="moon">☾</span><span class="sun">☀</span></button>
   <a class="btn out sm" id="back" href="../">Back to the website</a>
 </div></header>
 
@@ -664,7 +711,9 @@ body.ms-noscroll{overflow:hidden}
     if (silent) say($('login-msg'), 'Your login has ended. Enter your email to get a new link.', false);
   }
   $('logout').addEventListener('click', function () { logout(false); });
-  $('pw-open').addEventListener('click', function () { if (state.me) { pwBanner(state.me, true); window.scrollTo(0, 0); } });
+  $('pw-open').addEventListener('click', function () { if (!state.me) return; var ra = $('rep-app'); if (ra && ra.offsetParent !== null && ra.innerHTML) { repTab = 'settings'; repView = null; renderRep(state.repM || state.me, ra, false); window.scrollTo(0, 0); } else { pwBanner(state.me, true); window.scrollTo(0, 0); } });
+  window.msTheme = function (t) { try { localStorage.setItem('maystone.theme', t); } catch (e) {} if (t === 'auto') t = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', t); };
+  $('thm').addEventListener('click', function () { var cur = document.documentElement.getAttribute('data-theme'); window.msTheme(cur === 'dark' ? 'light' : 'dark'); var s = document.querySelector('[data-themepick]'); if (s && state.repM) renderRep(state.repM, $('rep-app'), false); });
 
   /* ---------- rep app (Maystone HQ) ---------- */
   var LADDER = ['Rep', 'Top Rep', 'Coach', 'Team Lead'];
@@ -721,6 +770,7 @@ body.ms-noscroll{overflow:hidden}
     return '<div class="dx-rw' + (light ? ' light' : '') + '" style="width:' + size + 'px;height:' + size + 'px"><svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true"><defs><linearGradient id="dxg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB18F"/><stop offset="1" stop-color="#E0531F"/></linearGradient></defs><circle cx="' + h + '" cy="' + h + '" r="' + r + '" fill="none" stroke="' + (light ? '#EEF2F6' : 'rgba(255,255,255,.12)') + '" stroke-width="10"/><circle class="dx-arc" cx="' + h + '" cy="' + h + '" r="' + r + '" fill="none" stroke="url(#dxg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + c + '" style="--c:' + c + ';--o:' + (c * (1 - pct)) + '" stroke-dashoffset="' + (c * (1 - pct)) + '" transform="rotate(-90 ' + h + ' ' + h + ')"/></svg><div class="dx-rl">' + html + '</div></div>';
   }
   function renderRep(m, el, preview) {
+    if (!preview) state.repM = m;
     var first = String(m.user.name || '').split(' ')[0] || 'there';
     var open = m.training.filter(function (t) { return !t.locked; });
     var done = open.filter(function (t) { return t.done; }).length;
@@ -792,6 +842,17 @@ body.ms-noscroll{overflow:hidden}
       })(),
       tasks:
         '<div class="ms-phead"><div><p class="ms-kick dark">Maystone Academy</p><h2>Your training, step by step.</h2><p class="ms-lead">Work through the modules in order. Each one opens right here. When you have finished it, mark it complete. New modules unlock as you move up the ladder.</p></div><div class="ms-bigbar"><div class="ms-bartop"><b>' + done + ' / ' + open.length + '</b><span>' + Math.round(pct * 100) + '% complete</span></div><div class="ms-bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div></div></div>' + tasksHTML,
+      settings: (function () {
+        var th = 'dark'; try { th = localStorage.getItem('maystone.theme') || 'dark'; } catch (e) {}
+        var goal = 30; try { goal = parseInt(localStorage.getItem('maystone.goal'), 10) || 30; } catch (e) {}
+        return '<div class="ms-phead"><div><p class="ms-kick dark">Settings</p><h2>Make it yours.</h2><p class="ms-lead">Change how the portal looks and works for you. These settings are saved on this device.</p></div></div>' +
+          '<div class="dx-two st-grid">' +
+          '<div class="ms-panel"><h3>Appearance</h3><p class="ms-p">Dark is easier on the eyes for long calling sessions.</p><div class="st-seg" data-themepick>' + [['dark', '☾', 'Dark'], ['light', '☀', 'Light'], ['auto', '◐', 'Match my device']].map(function (o) { return '<button data-theme-set="' + o[0] + '" class="' + (th === o[0] ? 'on' : '') + '"><span>' + o[1] + '</span>' + o[2] + '</button>'; }).join('') + '</div></div>' +
+          '<div class="ms-panel"><h3>Daily call target</h3><p class="ms-p">The ring on your Home page fills up as you log calls.</p><form class="st-row" data-goalform><input type="number" min="1" max="999" name="g" value="' + goal + '" aria-label="Calls per day"><span>calls a day</span><button class="ms-btn acc" type="submit">Save</button></form><p class="st-ok" hidden>Saved.</p></div>' +
+          '<div class="ms-panel"><h3>Password</h3><p class="ms-p">' + (m.hasPassword ? 'You have a password. Set a new one here.' : 'Set a password so you can log in without waiting for an email link.') + '</p><form class="st-row" data-pwform><input type="password" name="p" minlength="8" autocomplete="new-password" placeholder="New password (8+ characters)"><button class="ms-btn acc" type="submit">' + (m.hasPassword ? 'Change' : 'Set') + ' password</button></form><p class="st-ok" hidden></p></div>' +
+          '<div class="ms-panel"><h3>Your account</h3><div class="st-acc">' + [['Name', m.user.name], ['Email', m.user.email], ['Level', m.user.role], ['Selling for', m.user.partner || 'Maystone'], ['Member since', m.joined || '–']].map(function (r) { return '<div><small>' + r[0] + '</small><b>' + esc(r[1] || '–') + '</b></div>'; }).join('') + '</div><p class="ms-p">Need something changed? Email <a href="mailto:harvey@maystone.uk">harvey@maystone.uk</a>.</p><button class="ms-btn ghost" data-logout>Log out</button></div>' +
+          '</div>';
+      })(),
       leads:
         '<div class="ms-phead"><div><p class="ms-kick dark">Leads</p><h2>Your call list.</h2><p class="ms-lead">Every lead on your list. Tap one to call it, log what happened and add notes. Changes save straight to your call list.</p></div><div class="ms-lstats" id="ms-lstats"></div></div><div id="ms-leads"><div class="ms-load"><i></i><i></i><i></i><span>Loading your leads…</span></div></div>',
       calls:
@@ -808,11 +869,17 @@ body.ms-noscroll{overflow:hidden}
         '<div class="ms-panel"><h3>Quick answers</h3><details class="ms-q"><summary>How do I get on the leaderboard?</summary><p>Book previews and make sales from your call list. The board updates every hour.</p></details><details class="ms-q"><summary>When do I get paid?</summary><p>Once a sale clears the customer\'s 14-day refund window, on the payday in your rep agreement.</p></details><details class="ms-q"><summary>How do I move up a level?</summary><p>Stay near the top of the board. Top Reps get first pick of new roles; Coaches train new reps and earn a bonus on their sales.</p></details><details class="ms-q"><summary>My login link expired.</summary><p>Go to maystone.uk/login and ask for a new one. Each link works once and lasts 30 minutes.</p></details></div>'
     };
     var nav = NAV.map(function (x) { return '<button class="ms-nav' + (repTab === x[0] ? ' on' : '') + '" data-go="' + x[0] + '"' + (repTab === x[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg><span data-s="' + (x[3] || x[1]) + '"><b>' + x[1] + '</b></span>' + (x[0] === 'tasks' && next.length ? '<em>' + next.length + '</em>' : '') + '</button>'; }).join('');
-    el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab === 'tasks' && viewing ? 'viewer' : repTab] + '</div></div>';
+    el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><button class="ms-nav ms-setl' + (repTab === 'settings' ? ' on' : '') + '" data-go="settings"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg><span><b>Settings</b></span></button><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab === 'tasks' && viewing ? 'viewer' : repTab] + '</div></div>';
     el.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.complete) complete(b.dataset.complete); repView = null; repTab = b.dataset.go; renderRep(m, el, preview); try { el.querySelector('.ms-main').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); } catch (e) {} }); });
     if (repTab === 'tasks' && viewing) loadLesson(m, viewing, el, preview);
     if (repTab === 'calls') loadCalendar(el, preview, m);
     if (repTab === 'leads') loadLeads(el, m);
+    if (repTab === 'settings') {
+      el.querySelectorAll('[data-theme-set]').forEach(function (b) { b.onclick = function () { window.msTheme(b.dataset.themeSet); renderRep(m, el, preview); }; });
+      var gf = el.querySelector('[data-goalform]'); if (gf) gf.onsubmit = function (e) { e.preventDefault(); var g = parseInt(gf.g.value, 10); if (!(g > 0 && g < 1000)) return; try { localStorage.setItem('maystone.goal', g); } catch (x) {} var ok = gf.nextElementSibling; ok.hidden = false; setTimeout(function () { ok.hidden = true; }, 2500); };
+      var pf = el.querySelector('[data-pwform]'); if (pf) pf.onsubmit = function (e) { e.preventDefault(); var ok = pf.nextElementSibling, b = pf.querySelector('button'); if (pf.p.value.length < 8) { ok.textContent = 'Use at least 8 characters.'; ok.hidden = false; return; } b.disabled = true; api('setPassword', { password: pf.p.value }).then(function (r) { b.disabled = false; ok.textContent = r.ok ? 'Password saved. Log in with your email and this password next time.' : (r.error || 'Could not save.'); ok.hidden = false; if (r.ok) { m.hasPassword = true; pf.reset(); } }); };
+      var lo = el.querySelector('[data-logout]'); if (lo) lo.onclick = function () { $('logout').click(); };
+    }
     if (repTab === 'home') {
       el.querySelectorAll('[data-count]').forEach(function (n) { var to = +n.dataset.count || 0, t0 = performance.now(), dur = 900; if (!to) { n.textContent = '0'; return; } (function tick(t) { var k = Math.min(1, (t - t0) / dur); n.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))).toLocaleString('en-GB'); if (k < 1) requestAnimationFrame(tick); })(t0); });
       var gb = el.querySelector('[data-goal]'); if (gb) gb.onclick = function () { var g = prompt('Your daily call target:', ''); g = parseInt(g, 10); if (g > 0 && g < 1000) { try { localStorage.setItem('maystone.goal', g); } catch (e) {} renderRep(m, el, preview); } };

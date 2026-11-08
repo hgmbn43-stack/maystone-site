@@ -32,6 +32,7 @@ var SHEETS = {
   Enquiries: ['Date', 'First name', 'Last name', 'Business', 'Email', 'Phone', 'Website', 'What they sell', 'Who buys it', 'Sale price', 'Commission', 'Reps wanted', 'Note', 'Status'],
   Progress: ['Email', 'Title', 'Done'],
   Passwords: ['Email', 'Hash', 'Salt', 'Set'],
+  Events: ['ID', 'Title', 'When', 'Minutes', 'Link', 'For', 'Details', 'Created'],
   Callbacks: ['ID', 'Email', 'When', 'Name', 'Business', 'Phone', 'Note', 'Status', 'Created'],
   Log: ['Time', 'Who', 'Action', 'Details']
 };
@@ -75,6 +76,8 @@ function doPost(e) {
     if (a === 'adminSavePartner') return json_(adminSavePartner_(me, req.partner || {}));
     if (a === 'adminAddSale') return json_(adminAddSale_(me, req.sale || {}));
     if (a === 'adminSetSaleStatus') return json_(adminSetSaleStatus_(me, req.id, req.status));
+    if (a === 'adminSaveEvent') { lock.waitLock(20000); return json_(adminSaveEvent_(me, req.event || {})); }
+    if (a === 'adminDeleteEvent') { lock.waitLock(20000); return json_(adminDeleteEvent_(me, req.id)); }
     if (a === 'adminSaveTraining') return json_(adminSaveTraining_(me, req.item || {}));
     if (a === 'adminSync') { syncActivity(); return json_(adminOverview_()); }
     return json_({ ok: false, error: 'Unknown action.' });
@@ -385,7 +388,7 @@ function mePayload_(u) {
   var users = table_('Users'), memberNo = 0;
   users.forEach(function (x, i) { if (cleanEmail_(x.Email) === u.Email) memberNo = i + 1; });
   return {
-    ok: true, user: publicUser_(u), admin: isAdmin_(u), hasPassword: hasPassword_(u.Email), mine: mine, rank: rank, training: training, joined: fmt_(u.Joined), memberNo: memberNo, boardSize: board.length,
+    ok: true, user: publicUser_(u), admin: isAdmin_(u), hasPassword: hasPassword_(u.Email), mine: mine, rank: rank, training: training, events: eventsFor_(lvl), joined: fmt_(u.Joined), memberNo: memberNo, boardSize: board.length,
     leaderboard: board.slice(0, 15).map(function (b, i) { return { rank: i + 1, name: b.name, role: b.role, previews: b.previews, sales: b.sales, me: b.email === u.Email }; })
   };
 }
@@ -434,6 +437,7 @@ function adminOverview_() {
                commission: Number(s.Commission || 0), status: s.Status, source: s.Source, notes: s.Notes };
     }),
     training: table_('Training').map(function (t) { return { role: t.Role, title: t.Title, link: t.Link, type: t.Type, order: t.Order }; }),
+    events: eventsFor_(99),
     activityUpdated: (function () { var v = ''; Object.keys(act).forEach(function (k) { if (act[k].Updated) v = fmt_(act[k].Updated, true); }); return v; })()
   };
 }
@@ -644,6 +648,35 @@ function selfTest() {
   out.push('bad token refused: ' + (!verify_('abc').ok));
   console.log(out.join('\n'));
   return out.join('\n');
+}
+
+/* ---------------- team events: group calls, trainings (set by the admin, seen by everyone at that level) ---------------- */
+
+function evOut_(r) { return { id: String(r.ID), title: String(r.Title || ''), when: Number(r.When) || 0, minutes: Number(r.Minutes) || 60, link: String(r.Link || ''), role: String(r.For || 'All'), details: String(r.Details || '') }; }
+function eventsFor_(lvl) {
+  if (!sheet_('Events')) return [];
+  var from = Date.now() - 3 * 3600000;
+  return table_('Events').filter(function (r) { return Number(r.When) >= from && (LEVEL[r.For] || 0) <= lvl; }).map(evOut_)
+    .sort(function (x, y) { return x.when - y.when; }).slice(0, 60);
+}
+function adminSaveEvent_(me, d) {
+  var when = Number(d.when), title = str_(d.title, 120), link = str_(d.link, 400);
+  if (!title) return { ok: false, error: 'Give the event a name.' };
+  if (!when || when < 1.6e12 || when > 2.2e12) return { ok: false, error: 'Pick a date and time.' };
+  if (link && !/^https:\/\//.test(link)) return { ok: false, error: 'The join link must start with https://' };
+  var role = d.role === 'All' || ROLES.indexOf(d.role) !== -1 ? d.role : 'All';
+  var row = { Title: title, When: when, Minutes: Math.max(5, Math.min(600, Number(d.minutes) || 60)), Link: link, For: role, Details: str_(d.details, 1000) };
+  var sh = ensureSheet_('Events'), head = SHEETS.Events;
+  if (d.id) {
+    var v = sh.getDataRange().getValues();
+    for (var i = 1; i < v.length; i++) if (String(v[i][0]) === String(d.id)) { head.forEach(function (h, c) { if (row[h] !== undefined) v[i][c] = row[h]; }); sh.getRange(i + 1, 1, 1, head.length).setValues([v[i]]); break; }
+  } else { row.ID = 'ev' + Utilities.getUuid().slice(0, 8); row.Created = new Date(); appendObj_('Events', row); }
+  log_(me.Email, d.id ? 'edited event' : 'added event', title);
+  var out = adminOverview_(); out.message = d.id ? 'Event updated.' : 'Event added. Reps will see it on their calendar.'; return out;
+}
+function adminDeleteEvent_(me, id) {
+  var sh = sheet_('Events'); if (sh) { var v = sh.getDataRange().getValues(); for (var i = v.length - 1; i >= 1; i--) if (String(v[i][0]) === String(id)) { sh.deleteRow(i + 1); log_(me.Email, 'deleted event', v[i][1]); } }
+  var out = adminOverview_(); out.message = 'Event deleted.'; return out;
 }
 
 /* ---------------- callbacks calendar (each rep sees only their own) ---------------- */

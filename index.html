@@ -24,547 +24,1029 @@
 {"@context":"https://schema.org","@type":"Organization","name":"Maystone Sales Group","url":"https://maystone.uk/","email":"hello@maystone.uk","description":"A remote UK sales agency: self-employed reps selling by phone for partner businesses. Founding partner: HGM Leads (websites for local trades).","address":{"@type":"PostalAddress","addressLocality":"Shoreham-by-Sea","addressRegion":"West Sussex","addressCountry":"GB"},"sameAs":["https://www.linkedin.com/company/maystonesales"],"founder":{"@type":"Person","name":"Harvey-George Matthews"}}
 </script>
 <style>
-/* The October Maystone design, made live: white and stone, navy ink, one orange accent; Space Grotesk headings, Inter body, Montserrat logo. Single light theme on purpose. */
-@font-face{font-family:"Montserrat";src:url("fonts/montserrat-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
-@font-face{font-family:"Montserrat";src:url("fonts/montserrat-latin-800-normal.woff2") format("woff2");font-weight:800;font-style:normal;font-display:swap}
-@font-face{font-family:"Space Grotesk";src:url("fonts/space-grotesk-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
-@font-face{font-family:"Space Grotesk";src:url("fonts/space-grotesk-latin-700-normal.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
-@font-face{font-family:"Inter";src:url("fonts/inter-latin-400-normal.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
-@font-face{font-family:"Inter";src:url("fonts/inter-latin-500-normal.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
-@font-face{font-family:"Inter";src:url("fonts/inter-latin-600-normal.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
-:root{
-  color-scheme:light;
-  --ink:#142D4C; --soft:#4A5A70; --muted:#667385; --label:#6E675B;
-  --bg:#FFFFFF; --stone:#F6F3EE; --line:#E4DED3; --line-2:#CFC6B6; --chip:#E9E3D8;
-  --accent:#D94A12; --accent-dark:#B23A0A; --top-row:#FFF1EA;
-  --head:"Space Grotesk",system-ui,sans-serif; --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; --logo:Montserrat,system-ui,sans-serif;
-}
-*{box-sizing:border-box}
+@font-face{font-family:'Inter';font-weight:400;font-display:swap;src:url(fonts/inter-latin-400-normal.woff2) format('woff2')}@font-face{font-family:'Inter';font-weight:500;font-display:swap;src:url(fonts/inter-latin-500-normal.woff2) format('woff2')}@font-face{font-family:'Inter';font-weight:600;font-display:swap;src:url(fonts/inter-latin-600-normal.woff2) format('woff2')}@font-face{font-family:'Montserrat';font-weight:600;font-display:swap;src:url(fonts/montserrat-latin-600-normal.woff2) format('woff2')}@font-face{font-family:'Montserrat';font-weight:800;font-display:swap;src:url(fonts/montserrat-latin-800-normal.woff2) format('woff2')}@font-face{font-family:'Space Grotesk';font-weight:500;font-display:swap;src:url(fonts/space-grotesk-latin-500-normal.woff2) format('woff2')}@font-face{font-family:'Space Grotesk';font-weight:700;font-display:swap;src:url(fonts/space-grotesk-latin-700-normal.woff2) format('woff2')}
+:root{--ink:#142D4C;--soft:#4A5A70;--muted:#667385;--label:#6E675B;--bg:#FFFFFF;--stone:#F6F3EE;--line:#E4DED3;--line-2:#CFC6B6;--chip:#E9E3D8;--accent:#D94A12;--accent-dark:#B23A0A;--top-row:#FFF1EA;--ok:#1F7A4D;--gut:max(16px,env(safe-area-inset-left));color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body)}
-a{color:var(--accent)}a:hover{color:var(--accent-dark)}
-:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
-@keyframes fadeUp{from{opacity:.35;transform:translateY(20px)}to{opacity:1;transform:none}}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(217,74,18,.7)}70%{box-shadow:0 0 0 10px rgba(217,74,18,0)}100%{box-shadow:0 0 0 0 rgba(217,74,18,0)}}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.lift{transition:transform .25s ease,border-color .25s ease}
-.lift:hover{transform:translateY(-6px);border-color:var(--accent) !important}
-@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
-
-.wrap{max-width:1200px;margin:0 auto;padding-left:max(20px, env(safe-area-inset-left, 0px));padding-right:max(20px, env(safe-area-inset-right, 0px))}
-.kick{margin:0;font-size:14px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--label)}
-h1,h2,h3{margin:0}
-.h2{font-family:var(--head);font-weight:700;font-size:clamp(32px,4vw,48px);letter-spacing:-1px;line-height:1.1;text-wrap:balance}
-.h2s{font-family:var(--head);font-weight:700;font-size:clamp(30px,3.6vw,44px);letter-spacing:-1px;line-height:1.1;text-wrap:balance}
-.p{margin:0;color:var(--soft);font-size:18px;line-height:1.55}
-.card{background:#FFFFFF;border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:8px}
-.card h3{font-family:var(--head);font-size:22px;color:var(--ink)}
-.card p{margin:0;font-size:15px;line-height:1.55;color:var(--soft)}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none;font-weight:600;font-size:17px;padding:14px 28px;border-radius:999px}
-.btn-acc{background:var(--accent);color:#FFFFFF}
-.btn-acc:hover{background:var(--accent-dark);color:#FFFFFF}
-.btn-out{border:1px solid var(--line-2);color:var(--ink)}
-.btn-out:hover{border-color:var(--ink);color:var(--ink)}
-.sec{padding-block:96px}
-.stone{background:var(--stone);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 Inter,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;letter-spacing:-.5px;line-height:1.08;text-wrap:balance}
+h2{font-size:clamp(1.8rem,4vw,2.7rem)}
+h3{font-size:1.15rem;font-weight:500;letter-spacing:-.2px}
+p{text-wrap:pretty}
+a{color:inherit}
+img,svg{display:block}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--gut)}
+section{padding:clamp(64px,9vw,112px) 0}
+.alt{background:var(--stone)}
+.kicker{font:600 .74rem/1.2 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--label);margin-bottom:14px;display:block}
+.lede{color:var(--soft);font-size:1.06rem;max-width:62ch;margin-top:16px}
+.small{font-size:.86rem;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:999px;font:600 .98rem Inter,sans-serif;text-decoration:none;border:1.5px solid transparent;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .15s}
+.btn:active{transform:scale(.98)}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent-dark)}
+.btn-line{border-color:var(--line-2);color:var(--ink);background:#fff}.btn-line:hover{border-color:var(--ink)}
+.btn-ink{background:var(--ink);color:#fff}.btn-ink:hover{background:#0d2038}
+.btn-white{background:#fff;color:var(--ink)}.btn-white:hover{background:var(--stone)}
+.btn-ghost{border-color:rgba(255,255,255,.55);color:#fff;background:transparent}.btn-ghost:hover{border-color:#fff}
+.btn-sm{min-height:44px;padding:0 18px;font-size:.92rem}
+.badge{display:inline-flex;align-items:center;gap:6px;font:600 .74rem/1 Inter;padding:6px 10px;border-radius:999px;background:var(--chip);color:var(--label);white-space:nowrap}
+.badge.ex{background:#FFF1EA;color:var(--accent-dark)}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px}
 
 /* header */
-header.top{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;padding-block:24px}
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
-.brand:hover{color:var(--ink)}
-.mark{display:flex;align-items:flex-end;gap:2px;flex:none}
-.mark span{display:flex;flex-direction:column-reverse;gap:2px}
-.mark i{display:block;width:14px;height:8px;border-radius:2px;background:var(--ink)}
-.mark i.a{background:var(--accent)}
-.word{display:flex;flex-direction:column;line-height:1}
-.word b{font-family:var(--logo);font-weight:800;font-size:22px;letter-spacing:1.5px}
-.word small{font-family:var(--logo);font-weight:600;font-size:10px;letter-spacing:3.5px;color:#8C8577;margin-top:4px}
-nav.nav{display:flex;flex-wrap:wrap;gap:24px;align-items:center;font-size:15px}
-nav.nav a{color:var(--soft);text-decoration:none}
-nav.nav a.cta{background:var(--accent);color:#FFFFFF;font-weight:600;padding:12px 20px;border-radius:999px}
-nav.nav a.cta:hover{background:var(--accent-dark)}
-@media (max-width:700px){nav.nav{gap:14px 18px;font-size:14px}nav.nav a.hide-sm{display:none}}
+.hdr{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;gap:20px;height:68px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);flex:none}
+.logo .wm{display:grid;line-height:1}
+.logo .wm b{font:800 1.12rem/1 Montserrat,sans-serif;letter-spacing:1.5px}
+.logo .wm small{font:600 9px/1 Montserrat,sans-serif;letter-spacing:3px;color:var(--muted);margin-top:4px}
+.nav{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav a.l{padding:10px 12px;font-weight:500;font-size:.93rem;text-decoration:none;color:var(--soft);border-radius:999px}
+.nav a.l:hover{color:var(--ink);background:var(--stone)}
+@media(max-width:960px){.nav a.hide-m{display:none}}
+@media(max-width:640px){.nav a.l{display:none}.nav a.login-m{display:inline-flex}}
+.nav a.login-m{display:none}
 
 /* ticker */
-.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--stone);display:flex;align-items:stretch;overflow:hidden}
-.ticker .lab{flex:none;display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--ink);color:#FFFFFF;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;z-index:1}
-.ticker .run{overflow:hidden;flex:1;min-width:0;padding:12px 0}
-.ticker .track{display:flex;gap:40px;width:max-content;animation:marquee 32s linear infinite}
-.ticker .it{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--soft);white-space:nowrap}
-.ticker .it::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
-.ticker .it strong{color:var(--ink)}
-.ticker .it em{font-style:normal;color:var(--accent);font-weight:600}
+.ticker{background:var(--ink);color:#fff;font-size:.86rem;overflow:hidden;display:flex;align-items:center}
+.ticker .tag{flex:none;background:var(--accent);font:600 .7rem/1 Inter;letter-spacing:.1em;text-transform:uppercase;padding:11px 14px;position:relative;z-index:2}
+.ticker .rail{display:flex;gap:40px;white-space:nowrap;padding:9px 0;animation:tick 42s linear infinite;padding-left:24px}
+.ticker .rail span b{color:#FFB18F;font-weight:600}
+@keyframes tick{to{transform:translateX(-50%)}}
 
 /* hero */
-.hero{display:flex;flex-wrap:wrap;gap:56px;align-items:center;padding-block:64px 96px}
-.hero .copy{flex:1 1 480px;min-width:0;display:flex;flex-direction:column;gap:24px;animation:fadeUp .9s cubic-bezier(.2,.8,.2,1) both}
-.hero h1{font-family:var(--head);font-weight:700;font-size:clamp(44px,6vw,80px);line-height:1.02;letter-spacing:-2px}
-.hero .lede{margin:0;font-size:19px;line-height:1.55;color:var(--soft);max-width:540px}
-.hero .row{display:flex;flex-wrap:wrap;gap:12px}
-.hero .fine{margin:0;font-size:14px;color:var(--muted)}
-.board{flex:1 1 400px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:16px;animation:fadeUp .9s .25s cubic-bezier(.2,.8,.2,1) both,floaty 6s 1.2s ease-in-out infinite}
-.board-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.board-top h2{font-family:var(--head);font-size:22px;display:flex;align-items:center;gap:10px}
-.board-top h2::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent);animation:livePulse 1.8s infinite}
-.ex{font-size:12px;font-weight:700;color:#7A3410;background:#FFE7DA;border:1px solid #F4BFA5;padding:5px 10px;border-radius:999px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;font-size:13px}
-.tabs span{color:var(--soft);border:1px solid var(--line-2);padding:6px 12px;border-radius:999px}
-.tabs span.on{background:var(--ink);color:#FFFFFF;border-color:var(--ink);font-weight:600}
-.rows{position:relative;height:380px}
-.r{position:absolute;left:0;right:0;top:0;height:68px;display:flex;align-items:center;gap:14px;padding:0 16px;border-radius:14px;background:var(--stone);transition:transform .7s cubic-bezier(.2,.8,.2,1),box-shadow .4s,background .4s}
-.r .rank{font-family:var(--head);font-weight:700;font-size:20px;width:28px;color:var(--muted)}
-.r .av{width:40px;height:40px;flex:none;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
-.r .nm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.r .nm b{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.r .nm span{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.r .gain{font-size:13px;font-weight:700;color:#FFFFFF;background:var(--accent);padding:3px 8px;border-radius:999px;opacity:0;transition:opacity .4s}
-.r .earn{font-family:var(--head);font-weight:700;font-size:18px;min-width:72px;text-align:right;font-variant-numeric:tabular-nums}
-.r.first{background:var(--top-row);box-shadow:0 0 0 2px var(--accent),0 0 28px rgba(217,74,18,.33)}
-.r.first .rank{color:var(--accent)}
-.r.second .rank,.r.third .rank{color:var(--ink)}
-.r.flash{z-index:2}
-.r.flash .gain{opacity:1}
-.r.flash:not(.first){box-shadow:0 0 0 1px rgba(217,74,18,.55)}
-.board .foot{margin:0;font-size:13px;color:var(--muted)}
-@media (max-width:520px){.board{padding:18px}.r{gap:10px;padding:0 12px}.r .av{width:34px;height:34px}.r .gain{display:none}.r .earn{min-width:60px;font-size:16px}}
+.hero{padding:clamp(48px,7vw,96px) 0 clamp(40px,6vw,72px)}
+.hero .wrap{display:grid;grid-template-columns:1.12fr .88fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(2.4rem,4.6vw,4rem)}
+.hero h1 span{display:block}
+.hero h1 span:nth-child(2){color:var(--accent)}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.hero .fine{margin-top:14px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.trust span{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;color:var(--soft);font-weight:500}
+.trust i{width:18px;height:18px;border-radius:50%;background:#E6F2EC;display:grid;place-items:center;flex:none}
+.trust i::after{content:"";width:7px;height:4px;border:2px solid var(--ok);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+@media(max-width:900px){.hero .wrap{grid-template-columns:1fr;gap:40px}}
+
+/* leaderboard */
+.board{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 30px 60px -30px rgba(20,45,76,.28)}
+.board-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.board-hd h3{font-weight:700;font-size:1.1rem}
+.seg{display:inline-flex;background:var(--chip);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;font:500 .82rem Inter;color:var(--soft);padding:0 12px;min-height:34px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.rows{position:relative}
+.row{position:absolute;left:0;right:0;display:grid;grid-template-columns:30px 36px 1fr auto;align-items:center;gap:10px;height:56px;padding:0 12px;border-radius:12px;transition:transform .55s cubic-bezier(.2,.8,.2,1),background .3s}
+.row .pos{font:700 .95rem "Space Grotesk";color:var(--muted);text-align:center}
+.row .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:600 .78rem Inter;color:#fff;background:var(--soft)}
+.row .nm{font-weight:600;font-size:.95rem;line-height:1.2}
+.row .nm small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+.row .ct{text-align:right;font:700 1rem "Space Grotesk"}
+.row .ct small{display:block;font:500 .74rem Inter;color:var(--muted)}
+.row.r1{background:var(--top-row)}.row.r1 .pos{color:var(--accent)}
+.row.r1 .av{background:var(--accent)}.row.r2 .av{background:var(--ink)}.row.r3 .av{background:#7A6A52}
+.pop{position:absolute;right:100px;font:700 .8rem Inter;color:var(--ok);animation:pop 1.2s ease forwards;pointer-events:none}
+@keyframes pop{0%{opacity:0;transform:translateY(6px)}20%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-14px)}}
+.board-ft{margin-top:12px;font-size:.84rem;color:var(--muted)}
 
 /* grids */
-.g6{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
-.step{background:#FFFFFF;border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:12px}
-.step .n{font-family:var(--head);font-size:40px;font-weight:700;color:var(--ink)}
-.step h3{font-size:21px}
-.step p{margin:0;color:var(--soft);line-height:1.55}
-.split{display:flex;flex-wrap:wrap;gap:48px}
-.day{display:flex;flex-direction:column;gap:14px}
-.day div{display:flex;gap:18px;align-items:flex-start}
-.day .t{font-family:var(--head);font-weight:700;font-size:16px;color:var(--label);min-width:64px;padding-top:2px}
-.day p{margin:0;font-size:16px;line-height:1.55;color:var(--soft)}
-.day strong{color:var(--ink)}
-.skills{flex:1 1 360px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:18px}
-.skills h3{font-family:var(--head);font-size:24px}
-.skills div{display:flex;gap:12px;align-items:center;font-size:16px}
-.skills div::before{content:"\2713";width:24px;height:24px;flex:none;border-radius:50%;background:var(--ink);color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
-.skills p{margin:0;font-size:14px;color:var(--muted);line-height:1.5}
-.ladder{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
-.lv{border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:10px;background:#FFFFFF}
-.lv span{font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-.lv h3{font-family:var(--head);font-size:24px;color:var(--ink)}
-.lv p{margin:0;font-size:15px;line-height:1.5;color:var(--soft)}
-.lv.dark{background:var(--ink);border-color:var(--ink)}
-.lv.dark span,.lv.dark h3,.lv.dark p{color:#FFFFFF}
-.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.path{background:#FFFFFF;border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:12px}
-.path span{font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-.path h3{font-family:var(--head);font-size:26px;color:var(--ink)}
-.path p{margin:0;font-size:16px;line-height:1.55;color:var(--soft)}
-.path .who{font-size:14px;font-weight:600;color:var(--ink)}
-.path.dark{background:var(--ink);border-color:var(--ink)}
-.path.dark span,.path.dark h3,.path.dark p,.path.dark .who{color:#FFFFFF}
-.stages{flex:1 1 520px;min-width:0;display:flex;flex-direction:column;gap:12px}
-.stages div.s{background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:20px 22px;display:flex;gap:18px;align-items:flex-start}
-.stages .tag{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#FFFFFF;background:var(--ink);padding:5px 10px;border-radius:999px;white-space:nowrap}
-.stages h3{font-size:18px}
-.stages p{margin:4px 0 0;font-size:15px;line-height:1.5;color:var(--soft)}
-.earn-box{flex:1 1 420px;min-width:0;background:#FFFFFF;border:1px solid var(--line);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:20px}
-.earn-box label{display:flex;justify-content:space-between;font-size:16px;font-weight:600}
-.earn-box input{width:100%;accent-color:var(--accent);min-height:44px}
-.earn-box .lbl{font-size:14px;color:var(--muted)}
-.earn-box .big{font-family:var(--head);font-weight:700;font-size:clamp(40px,5vw,56px);color:var(--ink);font-variant-numeric:tabular-nums}
-.earn-box .fine{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
-.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.role{background:#FFFFFF;border:1px solid var(--line);border-radius:18px;padding:24px;display:flex;flex-direction:column;gap:14px}
-.role .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.role .co{font-size:13px;color:var(--muted)}
-.role .tg{font-size:12px;font-weight:600;color:#FFFFFF;background:var(--ink);padding:4px 10px;border-radius:999px}
-.role h3{font-size:20px}
-.role p{margin:0;font-size:15px;color:var(--soft);line-height:1.5}
-.role .pay{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:14px;margin-top:auto}
-.role .pay a{font-weight:600;text-decoration:none}
-.story{max-width:860px;margin:0 auto;padding-top:96px;display:flex;flex-direction:column;gap:20px}
-.story blockquote{margin:0;font-family:var(--head);font-size:clamp(24px,3vw,34px);line-height:1.35;letter-spacing:-.5px}
-.by{display:flex;align-items:center;gap:14px}
-.by .av{width:48px;height:48px;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;font-weight:700}
-.by small{display:block;font-size:14px;color:var(--muted)}
-.partner{background:#FFFFFF;border:1px solid var(--line);border-radius:24px;overflow:hidden;display:flex;flex-wrap:wrap}
-.partner .logo{flex:1 1 280px;background:#0E0F12;color:#FFFFFF;padding:32px;display:flex;flex-direction:column;justify-content:center;gap:8px}
-.partner .logo b{font-family:var(--logo);font-weight:800;font-size:34px;letter-spacing:-.5px}
-.partner .logo small{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#A3A3A0}
-.partner .info{flex:2 1 380px;min-width:0;padding:28px;display:flex;flex-direction:column;gap:14px}
-.partner .badge{align-self:flex-start;font-size:12px;font-weight:700;color:#FFFFFF;background:var(--accent);padding:5px 10px;border-radius:999px}
-.partner .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.partner .facts div{background:var(--stone);border-radius:14px;padding:14px}
-.partner .facts span{display:block;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
-.partner .facts b{display:block;margin-top:4px}
-.next{border:2px dashed var(--line-2);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:12px;justify-content:center}
-.next h3{font-family:var(--head);font-size:24px}
-.next p{margin:0;color:var(--soft);line-height:1.55}
-.biz{display:flex;flex-wrap:wrap;gap:48px;align-items:center}
-.biz .copy{flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:20px}
-.biz .tiles{flex:1 1 420px;min-width:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
-.biz .tiles div{background:#FFFFFF;border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:8px}
-.biz .tiles h3{font-size:18px}
-.biz .tiles p{margin:0;font-size:15px;color:var(--soft);line-height:1.5}
-.promises{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
-.promises div{background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:18px 20px}
-.promises b{display:block;font-size:16px}
-.promises span{display:block;margin-top:4px;font-size:15px;color:var(--soft);line-height:1.5}
-.prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:8px}
-.price{background:#FFFFFF;border:1px solid var(--line);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:10px}
-.price.dark{background:var(--ink);border-color:var(--ink);color:#FFFFFF}
-.price .l{font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-.price.dark .l{color:#C9C0AE}
-.price .v{font-family:var(--head);font-weight:700;font-size:40px;letter-spacing:-1px}
-.price ul{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--soft);font-size:15px;line-height:1.5}
-.price.dark ul{color:#E3DED5}
-.faq{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
-.faq details{background:#FFFFFF;border:1px solid var(--line);border-radius:16px;padding:20px 24px}
-.faq summary{cursor:pointer;font-weight:600;font-size:17px;min-height:28px}
-.faq details p{margin:12px 0 0;font-size:16px;line-height:1.6;color:var(--soft)}
-.join{background:var(--ink);color:#FFFFFF}
-.join .in{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:24px;align-items:center;text-align:center}
-.join h2{font-family:var(--head);font-size:clamp(36px,5vw,56px);letter-spacing:-1.5px;line-height:1.05}
-.join p{margin:0;font-size:18px;line-height:1.5}
-.join .two{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.join .two a{min-height:52px;display:inline-flex;align-items:center;font-weight:600;font-size:17px;padding:14px 26px;border-radius:999px;text-decoration:none}
-.join .two a.w{background:#FFFFFF;color:var(--ink)}
-.join .two a.o{border:2px solid #FFFFFF;color:#FFFFFF}
-.join .two a.w:hover{background:#F6F3EE}
-.join small{font-size:14px;color:#C9C0AE}
-.privacy{font-size:15px}
-.privacy .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px 40px;margin-top:24px}
-.privacy h3{font-size:16px;margin-bottom:6px}
-.privacy p,.privacy li{color:var(--soft);line-height:1.55}
-.privacy ul{margin:4px 0 0;padding-left:20px}
-footer.foot{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;padding-block:40px;font-size:14px;color:var(--muted)}
-footer.foot a{color:var(--muted)}
-footer.foot .legal{max-width:640px;line-height:1.5}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px}
+.tile .ic{width:40px;height:40px;border-radius:12px;background:var(--stone);display:grid;place-items:center;margin-bottom:16px;color:var(--accent)}
+.tile p{color:var(--soft);font-size:.95rem;margin-top:6px}
+@media(max-width:860px){.tiles{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.tiles{grid-template-columns:1fr}}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;counter-reset:s}
+.step{border-top:2px solid var(--ink);padding-top:20px}
+.step .n{font:700 .85rem "Space Grotesk";color:var(--accent)}
+.step h3{margin:8px 0 6px;font-weight:700;font-size:1.25rem}
+.step p{color:var(--soft)}
+@media(max-width:760px){.steps{grid-template-columns:1fr;gap:28px}}
+
+/* day */
+.day{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:start}
+.tl{list-style:none;position:relative;margin-top:6px}
+.tl::before{content:"";position:absolute;left:58px;top:10px;bottom:10px;width:2px;background:var(--line)}
+.tl li{display:grid;grid-template-columns:48px 22px 1fr;gap:10px;padding:12px 0}
+.tl time{font:700 .95rem "Space Grotesk";padding-top:2px}
+.tl .dot{width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--ink);margin:6px 0 0 5px;position:relative;z-index:1}
+.tl li:last-child .dot{background:var(--accent);border-color:var(--accent)}
+.tl b{display:block}
+.tl span{color:var(--soft);font-size:.95rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chips span{background:var(--chip);border-radius:999px;padding:8px 14px;font-size:.88rem;font-weight:500}
+@media(max-width:860px){.day{grid-template-columns:1fr;gap:36px}}
+
+/* ladder */
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:40px;align-items:end}
+.rung{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+.rung:nth-child(1){min-height:170px}.rung:nth-child(2){min-height:200px}.rung:nth-child(3){min-height:230px}.rung:nth-child(4){min-height:260px;background:var(--ink);color:#fff;border-color:var(--ink)}
+.rung .lv{font:600 .72rem Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--label)}
+.rung:nth-child(4) .lv{color:#FFB18F}
+.rung h3{font-weight:700;font-size:1.3rem;margin:6px 0}
+.rung p{font-size:.92rem;color:var(--soft)}
+.rung:nth-child(4) p{color:#C9D3E0}
+@media(max-width:860px){.ladder{grid-template-columns:1fr 1fr}.rung{min-height:0!important}}
+@media(max-width:480px){.ladder{grid-template-columns:1fr}}
+
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+.path .for{display:inline-block;margin-top:14px;font-size:.82rem;color:var(--label);font-weight:600}
+.path .tag{font:600 .74rem Inter;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.path h3{font-weight:700;font-size:1.25rem;margin:8px 0}
+.path p{color:var(--soft);font-size:.95rem}
+@media(max-width:860px){.paths{grid-template-columns:1fr}}
+
+.academy{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:40px}
+.stage{border:1px solid var(--line);border-radius:16px;padding:20px;background:#fff;position:relative}
+.stage .k{font:600 .72rem Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.stage h3{font-weight:700;font-size:1.05rem;margin:8px 0 6px}
+.stage p{font-size:.88rem;color:var(--soft)}
+@media(max-width:1000px){.academy{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.academy{grid-template-columns:1fr}}
+
+/* earnings */
+.earn{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.calc{background:var(--ink);color:#fff;border-radius:18px;padding:32px}
+.calc label{display:flex;justify-content:space-between;font-weight:500;color:#C9D3E0}
+.calc label b{color:#fff;font:700 1.1rem "Space Grotesk"}
+.calc input[type=range]{width:100%;margin:18px 0 26px;accent-color:var(--accent);height:28px}
+.calc .out{font:700 clamp(2rem,5vw,3rem)/1 "Space Grotesk";letter-spacing:-1px}
+.calc .out small{font:500 1rem Inter;color:#C9D3E0;letter-spacing:0}
+.calc .meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.calc .meta div{background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;font-size:.85rem;color:#C9D3E0}
+.calc .meta b{display:block;color:#fff;font:700 1.1rem "Space Grotesk"}
+.calc .fine{margin-top:18px;font-size:.8rem;color:#AEBACB}
+@media(max-width:860px){.earn{grid-template-columns:1fr}}
+
+/* roles */
+.roles{display:grid;gap:12px;margin-top:32px}
+.role{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+.role .who{font-size:.82rem;color:var(--label);font-weight:600;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.role .who .open{color:var(--ok)}
+.role h3{font-weight:700;font-size:1.2rem;margin:6px 0 4px}
+.role p{color:var(--soft);font-size:.95rem;max-width:60ch}
+.role .pay{text-align:right}
+.role .pay b{display:block;font:700 1.15rem "Space Grotesk";margin-bottom:8px}
+.role.main{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+@media(max-width:700px){.role{grid-template-columns:1fr}.role .pay{text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.role .pay b{margin:0}}
+
+/* founder */
+.founder blockquote{font:500 clamp(1.25rem,2.6vw,1.75rem)/1.4 "Space Grotesk";letter-spacing:-.3px;max-width:30em}
+.founder figcaption{display:flex;align-items:center;gap:12px;margin-top:24px}
+.founder .av{width:48px;height:48px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 .95rem "Space Grotesk"}
+
+/* partners */
+.partners{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-top:36px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px}
+.pcard .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.pcard h3{font-weight:700;font-size:1.4rem}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}
+.facts small{display:block;color:var(--muted);font-size:.78rem}
+.facts b{font-size:.95rem}
+.pnext{background:transparent;border-style:dashed;border-color:var(--line-2)}
+@media(max-width:860px){.partners{grid-template-columns:1fr}.facts{grid-template-columns:1fr}}
+
+/* business */
+.biz{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.biz .tiles{grid-template-columns:1fr 1fr;margin-top:0}
+.biz .tile h3{font-weight:700}
+@media(max-width:860px){.biz{grid-template-columns:1fr}}
+@media(max-width:480px){.biz .tiles{grid-template-columns:1fr}}
+
+/* call */
+.points{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 28px;margin-top:36px}
+.points div{padding-left:16px;border-left:2px solid var(--accent)}
+.points b{display:block;font-family:"Space Grotesk";font-size:1.05rem}
+.points span{color:var(--soft);font-size:.93rem}
+@media(max-width:860px){.points{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.points{grid-template-columns:1fr}}
+.prices{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:36px}
+.price .amt{font:700 2.2rem/1 "Space Grotesk";letter-spacing:-1px;margin:10px 0 14px}
+.price ul{list-style:none;display:grid;gap:8px}
+.price li{padding-left:22px;position:relative;color:var(--soft);font-size:.94rem}
+.price li::before{content:"";position:absolute;left:2px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+@media(max-width:700px){.prices{grid-template-columns:1fr}}
+
+/* faq */
+.faq{max-width:820px;margin-top:28px}
+details{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;padding:20px 40px 20px 0;font:500 1.08rem "Space Grotesk";position:relative;min-height:44px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:6px;top:16px;font:400 1.6rem Inter;color:var(--accent);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 0 20px;color:var(--soft);max-width:66ch}
+
+/* join */
+.join{background:var(--ink);color:#fff;text-align:center}
+.join h2{font-size:clamp(2rem,5vw,3.4rem)}
+.join p{color:#C9D3E0;max-width:52ch;margin:16px auto 0}
+.join .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.join .fine{margin-top:22px;font-size:.88rem;color:#AEBACB}
+.join .fine a{color:#fff}
+
+/* privacy */
+.priv{display:grid;grid-template-columns:1fr 1fr;gap:16px 40px;margin-top:32px}
+.priv h3{font-weight:700;font-size:1rem;margin-bottom:6px}
+.priv p,.priv li{font-size:.92rem;color:var(--soft)}
+.priv ul{padding-left:18px;display:grid;gap:4px}
+@media(max-width:760px){.priv{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--line);padding:32px 0 calc(32px + env(safe-area-inset-bottom))}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.86rem;color:var(--muted)}
+footer nav{display:flex;gap:16px}
+footer a{color:var(--soft)}
+
+/* mobile join bar */
+.mbar{position:fixed;left:0;right:0;bottom:0;z-index:25;padding:10px var(--gut) calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:none;gap:10px;transform:translateY(110%);transition:transform .3s}
+.mbar.on{transform:none}
+.mbar .btn{flex:1}
+@media(max-width:640px){.mbar{display:flex}footer{padding-bottom:96px}}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+
+
+/* 3D logo stack */
+.herovis{display:grid;gap:8px}
+.stack3d{height:230px;perspective:900px;overflow:hidden;display:grid;place-items:center;position:relative}
+.stack3d::after{content:"";position:absolute;bottom:18px;left:50%;width:240px;height:40px;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(20,45,76,.18),transparent 70%);filter:blur(4px)}
+.scene{position:relative;width:0;height:0;transform-style:preserve-3d;transform:rotateX(-28deg) rotateY(-32deg);animation:sway 9s ease-in-out 2.6s infinite}
+@keyframes sway{50%{transform:rotateX(-20deg) rotateY(-24deg)}}
+.cube{--s:52px;position:absolute;width:var(--s);height:var(--s);transform-style:preserve-3d;left:calc(var(--x)*62px - 93px);top:calc(var(--y)*-62px + 40px);animation:drop .7s cubic-bezier(.3,1.4,.5,1) both;animation-delay:calc(var(--i)*.28s + .2s);animation-play-state:paused}.stack3d.go .cube,.stack3d.go .scene,.stack3d.go .cube.top::after{animation-play-state:running}.scene{animation-play-state:paused}
+@keyframes drop{0%{transform:translateY(-360px)}100%{transform:none}}
+.cube i{position:absolute;inset:0;border-radius:9px;background:var(--c,#142D4C)}
+.cube i:nth-child(1){transform:translateZ(26px)}
+.cube i:nth-child(2){transform:rotateY(180deg) translateZ(26px)}
+.cube i:nth-child(3){transform:rotateY(90deg) translateZ(26px);filter:brightness(.72)}
+.cube i:nth-child(4){transform:rotateY(-90deg) translateZ(26px);filter:brightness(.72)}
+.cube i:nth-child(5){transform:rotateX(90deg) translateZ(26px);filter:brightness(1.35)}
+.cube i:nth-child(6){transform:rotateX(-90deg) translateZ(26px)}
+.cube.top{--c:#D94A12}
+.cube.top i:nth-child(5){filter:brightness(1.15)}
+.cube.top::after{content:"";position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,rgba(217,74,18,.35),transparent 65%);transform:translateZ(-40px);animation:glow 2.4s ease-in-out 2.4s infinite;opacity:0}
+@keyframes glow{0%,100%{opacity:.35}50%{opacity:.9}}
+@media(max-width:900px){.stack3d{height:170px}.scene{scale:.72}.hero .wrap{gap:12px}}
+@media(prefers-reduced-motion:reduce){.cube{animation:none!important}}
+
+.wwcard{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:center;text-decoration:none;color:inherit;background:var(--ink);color:#fff;border-radius:22px;padding:clamp(28px,5vw,56px);transition:transform .25s,box-shadow .25s}
+.wwcard:hover{transform:translateY(-3px);box-shadow:0 30px 60px -30px rgba(20,45,76,.5)}
+.wwcard .kicker{color:#FFB18F}.wwcard .lede{color:#C9D3E0}
+.wwside{display:grid;gap:18px;justify-items:start}
+.wwlogos{display:flex;gap:10px;flex-wrap:wrap}
+.wwl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:14px 18px;display:grid}
+.wwl b{font:700 1.1rem "Space Grotesk"}.wwl small{color:#FFB18F;font-size:.78rem}
+.wwnext{border-style:dashed;color:#C9D3E0;align-content:center}
+@media(max-width:860px){.wwcard{grid-template-columns:1fr;gap:24px}}
+
+/* v2 */
+.dark{background:#0E2138;color:#fff;position:relative;overflow:hidden}
+.dark .kicker{color:#FFB18F}.dark .lede{color:#C3CEDC}
+.hero.dark{padding-top:clamp(48px,7vw,88px);padding-bottom:0}
+.hero.dark::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(ellipse at 70% 30%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at 70% 30%,#000 20%,transparent 75%)}
+.glow{position:absolute;width:720px;height:720px;right:-120px;top:-180px;background:radial-gradient(circle,rgba(217,74,18,.38),transparent 62%);filter:blur(10px);pointer-events:none;animation:breathe 7s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.65;transform:scale(1.06)}}
+.hero.dark .wrap{position:relative}
+.hero.dark h1 span:nth-child(2){color:#FF6A2E}
+.hero.dark .trust{border-color:rgba(255,255,255,.12)}
+.hero.dark .trust span{color:#DCE3EC}
+.hero.dark .trust i{background:rgba(52,199,123,.18)}.hero.dark .trust i::after{border-color:#5BE09A}
+.hero.dark .board{background:rgba(255,255,255,.97);color:var(--ink);box-shadow:0 40px 80px -30px rgba(0,0,0,.6)}
+.hero.dark .stack3d::after{background:radial-gradient(ellipse,rgba(0,0,0,.45),transparent 70%)}
+.cube i{background:var(--c,#20406A)}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);margin-top:clamp(48px,6vw,80px);border-top:1px solid rgba(255,255,255,.12)}
+.nums div{padding:28px 20px 32px;border-left:1px solid rgba(255,255,255,.12)}
+.nums div:first-child{border-left:0;padding-left:0}
+.nums b{display:block;white-space:nowrap;font:700 clamp(2rem,4.5vw,3.2rem)/1 "Space Grotesk";letter-spacing:-1px}
+.nums span{display:block;margin-top:8px;color:#AEBACB;font-size:.92rem}
+@media(max-width:700px){.nums{grid-template-columns:1fr 1fr}.nums div{border-left:0;padding-left:0;border-top:1px solid rgba(255,255,255,.12)}.nums div:nth-child(-n+2){border-top:0}}
+.sechd{display:grid;grid-template-columns:1fr 1fr;gap:24px 56px;align-items:end;margin-bottom:44px}
+.sechd .lede{margin:0}
+@media(max-width:860px){.sechd{grid-template-columns:1fr}}
+/* path */
+.climb{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:14px;position:relative;padding-top:34px}
+.climb::before{content:"";position:absolute;top:9px;left:10px;right:10px;height:3px;background:var(--line);border-radius:3px}
+.climb::after{content:"";position:absolute;top:9px;left:10px;height:3px;width:calc((100% - 20px)*var(--p,0));background:linear-gradient(90deg,var(--accent),#FF8A4C);border-radius:3px;transition:width .15s linear}
+.climb li{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;transition:border-color .3s,transform .3s}
+.climb li::before{content:"";position:absolute;top:-31px;left:14px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--line-2);z-index:1;transition:.3s}
+.climb li.on::before{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 5px rgba(217,74,18,.15)}
+.climb li.on{border-color:rgba(217,74,18,.45);transform:translateY(-3px)}
+.climb .when{font:600 .72rem Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.climb h3{font-weight:700;font-size:1.08rem;margin:8px 0 6px}
+.climb p{font-size:.88rem;color:var(--soft)}
+.climb li.end{background:var(--ink);color:#fff;border-color:var(--ink)}.climb li.end p{color:#C3CEDC}.climb li.end .when{color:#FFB18F}
+@media(max-width:1000px){.climb{grid-template-columns:1fr;padding:0 0 0 34px;gap:12px}.climb::before{top:10px;bottom:10px;left:9px;right:auto;width:3px;height:auto}.climb::after{top:10px;left:9px;width:3px;height:calc((100% - 20px)*var(--p,0))}.climb li::before{top:20px;left:-31px}.climb li.on{transform:none}}
+/* photos */
+.pgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.pgrid figure{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:var(--chip)}
+.pgrid figure:nth-child(2){transform:translateY(32px)}
+.pgrid img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
+.pgrid figure:hover img{transform:scale(1.04)}
+.pgrid figcaption{position:absolute;left:14px;bottom:14px;background:rgba(14,33,56,.78);backdrop-filter:blur(8px);color:#fff;font-size:.84rem;font-weight:600;padding:8px 12px;border-radius:999px}
+.photos{padding-bottom:clamp(96px,10vw,140px)}
+@media(max-width:760px){.pgrid{grid-template-columns:1fr 1fr}.pgrid figure:nth-child(2){transform:none}.pgrid .p3{grid-column:1/-1;aspect-ratio:16/11}}
+/* ambition dark */
+.ambition .card{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff}
+.ambition .card p{color:#C3CEDC}
+.ambition .card .for{color:#FFB18F}
+.ambition .card:nth-child(3){background:linear-gradient(160deg,rgba(217,74,18,.35),rgba(217,74,18,.08));border-color:rgba(255,138,76,.5)}
+.ambition .paths .tag{color:#FF8A4C}
+/* trust */
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tcard{border:1px solid var(--line);border-radius:16px;padding:20px;background:#fff}
+.tcard b{font:700 1.08rem "Space Grotesk";display:flex;gap:10px;align-items:center}
+.tcard b::before{content:"";width:22px;height:22px;flex:none;border-radius:50%;background:#E6F2EC url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F7A4D' stroke-width='3'%3E%3Cpath d='M6 12l4 4 8-8'/%3E%3C/svg%3E") center/14px no-repeat}
+.tcard p{font-size:.9rem;color:var(--soft);margin-top:8px}
+.fq{margin-top:56px;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;max-width:900px}
+.fq blockquote{font:500 clamp(1.15rem,2.3vw,1.55rem)/1.45 "Space Grotesk";letter-spacing:-.2px;grid-column:1/-1}
+.fq figcaption{display:flex;align-items:center;gap:12px;grid-column:1/-1}
+.fq .av{width:48px;height:48px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font:700 .95rem "Space Grotesk"}
+@media(max-width:860px){.tgrid{grid-template-columns:1fr 1fr}}@media(max-width:480px){.tgrid{grid-template-columns:1fr}}
+/* explore */
+.ecards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:32px}
+.ecard{position:relative;display:block;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 24px 56px;transition:transform .25s,border-color .25s,box-shadow .25s;overflow:hidden}
+.ecard::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent);transition:width .35s}
+.ecard:hover{transform:translateY(-4px);border-color:var(--ink);box-shadow:0 24px 50px -28px rgba(20,45,76,.45)}
+.ecard:hover::after{width:100%}
+.ecard span{font:700 .85rem "Space Grotesk";color:var(--accent)}
+.ecard h3{font-weight:700;font-size:1.3rem;margin:10px 0 6px}
+.ecard p{font-size:.92rem;color:var(--soft)}
+.ecard i{position:absolute;right:22px;bottom:18px;font-style:normal;font-size:1.3rem;color:var(--ink);transition:transform .25s}
+.ecard:hover i{transform:translateX(4px)}
+@media(max-width:960px){.ecards{grid-template-columns:1fr 1fr}}@media(max-width:480px){.ecards{grid-template-columns:1fr}}
+/* pages */
+.pg{padding-top:8px}
+.pgt{font-size:clamp(2.2rem,5vw,3.6rem);max-width:20ch}
+#pv section{padding:clamp(40px,6vw,72px) 0}
+#pv section .wrap{padding:0}
+#pv .tile,#pv .rung:not(:nth-child(4)),#pv .stage,#pv .role{background:#fff}
+figure.wide{border-radius:20px;overflow:hidden;margin-top:32px;aspect-ratio:16/7}
+figure.wide img{width:100%;height:100%;object-fit:cover}
+@media(max-width:600px){figure.wide{aspect-ratio:4/3}}
+
+/* subpages */
+.portal{overflow-x:hidden}
+.pbody.full{padding:0}.pbody.full>#pv{max-width:none;padding:0}
+#pv section{padding:clamp(56px,8vw,96px) 0;position:relative}
+#pv section .wrap{padding:0 var(--gut)}
+.phero{position:relative;overflow:hidden;background:#0E2138;color:#fff;padding:clamp(64px,9vw,120px) 0 clamp(48px,7vw,88px)}
+.phero .wrap{position:relative;z-index:2}
+.phero h1{font-size:clamp(2.4rem,5.6vw,4.4rem);max-width:16ch;margin-top:6px}
+.phero .kicker{color:#FFB18F}.phero .lede{color:#C3CEDC;max-width:58ch}
+.phero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.phgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(ellipse at 75% 20%,#000 15%,transparent 70%);mask-image:radial-gradient(ellipse at 75% 20%,#000 15%,transparent 70%);pointer-events:none}
+.phbg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.35;transform:scale(1.05);animation:kb 18s ease-in-out infinite alternate}
+.phero.imgbg .phbg{opacity:.5}
+.phero .phbg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0E2138 25%,rgba(14,33,56,.55) 70%,rgba(14,33,56,.3))}
+@keyframes kb{to{transform:scale(1.12) translateX(-2%)}}
+.jumps{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.jumps button{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;border-radius:999px;min-height:40px;padding:0 16px;font:500 .9rem Inter;cursor:pointer;transition:.2s}
+.jumps button:hover{background:#fff;color:var(--ink)}
+.pdark{background:#0E2138;color:#fff;overflow:hidden}
+.pdark .kicker{color:#FFB18F}.pdark .lede,.pdark p{color:#C3CEDC}
+.pdark .tile{background:rgba(255,255,255,.05)!important;border-color:rgba(255,255,255,.12);color:#fff}
+.pdark .tile .ic{background:rgba(217,74,18,.18);color:#FF8A4C;font-weight:700}
+.pdark .tile:hover{border-color:rgba(255,138,76,.6);transform:translateY(-3px)}
+.pdark .tile{transition:.25s}
+.pdark .role{background:rgba(255,255,255,.05)!important;border-color:rgba(255,255,255,.14);color:#fff}
+.pdark .role.main{border-color:var(--accent);background:linear-gradient(120deg,rgba(217,74,18,.25),rgba(255,255,255,.04))!important}
+.pdark .role .who{color:#FFB18F}.pdark .badge{background:rgba(255,255,255,.1);color:#fff}
+.pdark .btn-line{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.pdark .points b{color:#fff}.pdark .points span{color:#C3CEDC}
+.pdark a{color:#fff}
+.pstone{background:var(--stone)}
+.bigsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}
+.bstep{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px 26px 30px;min-height:220px;transition:.25s}
+.bstep:hover{transform:translateY(-4px);box-shadow:0 24px 50px -28px rgba(20,45,76,.4)}
+.bstep .bn{position:absolute;right:-6px;top:-18px;font:700 7.5rem/1 "Space Grotesk";color:transparent;-webkit-text-stroke:1.5px var(--line-2);letter-spacing:-4px}
+.bstep h3{position:relative;font-weight:700;font-size:1.35rem;margin-top:70px}
+.bstep p{position:relative;color:var(--soft);margin-top:8px}
+.bstep.hot{background:var(--accent);border-color:var(--accent);color:#fff}.bstep.hot p{color:#FFE3D6}.bstep.hot .bn{-webkit-text-stroke-color:rgba(255,255,255,.45)}
+@media(max-width:800px){.bigsteps{grid-template-columns:1fr}.bstep{min-height:0}.bstep h3{margin-top:48px}}
+.dayimg{margin-top:28px;border-radius:20px;overflow:hidden;aspect-ratio:4/3}
+.dayimg img{width:100%;height:100%;object-fit:cover}
+.skillbox{margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px}
+.ladder .rung{transition:transform .3s}.ladder .rung:hover{transform:translateY(-6px)}
+.stage{transition:.25s}.stage:hover{border-color:var(--accent);transform:translateY(-4px)}
+.ctacard{display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap;background:linear-gradient(120deg,var(--top-row),#fff);border:1px solid #F5C9B3;border-radius:24px;padding:clamp(28px,5vw,48px)}
+.qsearch{margin-top:26px;max-width:520px}
+.qsearch input{width:100%;min-height:54px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;padding:0 22px;font:400 1rem Inter}
+.qsearch input::placeholder{color:#AEBACB}
+.qsearch input:focus{outline:none;border-color:#FF8A4C;background:rgba(255,255,255,.12)}
+.qwrap{display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:start}
+.qwrap .faq{margin-top:0}
+.qwrap details{background:#fff;border:1px solid var(--line);border-radius:14px;padding:0 20px;margin-bottom:10px}
+.qwrap details[open]{border-color:var(--accent)}
+.qside{position:sticky;top:90px;background:var(--ink);color:#fff;border-radius:20px;padding:24px;display:grid;gap:12px}
+.qside b{font:700 1.2rem "Space Grotesk"}.qside p{color:#C3CEDC;font-size:.92rem}
+.qside .btn-line{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.qempty{color:var(--muted);padding:12px 0}
+@media(max-width:860px){.qwrap{grid-template-columns:1fr}.qside{position:static}}
+.pstone .priv>div{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px}
+/* PORTAL */
+.portal{position:fixed;inset:0;overscroll-behavior:contain;z-index:100;background:var(--stone);overflow-y:auto;display:none}
+.portal.on{display:block}
+body.lock{overflow:hidden}
+.ph{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.ph .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+.back{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:.92rem;text-decoration:none;color:var(--soft);padding:10px 12px;border-radius:999px;border:0;background:none;cursor:pointer;min-height:44px}
+.back{white-space:nowrap}.back[hidden]{display:none}@media(max-width:480px){.ph .wm{display:none}}.back:hover{background:var(--stone);color:var(--ink)}
+.pbody{padding:40px 0 80px}
+.narrow{max-width:560px;margin:0 auto}
+.form{display:grid;gap:16px;margin-top:24px}
+.form .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:520px){.form .two{grid-template-columns:1fr}}
+.f label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
+.f label small{font-weight:400;color:var(--muted)}
+.f input,.f select,.f textarea{width:100%;min-height:48px;border:1.5px solid var(--line-2);border-radius:12px;padding:10px 14px;font:400 1rem Inter;color:var(--ink);background:#fff}
+.f textarea{min-height:96px;resize:vertical}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--ink);outline:none;box-shadow:0 0 0 3px rgba(217,74,18,.25)}
+.f.bad input,.f.bad select{border-color:#C0392B}
+.f .err{color:#B42318;font-size:.84rem;margin-top:5px;display:none}
+.f.bad .err{display:block}
+.tick{display:flex;gap:12px;align-items:flex-start;font-size:.95rem;cursor:pointer}
+.tick input{width:22px;height:22px;flex:none;accent-color:var(--accent);margin-top:2px}
+.alert{background:#FDECEA;color:#912018;border-radius:12px;padding:12px 14px;font-size:.92rem}
+.okbox{background:#E6F2EC;color:#14532D;border-radius:16px;padding:24px;font-size:1.02rem}
+.sandbox{background:#FFF8E6;border:1px dashed #E2C36B;color:#6B5310;border-radius:12px;padding:12px 14px;font-size:.85rem;margin-top:20px}
+.sandbox code{font-family:ui-monospace,monospace;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:5px}
+.hp{position:absolute;left:-9999px}
+
+/* admin */
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin:20px 0 24px;scrollbar-width:none}
+.tabs button{border:0;background:none;font:600 .92rem Inter;color:var(--soft);padding:12px 14px;min-height:44px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;display:flex;gap:6px;align-items:center}
+.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--accent)}
+.tabs .n{background:var(--accent);color:#fff;border-radius:999px;font-size:.72rem;padding:2px 7px}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.kpi small{color:var(--muted);font-size:.8rem;display:block}
+.kpi b{font:700 1.6rem "Space Grotesk";display:block;margin-top:4px}
+.kpi span{font-size:.8rem;color:var(--soft)}
+.kpi.hot{border-color:var(--accent);background:var(--top-row)}
+@media(max-width:1000px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){.kpis{grid-template-columns:1fr 1fr}}
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@media(max-width:860px){.panels{grid-template-columns:1fr}}
+.tbl{width:100%;border-collapse:collapse;font-size:.88rem;background:#fff}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+.tbl th{text-align:left;font-weight:600;color:var(--muted);font-size:.78rem;padding:12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td small{display:block;color:var(--muted)}
+.tbl select{min-height:36px;border:1px solid var(--line-2);border-radius:8px;padding:0 8px;font:500 .85rem Inter;background:#fff;color:var(--ink)}
+.tbl .btn{min-height:36px;padding:0 12px;font-size:.82rem}
+.mini{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:.92rem;gap:12px}
+.mini:last-child{border-bottom:0}
+.mini small{color:var(--muted)}
+.addbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;display:none}
+.addbox.on{display:block}
+.addbox .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:end}
+@media(max-width:860px){.addbox .grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.addbox .grid{grid-template-columns:1fr}}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.76rem;font-weight:600;background:var(--chip)}
+.pill.g{background:#E6F2EC;color:#14532D}.pill.o{background:var(--top-row);color:var(--accent-dark)}.pill.r{background:#FDECEA;color:#912018}
+.dash .kpis{grid-template-columns:repeat(4,1fr)}
+@media(max-width:760px){.dash .kpis{grid-template-columns:1fr 1fr}}
+.train{display:grid;gap:8px}
+.train a{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-decoration:none;font-weight:500}
+.train a:hover{border-color:var(--ink)}
+.me{background:var(--top-row)!important}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);opacity:0;background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-size:.92rem;z-index:200;transition:.25s;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.ticker .rail{animation:none}}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="mk" viewBox="0 0 34 34"><rect x="1" y="23" width="9" height="9" rx="2.5" fill="#142D4C"/><rect x="12.5" y="23" width="9" height="9" rx="2.5" fill="#142D4C"/><rect x="12.5" y="12" width="9" height="9" rx="2.5" fill="#142D4C"/><rect x="24" y="23" width="9" height="9" rx="2.5" fill="#142D4C"/><rect x="24" y="12" width="9" height="9" rx="2.5" fill="#142D4C"/><rect x="24" y="1" width="9" height="9" rx="2.5" fill="#D94A12"/></symbol>
+</defs></svg>
 
-<div class="wrap"><header class="top">
-  <a class="brand" href="#top" aria-label="Maystone Sales Group home">
-    <span class="mark" aria-hidden="true"><span><i></i></span><span><i></i><i></i></span><span><i></i><i></i><i class="a"></i></span></span>
-    <span class="word"><b>MAYSTONE</b><small>SALES GROUP</small></span>
-  </a>
-  <nav class="nav" aria-label="Main">
-    <a href="#how" class="hide-sm">How it works</a>
-    <a href="#partners">Partners</a>
-    <a href="#business">For businesses</a>
-    <a href="#join" class="cta">Join the team</a>
-  </nav>
-</header></div>
+<header class="hdr">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Maystone Sales Group, home"><svg width="34" height="34"><use href="#mk"/></svg><span class="wm"><b>MAYSTONE</b><small>SALES GROUP</small></span></a>
+    <nav class="nav" aria-label="Main">
+      <a class="l hide-m" href="#how-it-works">How it works</a>
+      <a class="l" href="#who-we-work-with">Partners</a>
+      <a class="l" href="#for-businesses">For businesses</a>
+      <a class="l" href="/login/">Team login</a>
+      <a class="l login-m" href="/login/">Log in</a>
+      <a class="btn btn-accent btn-sm" href="#apply">Join the team</a>
+    </nav>
+  </div>
+</header>
 
-<div class="ticker" aria-label="Example activity feed – not real reps">
-  <span class="lab">Example feed</span>
-  <div class="run"><div class="track" id="track"></div></div>
-</div>
 
-<main id="main">
-<div class="wrap"><section id="top" class="hero">
-  <div class="copy">
-    <p class="kick">UK sales agency · Commission roles</p>
-    <h1>Get paid to sell.<br>Climb the leaderboard.<br>Unlock bigger roles.</h1>
-    <p class="lede">Maystone is a remote sales agency. Our reps sell for partner businesses by phone, with free training, a real leaderboard and no set hours. Every sale moves you up the board, and the top reps get first pick of new roles.</p>
-    <div class="row">
-      <a class="btn btn-acc" href="#join">Start selling</a>
-      <a class="btn btn-out" href="#business">I need reps</a>
+
+<main id="top">
+<section class="hero dark">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <div>
+      <span class="kicker">UK sales agency · Commission roles</span>
+      <h1><span>Get paid to sell.</span><span>Climb the leaderboard.</span><span>Unlock bigger roles.</span></h1>
+      <p class="lede">A remote sales agency for people who want more. Sell for great businesses by phone, on your own hours, and build towards a team of your own.</p>
+      <div class="ctas"><a class="btn btn-accent" href="#apply">Start selling</a><a class="btn btn-ghost" href="#how-it-works">How it works</a></div>
+      <div class="trust">
+        <span><i></i>You never pay us</span><span><i></i>Not an MLM</span><span><i></i>18+, self-employed</span>
+      </div>
     </div>
-    <p class="fine">No fees to join. No set hours. Paid on every sale.</p>
+<div class="herovis"><div class="stack3d" aria-hidden="true"><div class="scene"><div class="cube" style="--x:0;--y:0;--i:0"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube" style="--x:1;--y:0;--i:1"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube" style="--x:1;--y:1;--i:2"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube" style="--x:2;--y:0;--i:3"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube" style="--x:2;--y:1;--i:4"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="cube top" style="--x:2;--y:2;--i:5"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+    <div class="board rv" id="lb">
+      <div class="board-hd">
+        <h3>The leaderboard</h3>
+        <span class="badge ex">Example – not real reps</span>
+      </div>
+      <div class="seg" role="group" aria-label="Period" style="margin-bottom:12px">
+        <button aria-pressed="true" data-p="1">This month</button><button aria-pressed="false" data-p=".35">This week</button><button aria-pressed="false" data-p=".1">Today</button>
+      </div>
+      <div class="rows" id="rows" style="height:280px"></div>
+      <p class="board-ft">Top reps each month get first pick of new roles and coaching spots.</p>
+    </div></div>
   </div>
-  <div class="board" aria-label="Example leaderboard – not real reps">
-    <div class="board-top"><h2>The leaderboard</h2><span class="ex">Example – not real reps</span></div>
-    <div class="tabs" aria-hidden="true"><span class="on">This month</span><span>This week</span><span>Today</span></div>
-    <div class="rows" id="rows"></div>
-    <p class="foot">Top reps each month get first pick of new roles and coaching spots.</p>
-  </div>
-</section></div>
-
-<div class="wrap"><section id="why" class="sec" style="display:flex;flex-direction:column;gap:40px">
-  <div style="display:flex;flex-direction:column;gap:12px;max-width:680px">
-    <p class="kick">Why Maystone</p>
-    <h2 class="h2">Sales without the doorstep, the commute or the boss watching the clock.</h2>
-  </div>
-  <div class="g6">
-    <div class="card lift"><h3>100% remote</h3><p>Work from your bedroom, the library or a café. All you need is a phone and wifi.</p></div>
-    <div class="card lift"><h3>No set hours</h3><p>Work when it suits you. Exams, shifts or a day off? No problem.</p></div>
-    <div class="card lift"><h3>No experience needed</h3><p>Free training, scripts and practice calls get you ready for your first call.</p></div>
-    <div class="card lift"><h3>Uncapped earnings</h3><p>Every sale pays. The more you sell, the more you earn.</p></div>
-    <div class="card lift"><h3>Free to join</h3><p>No sign-up fees, no buying stock, ever. You never pay us anything.</p></div>
-    <div class="card lift"><h3>Real progression</h3><p>Your leaderboard rank unlocks bigger roles, coaching and team lead spots.</p></div>
-  </div>
-</section></div>
-
-<section id="how" class="stone"><div class="wrap sec" style="display:flex;flex-direction:column;gap:48px">
-  <h2 class="h2">How it works</h2>
-  <div class="g3">
-    <div class="step lift"><span class="n">01</span><h3>Join the team</h3><p>A quick intro call, sign your rep agreement, and get your own login with the training for your role.</p></div>
-    <div class="step lift"><span class="n">02</span><h3>Sell on your schedule</h3><p>Free training, scripts and leads ready to call. Work evenings, weekends, between lectures, whenever suits you.</p></div>
-    <div class="step lift"><span class="n">03</span><h3>Climb and level up</h3><p>Every sale puts you higher on the leaderboard. Top reps get first pick of new roles and become coaches.</p></div>
-  </div>
-</div></section>
-
-<div class="wrap"><section class="sec split">
-  <div style="flex:1 1 460px;min-width:0;display:flex;flex-direction:column;gap:24px">
-    <p class="kick">A day at Maystone</p>
-    <h2 class="h2s">Call between lectures. Close a deal before dinner.</h2>
-    <div class="day">
-      <div><span class="t">10:00</span><p><strong>Pick up your leads.</strong> Log in and grab today's call list.</p></div>
-      <div><span class="t">13:00</span><p><strong>Make a few calls.</strong> Book two business owners in for a free website preview.</p></div>
-      <div><span class="t">17:00</span><p><strong>Close the deal.</strong> Walk an owner through their preview. They say yes.</p></div>
-      <div><span class="t">17:05</span><p><strong>Watch yourself climb.</strong> The sale goes through and you jump three places on the leaderboard.</p></div>
+  <div class="wrap">
+    <div class="nums">
+      <div><b>100%</b><span>remote</span></div>
+      <div><b data-n="0" data-pre="£">£0</b><span>to join, ever</span></div>
+      <div><b>2 min</b><span>to apply</span></div>
+      <div><b data-n="4">4</b><span>levels to climb</span></div>
     </div>
   </div>
-  <div class="skills">
-    <h3>Skills you'll walk away with</h3>
-    <div>Confident phone manner</div><div>Handling objections</div><div>Closing deals</div><div>Managing your own time</div><div>A real sales record</div>
-    <p>Skills every employer wants, and proof on the leaderboard that you have them.</p>
+</section>
+<section id="path">
+  <div class="wrap">
+    <div class="sechd"><div><span class="kicker">Your path</span><h2>From first call to your own team.</h2></div><p class="lede">This is how reps climb at Maystone. Your results decide how fast you go.</p></div>
+    <ol class="climb" id="pathline">
+      <li><span class="when">Day 1</span><h3>Apply in 2 minutes</h3><p>We call you for a chat. If it's a fit, you sign your rep agreement and get your own login.</p></li>
+      <li><span class="when">Week 1</span><h3>Train, then call</h3><p>Free scripts, objection handling and practice calls. Then your first real calls, on your hours.</p></li>
+      <li><span class="when">First sale</span><h3>Paid, and on the board</h3><p>Commission paid once the customer's 14-day refund window clears. You're on the leaderboard.</p></li>
+      <li><span class="when">Level 2</span><h3>Top Rep</h3><p>Stay in the top 10% and get first pick of new roles from new partners.</p></li>
+      <li><span class="when">Level 3</span><h3>Coach</h3><p>Train new reps and earn a bonus on their sales.</p></li>
+      <li class="end"><span class="when">Level 4</span><h3>Team Lead</h3><p>Run a team across a role or region. Self-employed, your team, your business.</p></li>
+    </ol>
   </div>
-</section></div>
-
-<div class="wrap"><section class="sec" style="display:flex;flex-direction:column;gap:40px;padding-top:0">
-  <div style="display:flex;flex-direction:column;gap:12px;max-width:640px">
-    <h2 class="h2">The ladder</h2>
-    <p class="p">Your results decide how far you go, not who you know.</p>
+</section>
+<section class="photos alt">
+  <div class="wrap">
+    <div class="sechd"><div><span class="kicker">100% remote</span><h2>Your office is wherever you are.</h2></div><p class="lede">The café, the library, your bedroom at 7pm. All you need is a phone and wifi. No commute, no clocking in, no boss watching the clock.</p></div>
+    <div class="pgrid">
+      <figure class="p1"><img src="img/cafe.webp" alt="" loading="lazy"><figcaption>The café</figcaption></figure>
+      <figure class="p2"><img src="img/library.webp" alt="" loading="lazy"><figcaption>In the library</figcaption></figure>
+      <figure class="p3"><img src="img/evening-desk.webp" alt="" loading="lazy"><figcaption>Your desk, 7pm</figcaption></figure>
+    </div>
+    
   </div>
-  <div class="ladder">
-    <div class="lv lift"><span>Level 1</span><h3>Rep</h3><p>Take an open role. Sell, learn, start climbing.</p></div>
-    <div class="lv lift"><span>Level 2</span><h3>Top Rep</h3><p>Stay in the top 10% of the leaderboard to get first pick of new roles.</p></div>
-    <div class="lv lift"><span>Level 3</span><h3>Coach</h3><p>Train new reps and earn a bonus on their sales.</p></div>
-    <div class="lv lift dark"><span>Level 4</span><h3>Team Lead</h3><p>Run a team of coaches across a role or region.</p></div>
-  </div>
-</section></div>
-
-<div class="wrap"><section id="paths" class="sec" style="display:flex;flex-direction:column;gap:40px;padding-top:0">
-  <div style="display:flex;flex-direction:column;gap:12px;max-width:720px">
-    <p class="kick">Your ambition, your call</p>
-    <h2 class="h2">A bit of extra cash, or a business of your own.</h2>
-    <p class="p">Every Maystone rep is self-employed. You're not clocking in for someone else. You're working for yourself, and you decide how far to take it.</p>
-  </div>
-  <div class="paths">
-    <div class="path lift"><span>Side money</span><h3>Earn around your life</h3><p>A few hours a week between lectures, shifts or the school run. Extra cash for rent, travel or savings.</p><p class="who">For students and side hustlers</p></div>
-    <div class="path lift"><span>Serious income</span><h3>Make sales your career</h3><p>Climb the leaderboard and get first pick of bigger roles, with more commission per deal, as new partners join.</p><p class="who">For driven, competitive reps</p></div>
-    <div class="path lift dark"><span>Your own business</span><h3>Build and lead a team</h3><p>Become a coach, then a team lead. Train new reps, keep them motivated, and earn a bonus on your team's sales.</p><p class="who">For future founders and leaders</p></div>
-  </div>
-</section></div>
-
-<section id="academy" class="stone" style="border-bottom:0"><div class="wrap sec split">
-  <div style="flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:16px">
-    <p class="kick">Maystone Academy</p>
-    <h2 class="h2s">We train you for every step, from first call to running a team.</h2>
-    <p class="p" style="font-size:17px">Selling is one skill. Coaching, keeping a team motivated and running yourself like a business are others. The Academy prepares you for each one before you need it, free for every rep.</p>
-    <p class="p" style="font-size:17px">Every rep gets their own login, with the training for their role.</p>
-  </div>
-  <div class="stages">
-    <div class="s"><span class="tag">Start</span><div><h3>Your first calls</h3><p>Scripts, objection handling, compliance basics and practice calls before you go live.</p></div></div>
-    <div class="s"><span class="tag">Grow</span><div><h3>Closing and consistency</h3><p>Advanced closing, building a daily routine and reading your own numbers.</p></div></div>
-    <div class="s"><span class="tag">Self-employed</span><div><h3>Running yourself like a business</h3><p>Setting targets, keeping records and managing your own time.</p></div></div>
-    <div class="s"><span class="tag">Coach</span><div><h3>Coaching new reps</h3><p>How to train, give feedback on calls and get someone to their first sale.</p></div></div>
-    <div class="s"><span class="tag">Lead</span><div><h3>Keeping a team together</h3><p>Motivation, retention, spotting burnout early and building a team people want to stay in.</p></div></div>
-  </div>
-</div></section>
-
-<section id="earn" class="stone" style="border-bottom:0"><div class="wrap sec split" style="align-items:center">
-  <div style="flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:16px">
-    <p class="kick">What could you earn?</p>
-    <h2 class="h2s">You set the hours. Your sales set the pay.</h2>
-    <p class="p" style="font-size:16px">Drag the slider to see an example for a website rep. Real earnings depend on the role and your results.</p>
-  </div>
-  <div class="earn-box">
-    <label for="hours">Hours per week <span id="hrs">10 hrs</span></label>
-    <input id="hours" type="range" min="2" max="30" step="1" value="10">
-    <div><span class="lbl">Example monthly earnings</span><div class="big" id="range">£563 – £1,126</div></div>
-    <p class="fine">Example only, not a guarantee. Based on £260 per sale and 1 sale every 10–20 calling hours.</p>
-  </div>
-</div></section>
-
-<section id="roles" class="stone"><div class="wrap sec" style="display:flex;flex-direction:column;gap:40px">
-  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
-    <h2 class="h2">Roles open now</h2>
-    <span style="font-size:14px;color:var(--muted)">Pay confirmed in writing before you start</span>
-  </div>
-  <div class="roles">
-    <div class="role lift"><div class="top"><span class="co">HGM Leads</span><span class="tg">Open now</span></div><h3>Website rep – local trades</h3><p>Call tradespeople who don't have a proper website, book them a free preview, then ring back and close. Leads and training provided.</p><div class="pay"><span>£260 per sale</span><a href="#join">Apply →</a></div></div>
-    <div class="role lift"><div class="top"><span class="co">Maystone</span><span class="tg">After your first sales</span></div><h3>Coach</h3><p>Proved you can sell? Train two or three new reps and get them to their first sale.</p><div class="pay"><span>Bonus on your reps' sales</span><a href="#join">Ask about it →</a></div></div>
-    <div class="role lift"><div class="top"><span class="co">New partners</span><span class="tg">Coming as we grow</span></div><h3>More products to sell</h3><p>New partners bring new roles, including bigger-ticket ones. Top reps get first pick.</p><div class="pay"><span>Rates set per role</span><a href="#business">Partner with us →</a></div></div>
-  </div>
-</div></section>
-
-<div class="wrap"><section id="story" class="story">
-  <p class="kick">Why I built this</p>
-  <blockquote>"I'm 19. I got into door-to-door sales to learn the skill, and I didn't realise how important that skill actually is. I was promised financial freedom. To me, freedom means being able to be anywhere in the world and earn money from my phone, and a lot of it. Maystone exists so you can learn the skill and earn that freedom too."</blockquote>
-  <div class="by"><span class="av">HM</span><span><strong>Harvey Matthews</strong><small>Founder, Maystone Sales Group</small></span></div>
-</section></div>
-
-<div class="wrap"><section id="partners" class="sec" style="display:flex;flex-direction:column;gap:40px">
-  <div style="display:flex;flex-direction:column;gap:12px;max-width:720px">
-    <p class="kick">Who we sell for</p>
-    <h2 class="h2">Our partners</h2>
-    <p class="p">Maystone reps sell for partner businesses. We add partners one at a time, so every product gets reps who know it properly.</p>
-  </div>
-  <div class="partner">
-    <div class="logo"><b>HGM Leads</b><small>Web design studio</small></div>
-    <div class="info">
-      <span class="badge">Founding partner</span>
-      <p class="p" style="font-size:17px">Our sister web studio. HGM Leads builds websites for local tradespeople from their Google reviews, and every owner sees a free preview before they decide anything.</p>
-      <div class="facts"><div><span>Reps sell</span><b>Websites for local trades</b></div><div><span>Rep earns</span><b>£260 per sale</b></div><div><span>Area</span><b>Sussex for now</b></div></div>
+</section>
+<section>
+  <div class="wrap earn">
+    <div>
+      <span class="kicker">What could you earn?</span>
+      <h2>You set the hours. Your sales set the pay.</h2>
+      <p class="lede">Drag the slider to see an example for a website rep. Real earnings depend on the role and your results.</p>
+    </div>
+    <div class="calc">
+      <label for="hrs">Hours per week <b id="hrsv">10</b></label>
+      <input type="range" id="hrs" min="2" max="40" step="1" value="10">
+      <div class="out" id="earn">£563 – £1,126<small> a month</small></div>
+      <div class="meta"><div>Sales a month<b id="sales">2 – 4</b></div><div>Calling hours a month<b id="hm">43</b></div></div>
+      <p class="fine">Example only, not a guarantee. Based on an example commission and 1 sale every 10–20 calling hours. Your exact commission is confirmed in writing when you join.</p>
     </div>
   </div>
-  <div class="next">
-    <h3>Your business next?</h3>
-    <p>If you sell something small businesses need, our reps could sell it for you. <a href="#business">See how it works</a>.</p>
+</section>
+<section class="dark ambition">
+  <div class="wrap">
+    <span class="kicker">Your ambition, your call</span>
+    <h2>A bit of extra cash, or a business of your own.</h2>
+    <p class="lede">Every Maystone rep is self-employed. You're not clocking in for someone else. You're working for yourself, and you decide how far to take it.</p>
+    <div class="paths">
+      <div class="card path rv"><span class="tag">Side money</span><h3>Earn around your life</h3><p>A few hours a week between lectures, shifts or the school run. Extra cash for rent, travel or savings.</p><span class="for">For students and side hustlers</span></div>
+      <div class="card path rv"><span class="tag">Serious income</span><h3>Make sales your career</h3><p>Climb the leaderboard and get first pick of bigger roles, with more commission per deal, as new partners join.</p><span class="for">For driven, competitive reps</span></div>
+      <div class="card path rv"><span class="tag">Your own business</span><h3>Build and lead a team</h3><p>Become a coach, then a team lead. Train new reps, keep them motivated, and earn a bonus on your team's sales.</p><span class="for">For future founders and leaders</span></div>
+    </div>
   </div>
-</section></div>
-
-<div class="wrap"><section id="business" class="sec biz" style="padding-top:0">
-  <div class="copy">
-    <p class="kick">For businesses</p>
-    <h2 class="h2">A sales team you only pay when it sells.</h2>
-    <p class="p">Got a product small businesses need? Our trained reps sell it by phone, and you only pay when they make a sale. Want a high-ticket closer? We offer it to the top of the leaderboard.</p>
-    <a class="btn btn-out" style="align-self:flex-start" href="mailto:hello@maystone.uk?subject=Partner%20with%20Maystone">Partner with us</a>
-    <p style="margin:0;font-size:14px;color:var(--muted)">hello@maystone.uk</p>
+</section>
+<section class="trustsec">
+  <div class="wrap">
+    <div class="tgrid">
+      <div class="tcard"><b>Not an MLM</b><p>You earn only from real sales to real customers. Nobody earns from recruiting.</p></div>
+      <div class="tcard"><b>You never pay us</b><p>No sign-up fees, no stock, no paid training. Ever.</p></div>
+      <div class="tcard"><b>Paid properly</b><p>Bank transfer for every cleared sale, with a statement each time.</p></div>
+      <div class="tcard"><b>A real partner</b><p>You sell real websites for HGM Leads, our sister web studio.</p></div>
+    </div>
+    <figure class="fq">
+      <blockquote>“I'm 19. I got into door-to-door sales to learn the skill, and I didn't realise how important that skill actually is. I was promised financial freedom. To me, freedom means being able to be anywhere in the world and earn money from my phone, and a lot of it. Maystone exists so you can learn the skill and earn that freedom too.”</blockquote>
+      <figcaption><span class="av">HM</span><span><b>Harvey Matthews</b><br><span class="small">Founder, Maystone Sales Group</span></span></figcaption>
+    </figure>
   </div>
-  <div class="tiles">
-    <div><h3>Free to start</h3><p>No upfront fees or retainers.</p></div>
-    <div><h3>Pay on results</h3><p>An agreed commission, only on sales.</p></div>
-    <div><h3>Real numbers</h3><p>See what's booked and what's sold.</p></div>
-    <div><h3>Trained reps</h3><p>Compliance and sales training built in.</p></div>
+</section>
+<section class="explore alt">
+  <div class="wrap">
+    <span class="kicker">Explore</span>
+    <h2>Want the details?</h2>
+    <div class="ecards">
+      <a class="ecard" href="#how-it-works"><span>01</span><h3>How it works</h3><p>A day at Maystone, the ladder, the Academy and open roles.</p><i>→</i></a>
+      <a class="ecard" href="#who-we-work-with"><span>02</span><h3>Who we work with</h3><p>The businesses our reps sell for, and what we do for them.</p><i>→</i></a>
+      <a class="ecard" href="#for-businesses"><span>03</span><h3>For businesses</h3><p>A sales team you only pay when it sells.</p><i>→</i></a>
+      <a class="ecard" href="#questions"><span>04</span><h3>Questions</h3><p>Pay, hours, who can join, and your privacy.</p><i>→</i></a>
+    </div>
   </div>
-</section></div>
-
-<section id="rang" class="stone"><div class="wrap sec" style="display:flex;flex-direction:column;gap:32px">
-  <div style="display:flex;flex-direction:column;gap:12px;max-width:720px">
-    <p class="kick">Had a call from us?</p>
-    <h2 class="h2">Here's what to expect.</h2>
-    <p class="p">Our reps ring local trades to offer a free preview website from HGM Leads, our sister web studio. Every call works the same way.</p>
+</section>
+<section class="join" id="join">
+  <div class="wrap">
+    <h2>Your first sale could be this week.</h2>
+    <p>Apply in two minutes and we'll call you to chat about joining. Free, remote, and on your schedule.</p>
+    <div class="ctas"><a class="btn btn-white" href="#apply">Apply to join</a><a class="btn btn-ghost" href="#reps">I need reps</a></div>
+    <p class="fine">Already on the team? <a href="/login/">Log in here</a> · Businesses: <a href="mailto:hello@maystone.uk">hello@maystone.uk</a></p>
   </div>
-  <div class="promises">
-    <div><b>We say who we are</b><span>Our name, that we're from Maystone, and that it's a sales call.</span></div>
-    <div><b>We're not Google</b><span>We don't sell Google listings, ads or "top of Google".</span></div>
-    <div><b>No card details on the phone. Ever.</b><span>If you buy, you pay on Stripe's secure page and see the amount first.</span></div>
-    <div><b>A preview only if you say yes</b><span>And we only text, WhatsApp or email you after you've said yes to it.</span></div>
-    <div><b>Calls may be recorded for training</b><span>Rather not? Say so and we'll switch it off.</span></div>
-    <div><b>Don't want calls? Tell us once.</b><span>We'll put your number on our do-not-call list, and nobody here will ring it again.</span></div>
-  </div>
-  <div class="prices">
-    <div class="price"><span class="l">One-off</span><span class="v">£500</span><ul><li>First year's hosting included, then £10 a month or £100 a year</li><li>The site's yours, and the domain's in your name</li><li>Stop the hosting and we send you the files</li></ul></div>
-    <div class="price dark"><span class="l">Monthly</span><span class="v">£298 today</span><ul><li>Then £49 a month (£249 set-up + first month today)</li><li>Hosting, security, domain renewal, support and up to 3 small changes a month</li><li>No contract: cancel with 30 days' notice. Yours after 12 months, or a £150 buyout. £886 in year one</li></ul></div>
-  </div>
-  <p class="p" style="font-size:15px">Preview links are private. Nobody honest can promise more jobs, leads or the top of Google, so we don't. Questions, or want your preview taken down? Email hello@maystone.uk, or ring back the number that called you.</p>
-</div></section>
-
-<section id="faq" class="stone" style="border-top:0"><div class="wrap sec">
-  <div class="faq">
-    <h2 class="h2">Questions</h2>
-    <details><summary>Is it really free?</summary><p>Yes. Reps never pay to join, train or level up, and never buy stock. Our partners pay us; you never do.</p></details>
-    <details><summary>Is this an MLM or pyramid scheme?</summary><p>No. You earn only from real sales to real customers. You never pay us, never buy stock, and nobody earns from simply recruiting people.</p></details>
-    <details><summary>Do I need sales experience?</summary><p>No. Free training, scripts and practice calls are included before you start.</p></details>
-    <details><summary>How and when do I get paid?</summary><p>By bank transfer, for every sale that's cleared the customer's 14-day refund window, with a statement each time. Payday is set out in your rep agreement. You work as a self-employed contractor, so you handle your own tax.</p></details>
-    <details><summary>Can I really work any hours?</summary><p>Yes. There are no set shifts or minimum hours. Calls to businesses happen 8am to 7pm, Monday to Saturday.</p></details>
-    <details><summary>Who can join?</summary><p>Anyone in the UK aged 18 or over who's registered as self-employed with HMRC. Students, side hustlers, career changers and experienced closers are all welcome.</p></details>
-    <details><summary>Who do reps sell for right now?</summary><p>HGM Leads, our sister web studio: websites for local tradespeople. We'll add more partners as the team grows.</p></details>
-  </div>
-</div></section>
-
-<section id="join" class="join"><div class="wrap sec"><div class="in">
-  <h2>Your first sale could be this week.</h2>
-  <p>Book a free intro call and get on the Maystone leaderboard. Free, remote, and on your schedule.</p>
-  <div class="two">
-    <a class="w" href="mailto:harvey@maystone.uk?subject=JOIN">I want to sell</a>
-    <a class="o" href="mailto:hello@maystone.uk?subject=Partner%20with%20Maystone">I need reps</a>
-  </div>
-  <small>Reps: harvey@maystone.uk (subject JOIN) · Businesses: hello@maystone.uk</small>
-</div></div></section>
-
-<div class="wrap"><section id="privacy" class="sec privacy">
-  <p class="kick">Privacy</p>
-  <h2 class="h2s" style="margin-top:12px">Your details, in plain English.</h2>
-  <div class="grid">
-    <div><h3>Who's responsible</h3><p>Harvey-George Matthews, trading as Maystone Sales Group. Contact: <a href="mailto:hello@maystone.uk">hello@maystone.uk</a>.</p></div>
-    <div><h3>What we use</h3><ul><li>Businesses we call: details that are public on Google (business name, trade, area, business phone number, rating and reviews), plus what you give us and notes from our calls.</li><li>People who apply to join: what you send us.</li><li>Call recordings, when a call is recorded.</li></ul></div>
-    <div><h3>Why we use it</h3><ul><li>To tell local businesses about a service that could help them, and to build your preview if you say yes (legitimate interests).</li><li>To build and run your website if you buy (our contract with you).</li><li>To consider your application if you want to join.</li><li>To keep accounts records (the law requires it).</li></ul></div>
-    <div><h3>Who sees it</h3><p>The Maystone team, HGM Leads (to build previews and websites), and the services we use to run the business: Google Workspace (email and files), GitHub (hosting websites and previews) and Stripe (payments). We never sell your details.</p></div>
-    <div><h3>How long we keep it</h3><ul><li>Call recordings: up to 30 days, only for training. Object, and we delete yours the same day.</li><li>Sales notes: up to 12 months after we last spoke, then deleted.</li><li>Applications: up to 12 months if you don't join.</li><li>Customers: while we look after your site, plus 6 years for accounts records.</li><li>Do-not-call list: your number stays on it, so nobody here rings you again.</li></ul></div>
-    <div><h3>Your rights</h3><p>Ask for a copy of your details, ask us to correct or delete them, or tell us to stop contacting you: email <a href="mailto:hello@maystone.uk">hello@maystone.uk</a>. We act within 7 days, and always within one month. Unhappy with how we've handled it? You can complain to the Information Commissioner's Office: <a href="https://ico.org.uk/make-a-complaint/" rel="noopener">ico.org.uk</a> or 0303 123 1113. You can also register free with the Telephone Preference Service to stop most sales calls: <a href="https://www.tpsonline.org.uk/" rel="noopener">tpsonline.org.uk</a>.</p></div>
-    <div><h3>This website</h3><p>No cookies, no tracking, no analytics. The leaderboard, feed and earnings figures on this page are examples, not real reps. It's hosted by GitHub, which may keep basic server logs for security.</p></div>
-  </div>
-  <p style="margin:24px 0 0;font-size:14px;color:var(--muted)">Last updated 8 November 2026.</p>
-</section></div>
+</section>
 </main>
 
-<div class="wrap"><footer class="foot">
-  <span class="legal">© 2026 Maystone Sales Group · A trading name of Harvey-George Matthews, sole trader (no company number) · Near Shoreham-by-Sea, West Sussex</span>
-  <span style="display:flex;gap:20px;flex-wrap:wrap"><a href="#privacy">Privacy</a><a href="mailto:hello@maystone.uk">Contact</a><a href="https://www.linkedin.com/company/maystonesales" rel="noopener">LinkedIn</a></span>
-</footer></div>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Maystone Sales Group · A trading name of Harvey-George Matthews, sole trader (no company number) · Near Shoreham-by-Sea, West Sussex</p>
+    <nav aria-label="Footer"><a href="#privacy">Privacy</a><a href="mailto:hello@maystone.uk">Contact</a><a href="#" id="li" title="LinkedIn link to add">LinkedIn</a></nav>
+  </div>
+</footer>
+
+<div class="mbar" id="mbar"><a class="btn btn-line btn-sm" href="#reps">I need reps</a><a class="btn btn-accent btn-sm" href="#apply">Join the team</a></div>
+
+<template id="pg-how-it-works">
+<header class="phero "><div class="phbg" style="background-image:url(img/training-room.webp)"></div><div class="phgrid"></div><div class="glow"></div><div class="wrap"><span class="kicker">How it works</span><h1>From your first call to<br>running your own team.</h1><p class="lede">Everything you need to know about selling with Maystone: how you start, what a day looks like, how you climb and what we train you in.</p><nav class="jumps"><button data-jump="j-steps">3 steps</button><button data-jump="j-why">Why Maystone</button><button data-jump="j-day">A day</button><button data-jump="j-ladder">The ladder</button><button data-jump="j-academy">Academy</button><button data-jump="j-roles">Open roles</button></nav></div></header>
+<section id="j-steps"><div class="wrap">
+  <span class="kicker">Getting started</span><h2>Three steps from sign-up to first sale.</h2>
+  <div class="bigsteps">
+    <div class="bstep"><span class="bn">01</span><h3>Join the team</h3><p>A quick intro call, sign your rep agreement, and get your own login with the training for your role.</p></div>
+    <div class="bstep"><span class="bn">02</span><h3>Sell on your schedule</h3><p>Free training, scripts and leads ready to call. Work evenings, weekends, between lectures, whenever suits you.</p></div>
+    <div class="bstep hot"><span class="bn">03</span><h3>Climb and level up</h3><p>Every sale puts you higher on the leaderboard. Top reps get first pick of new roles and become coaches.</p></div>
+  </div>
+</div></section>
+<section id="j-why" class="pdark"><div class="phgrid"></div><div class="wrap">
+  <span class="kicker">Why Maystone</span><h2>Sales without the doorstep, the commute or the boss watching the clock.</h2>
+  <div class="tiles">
+      <div class="tile rv"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/></svg></div><h3><b>100% remote</b></h3><p>Work from your bedroom, the library or a café. All you need is a phone and wifi.</p></div>
+      <div class="tile rv"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3><b>No set hours</b></h3><p>Work when it suits you. Exams, shifts or a day off? No problem.</p></div>
+      <div class="tile rv"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 012-2h12v15H6a2 2 0 00-2 2zM8 8h6"/></svg></div><h3><b>No experience needed</b></h3><p>Free training, scripts and practice calls get you ready for your first call.</p></div>
+      <div class="tile rv"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></div><h3><b>Uncapped earnings</b></h3><p>Every sale pays. The more you sell, the more you earn.</p></div>
+      <div class="tile rv"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v8H4v-8M2 7h20v5H2zM12 22V7M12 7c-2-4-6-4-6-1s6 1 6 1 6 3 6-1-4-3-6 1"/></svg></div><h3><b>Free to join</b></h3><p>No sign-up fees, no buying stock, ever. You never pay us anything.</p></div>
+      <div class="tile rv"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4v-6H4zM10 20h4V9h-4zM16 20h4V4h-4z"/></svg></div><h3><b>Real progression</b></h3><p>Your leaderboard rank unlocks bigger roles, coaching and team lead spots.</p></div>
+    </div>
+</div></section>
+<section id="j-day" class="pstone"><div class="wrap day">
+  <div>
+    <span class="kicker">A day at Maystone</span>
+    <h2>Call between lectures. Close a deal before dinner.</h2>
+    <figure class="dayimg"><img src="img/evening-desk.webp" alt="" loading="lazy"></figure>
+  </div>
+  <div><ol class="tl">
+      <li class="rv"><time>10:00</time><i class="dot"></i><div><b>Pick up your leads</b><span>Log in and grab today's call list.</span></div></li>
+      <li class="rv"><time>13:00</time><i class="dot"></i><div><b>Make a few calls</b><span>Book two business owners in for a free website preview.</span></div></li>
+      <li class="rv"><time>17:00</time><i class="dot"></i><div><b>Close the deal</b><span>Walk an owner through their preview. They say yes.</span></div></li>
+      <li class="rv"><time>17:05</time><i class="dot"></i><div><b>Watch yourself climb</b><span>The sale goes through and you jump three places on the leaderboard.</span></div></li>
+    </ol>
+    <div class="skillbox"><span class="kicker">Skills you'll walk away with</span>
+      <div class="chips"><span>Confident phone manner</span><span>Handling objections</span><span>Closing deals</span><span>Managing your own time</span><span>A real sales record</span></div>
+      <p class="small" style="margin-top:12px">Skills every employer wants, and proof on the leaderboard that you have them.</p></div>
+  </div>
+</div></section>
+<section id="j-ladder"><div class="wrap">
+  <span class="kicker">The ladder</span><h2>Your results decide how far you go, not who you know.</h2>
+  <div class="ladder">
+      <div class="rung rv"><span class="lv">Level 1</span><h3>Rep</h3><p>Take an open role. Sell, learn, start climbing.</p></div>
+      <div class="rung rv"><span class="lv">Level 2</span><h3>Top Rep</h3><p>Stay in the top 10% of the leaderboard to get first pick of new roles.</p></div>
+      <div class="rung rv"><span class="lv">Level 3</span><h3>Coach</h3><p>Train new reps and earn a bonus on their sales.</p></div>
+      <div class="rung rv"><span class="lv">Level 4</span><h3>Team Lead</h3><p>Run a team of coaches across a role or region.</p></div>
+    </div>
+</div></section>
+<section id="j-academy" class="pstone"><div class="wrap">
+  <div class="sechd"><div><span class="kicker">Maystone Academy</span><h2>We train you for every step, from first call to running a team.</h2></div><p class="lede">Selling is one skill. Coaching, keeping a team motivated and running yourself like a business are others. The Academy prepares you for each one before you need it, free for every rep.</p></div>
+  <div class="academy">
+      <div class="stage rv"><span class="k">Start</span><h3>Your first calls</h3><p>Scripts, objection handling, compliance basics and practice calls before you go live.</p></div>
+      <div class="stage rv"><span class="k">Grow</span><h3>Closing and consistency</h3><p>Advanced closing, building a daily routine and reading your own numbers.</p></div>
+      <div class="stage rv"><span class="k">Self-employed</span><h3>Running yourself like a business</h3><p>Setting targets, keeping records and managing your own time.</p></div>
+      <div class="stage rv"><span class="k">Coach</span><h3>Coaching new reps</h3><p>How to train, give feedback on calls and get someone to their first sale.</p></div>
+      <div class="stage rv"><span class="k">Lead</span><h3>Keeping a team together</h3><p>Motivation, retention, spotting burnout early and building a team people want to stay in.</p></div>
+    </div>
+  <p class="small" style="margin-top:18px">Every rep gets their own login, with the training for their role.</p>
+</div></section>
+<section id="j-roles" class="pdark"><div class="phgrid"></div><div class="wrap">
+  <div class="bar"><div><span class="kicker">Roles open now</span><h2>Pick a role. Start this week.</h2></div><span class="badge">Pay confirmed in writing before you start</span></div>
+  <div class="roles">
+      <div class="role main rv"><div><div class="who">HGM Leads · <span class="open">● Open now</span></div><h3>Website rep – local trades</h3><p>Call tradespeople who don't have a proper website, book them a free preview, then ring back and close. Leads and training provided.</p></div><div class="pay"><b>Commission per sale</b><a class="btn btn-accent btn-sm" href="#apply">Apply →</a></div></div>
+      <div class="role rv"><div><div class="who">Maystone · After your first sales</div><h3>Coach</h3><p>Proved you can sell? Train two or three new reps and get them to their first sale.</p></div><div class="pay"><b>Bonus on your reps' sales</b><a class="btn btn-line btn-sm" href="#apply" data-note="I'd like to ask about the Coach role.">Ask about it →</a></div></div>
+      <div class="role rv"><div><div class="who">New partners · Coming as we grow</div><h3>More products to sell</h3><p>New partners bring new roles, including bigger-ticket ones. Top reps get first pick.</p></div><div class="pay"><b>Rates set per role</b><a class="btn btn-line btn-sm" href="#reps">Partner with us →</a></div></div>
+    </div>
+</div></section>
+</template>
+<template id="pg-for-businesses">
+<header class="phero "><div class="phgrid"></div><div class="glow"></div><div class="wrap"><span class="kicker">For businesses</span><h1>A sales team you only<br>pay when it sells.</h1><p class="lede">Got a product small businesses need? Our trained reps sell it by phone, and you only pay when they make a sale.</p><div class="ctas"><a class="btn btn-accent" href="#reps">Find reps for my business</a><a class="btn btn-ghost" href="mailto:hello@maystone.uk">hello@maystone.uk</a></div></div></header>
+<section><div class="wrap">
+  <span class="kicker">How it works for you</span><h2>Three steps to a team selling for you.</h2>
+  <div class="bigsteps">
+    <div class="bstep"><span class="bn">01</span><h3>Tell us what you sell</h3><p>Who buys it, the typical price and what a good customer looks like. We'll call you to talk it through.</p></div>
+    <div class="bstep"><span class="bn">02</span><h3>We train the reps</h3><p>Your product, your script and your standards, taught before a single call is made.</p></div>
+    <div class="bstep hot"><span class="bn">03</span><h3>You pay per sale</h3><p>An agreed commission, only when a sale is made. No upfront fees or retainers.</p></div>
+  </div>
+</div></section>
+<section class="pdark"><div class="phgrid"></div><div class="wrap">
+  <span class="kicker">What you get</span><h2>Everything a sales team should be, without the hiring.</h2>
+  <div class="tiles">
+    <div class="tile"><div class="ic">£</div><h3><b>Free to start</b></h3><p>No upfront fees or retainers.</p></div>
+    <div class="tile"><div class="ic">✓</div><h3><b>Pay on results</b></h3><p>An agreed commission, only on sales.</p></div>
+    <div class="tile"><div class="ic">#</div><h3><b>Real numbers</b></h3><p>See what's booked and what's sold.</p></div>
+    <div class="tile"><div class="ic">★</div><h3><b>Trained reps</b></h3><p>Compliance and sales training built in.</p></div>
+    <div class="tile"><div class="ic">↑</div><h3><b>Top closers</b></h3><p>Want a high-ticket closer? We offer it to the top of the leaderboard.</p></div>
+    <div class="tile"><div class="ic">☎</div><h3><b>Calls done properly</b></h3><p>Reps say who they are, never pressure, and respect a no.</p></div>
+  </div>
+</div></section>
+<section><div class="wrap">
+  <div class="ctacard"><div><span class="kicker">Ready when you are</span><h2>Tell us about your business.</h2><p class="lede">Two minutes to fill in. We'll call you to talk it through, with no commitment.</p></div><a class="btn btn-accent" href="#reps">Find reps for my business →</a></div>
+</div></section>
+</template>
+<template id="pg-questions">
+<header class="phero "><div class="phgrid"></div><div class="glow"></div><div class="wrap"><span class="kicker">Questions</span><h1>Straight answers.</h1><p class="lede">Pay, hours, who can join and what we do with your details. Can't find it? Email us.</p><div class="qsearch"><input type="search" id="qs" placeholder="Search questions, e.g. paid, hours, MLM" aria-label="Search questions"></div></div></header>
+<section><div class="wrap qwrap">
+  <div><div class="faq">
+      <details><summary>Is it really free?</summary><p>Yes. Reps never pay to join, train or level up, and never buy stock. Our partners pay us; you never do.</p></details>
+      <details><summary>Is this an MLM or pyramid scheme?</summary><p>No. You earn only from real sales to real customers. You never pay us, never buy stock, and nobody earns from simply recruiting people.</p></details>
+      <details><summary>Do I need sales experience?</summary><p>No. Free training, scripts and practice calls are included before you start.</p></details>
+      <details><summary>How and when do I get paid?</summary><p>By bank transfer, for every sale that's cleared the customer's 14-day refund window, with a statement each time. Payday is set out in your rep agreement. You work as a self-employed contractor, so you handle your own tax.</p></details>
+      <details><summary>Can I really work any hours?</summary><p>Yes. There are no set shifts or minimum hours. Calls to businesses happen 8am to 7pm, Monday to Saturday.</p></details>
+      <details><summary>Who can join?</summary><p>Anyone in the UK aged 18 or over who's registered as self-employed with HMRC. Students, side hustlers, career changers and experienced closers are all welcome.</p></details>
+      <details><summary>Who do reps sell for right now?</summary><p>HGM Leads, our sister web studio: websites for local tradespeople. We'll add more partners as the team grows.</p></details>
+    </div>
+  </div>
+  <aside class="qside"><b>Still got a question?</b><p>Email us and a real person will get back to you.</p><a class="btn btn-accent btn-sm" href="mailto:hello@maystone.uk">hello@maystone.uk</a><a class="btn btn-line btn-sm" href="#apply">Apply to join</a></aside>
+</div></section>
+<section class="pstone"><div class="wrap">
+  <span class="kicker">Privacy</span><h2>Your details, in plain English.</h2>
+  <div class="priv">
+      <div><h3>Who's responsible</h3><p>Harvey-George Matthews, trading as Maystone Sales Group. Contact: <a href="mailto:hello@maystone.uk">hello@maystone.uk</a>.</p></div>
+      <div><h3>What we use</h3><ul><li>Businesses we call: details that are public on Google (business name, trade, area, business phone number, rating and reviews), plus what you give us and notes from our calls.</li><li>People who apply to join, and businesses that ask about reps: what you send us.</li><li>Call recordings, when a call is recorded.</li></ul></div>
+      <div><h3>Why we use it</h3><ul><li>To tell local businesses about a service that could help them, and to build your preview if you say yes (legitimate interests).</li><li>To build and run your website if you buy (our contract with you).</li><li>To consider your application if you want to join.</li><li>To keep accounts records (the law requires it).</li></ul></div>
+      <div><h3>Who sees it</h3><p>The Maystone team, HGM Leads (to build previews and websites), and the services we use to run the business: Google Workspace (email and files), GitHub (hosting websites and previews) and Stripe (payments). We never sell your details.</p></div>
+      <div><h3>How long we keep it</h3><ul><li>Call recordings: up to 30 days, only for training. Object, and we delete yours the same day.</li><li>Sales notes: up to 12 months after we last spoke, then deleted.</li><li>Applications: up to 12 months if you don't join.</li><li>Customers: while we look after your site, plus 6 years for accounts records.</li><li>Do-not-call list: your number stays on it, so nobody here rings you again.</li></ul></div>
+      <div><h3>Your rights</h3><p>Ask for a copy of your details, ask us to correct or delete them, or tell us to stop contacting you: email <a href="mailto:hello@maystone.uk">hello@maystone.uk</a>. We act within 7 days, and always within one month. Unhappy with how we've handled it? You can complain to the Information Commissioner's Office: <a href="https://ico.org.uk" rel="noopener">ico.org.uk</a> or 0303 123 1113. You can also register free with the Telephone Preference Service to stop most sales calls: <a href="https://www.tpsonline.org.uk" rel="noopener">tpsonline.org.uk</a>.</p></div>
+      <div><h3>This website</h3><p>No cookies, no tracking, no analytics. The leaderboard and earnings figures on this page are examples, not real reps. It's hosted by GitHub, which may keep basic server logs for security.</p></div>
+    </div>
+  <p class="small" style="margin-top:24px">Last updated 8 November 2026.</p>
+</div></section>
+</template>
+<template id="pg-who-we-work-with">
+<header class="phero imgbg"><div class="phbg" style="background-image:url(img/hove.webp)"></div><div class="phgrid"></div><div class="glow"></div><div class="wrap"><span class="kicker">Who we work with</span><h1>Great products deserve<br>a great sales team.</h1><p class="lede">Maystone partners with a small number of businesses we genuinely believe in. We add them one at a time, so every product gets reps who know it inside out.</p></div></header>
+<section class="pstone" style="margin:0"><div class="wrap"><span class="kicker">What we do for our partners</span>
+<h2>Your own trained sales team, without the hiring.</h2>
+<div class="tiles">
+ <div class="tile"><h3><b>Trained reps, ready to go</b></h3><p>Every rep learns your product, your script and your standards before they make a single call.</p></div>
+ <div class="tile"><h3><b>Calls done properly</b></h3><p>Honest, compliant calls. Reps say who they are, never pressure, and respect anyone who says no.</p></div>
+ <div class="tile"><h3><b>A steady pipeline</b></h3><p>A team calling every day, Monday to Saturday, turning cold numbers into warm conversations.</p></div>
+ <div class="tile"><h3><b>Real numbers</b></h3><p>See what's booked and what's sold, rep by rep. No guesswork.</p></div>
+ <div class="tile"><h3><b>Only pay on results</b></h3><p>No upfront fees or retainers. You pay an agreed commission when a sale is made.</p></div>
+ <div class="tile"><h3><b>A team that grows with you</b></h3><p>Our best reps coach new ones, so your sales team gets stronger every month.</p></div>
+</div>
+
+</div></section><section><div class="wrap"><span class="kicker">Our partners</span>
+<div class="pcard" style="margin-top:8px;padding:clamp(24px,4vw,40px)">
+ <div class="top"><div><h2 style="font-size:clamp(1.8rem,4vw,2.4rem)">HGM Leads</h2><span class="small">Web design studio · Sussex</span></div><span class="badge ex">Founding partner</span></div>
+  <p class="lede" style="max-width:70ch">HGM Leads builds premium websites for local tradespeople, made from the thing they've already earned: their Google reviews. Every site is designed for phones first, written in plain English and built to turn a visitor into a phone call.</p>
+ <div class="tiles" style="margin-top:28px">
+  <div class="tile" style="background:var(--stone)"><h3><b>Built from real reviews</b></h3><p>Each site is made around the owner's own business, reviews and area. Nothing generic.</p></div>
+  <div class="tile" style="background:var(--stone)"><h3><b>A free preview first</b></h3><p>Every owner sees their own website before they decide anything. No risk, no guesswork.</p></div>
+  <div class="tile" style="background:var(--stone)"><h3><b>Looked after for them</b></h3><p>Hosting, security, updates and changes handled, so owners can get on with the job.</p></div>
+ </div>
+ <div class="okbox" style="margin-top:24px;background:var(--top-row);color:var(--ink)"><b>Why reps love selling it:</b> you're not pitching an idea. You're showing a business owner their own new website, already built. It's the easiest yes in sales.</div>
+ <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn-accent" href="#apply">Sell for HGM Leads →</a></div>
+</div>
+
+<a class="pcard pnext" href="#reps" style="text-decoration:none;display:block;margin-top:16px"><h3 style="font-weight:700;font-size:1.3rem">Your business next?</h3><p style="margin-top:8px;color:var(--soft)">If you sell something small businesses need, our reps could sell it for you.</p><span style="display:inline-block;margin-top:14px;font-weight:600;color:var(--accent)">Tell us about your business →</span></a>
+
+</div></section><section class="pdark"><div class="phgrid"></div><div class="wrap"><span class="kicker">Had a call from us?</span>
+<h2>Here's what to expect.</h2>
+<p class="lede">Our reps ring local trades to offer a free preview website from HGM Leads. Every call works the same way.</p>
+<div class="points">
+ <div><b>We say who we are</b><span>Our name, that we're from Maystone, and that it's a sales call.</span></div>
+ <div><b>We're not Google</b><span>We don't sell Google listings, ads or "top of Google".</span></div>
+ <div><b>No card details on the phone. Ever.</b><span>If you buy, you pay on Stripe's secure page and see the amount first.</span></div>
+ <div><b>A preview only if you say yes</b><span>And we only text, WhatsApp or email you after you've said yes to it.</span></div>
+ <div><b>Calls may be recorded for training</b><span>Rather not? Say so and we'll switch it off.</span></div>
+ <div><b>Don't want calls? Tell us once.</b><span>We'll put your number on our do-not-call list, and nobody here will ring it again.</span></div>
+</div>
+<p class="small" style="margin-top:20px;max-width:75ch">Preview links are private. Questions, or want your preview taken down? Email <a href="mailto:hello@maystone.uk">hello@maystone.uk</a>, or ring back the number that called you.</p>
+</div></section>
+</template>
+<!-- PORTAL -->
+<div class="portal" id="portal" role="dialog" aria-modal="true" aria-label="Maystone team portal">
+  <div class="ph"><div class="wrap">
+    <a class="logo" href="#top"><svg width="30" height="30"><use href="#mk"/></svg><span class="wm"><b>MAYSTONE</b><small>SALES GROUP</small></span></a>
+    <div style="display:flex;gap:6px;align-items:center"><button class="back" id="logout" hidden>Log out</button><button class="back" id="back">← Back to site</button></div>
+  </div></div>
+  <div class="pbody"><div class="wrap" id="pv"></div></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-(function () {
-  // Example activity feed (not real reps)
-  var feed = [
-    ['Jamie R.', 'closed a website sale', '+£260'], ['Priya K.', 'booked a free preview', 'Preview'],
-    ['Tom M.', 'got a roofer to say yes', '+£260'], ['Aisha S.', 'closed a website sale', '+£260'],
-    ['Leo B.', 'moved up 2 places', '#3'], ['Sam D.', 'became a Top Rep', 'Level 2'],
-    ['Ella W.', 'booked a free preview', 'Preview'], ['Ben H.', 'became a Coach', 'Level 3']
-  ];
-  var track = document.getElementById('track');
-  if (track) {
-    var html = feed.concat(feed).map(function (f) { return '<span class="it"><strong>' + f[0] + '</strong> ' + f[1] + ' <em>' + f[2] + '</em></span>'; }).join('');
-    track.innerHTML = html;
-  }
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const gbp=n=>'£'+Math.round(n).toLocaleString('en-GB');
+const today=()=>new Date().toISOString().slice(0,10);
+const fdate=d=>new Date(d+'T12:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2600)}
 
-  // Example leaderboard (not real reps): £260 per website sale
-  var reps = [
-    { id: 'jr', i: 'JR', n: 'Jamie R.', lvl: 'Top Rep', s: 14 },
-    { id: 'as', i: 'AS', n: 'Aisha S.', lvl: 'Coach', s: 11 },
-    { id: 'tm', i: 'TM', n: 'Tom M.', lvl: 'Rep', s: 9 },
-    { id: 'pk', i: 'PK', n: 'Priya K.', lvl: 'Rep', s: 7 },
-    { id: 'lb', i: 'LB', n: 'Leo B.', lvl: 'Rep', s: 5 }
-  ];
-  var box = document.getElementById('rows');
-  function money(v) { return '£' + v.toLocaleString('en-GB'); }
-  reps.forEach(function (r) {
-    var el = document.createElement('div');
-    el.className = 'r';
-    el.innerHTML = '<span class="rank"></span><span class="av">' + r.i + '</span><span class="nm"><b>' + r.n + '</b><span></span></span><span class="gain"></span><span class="earn"></span>';
-    r.el = el; box.appendChild(el);
-  });
-  function draw(flash, gain) {
-    var order = reps.slice().sort(function (a, b) { return b.s - a.s; });
-    order.forEach(function (r, i) {
-      r.el.style.transform = 'translateY(' + (i * 78) + 'px)';
-      r.el.querySelector('.rank').textContent = i + 1;
-      r.el.querySelector('.nm span').textContent = r.lvl + ' · ' + r.s + ' sales';
-      r.el.querySelector('.earn').textContent = money(r.s * 260);
-      r.el.querySelector('.gain').textContent = r === flash ? '+' + money(gain) : '';
-      r.el.className = 'r' + (i === 0 ? ' first' : '') + (i === 1 ? ' second' : '') + (i === 2 ? ' third' : '') + (r === flash ? ' flash' : '');
-    });
-  }
-  draw(null, 0);
-  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!still) {
-    setInterval(function () {
-      var sorted = reps.slice().sort(function (a, b) { return b.s - a.s; });
-      var weights = sorted.map(function (r, i) { return i + 1; });
-      var pick = Math.random() * weights.reduce(function (a, b) { return a + b; }, 0), chosen = sorted[0];
-      for (var k = 0; k < sorted.length; k++) { pick -= weights[k]; if (pick <= 0) { chosen = sorted[k]; break; } }
-      var n = Math.random() < 0.75 ? 1 : 2;
-      chosen.s += n;
-      if (reps.some(function (r) { return r.s > 40; })) reps.forEach(function (r) { r.s = Math.max(3, Math.round(r.s / 2)); });
-      draw(chosen, n * 260);
-    }, 1800);
-  }
+/* ticker */
+const feed=[['Jamie R. closed a website sale','✓'],['Priya K. booked a free preview','Preview'],['Tom M. got a roofer to say yes','✓'],['Aisha S. closed a website sale','✓'],['Leo B. moved up 2 places','#3'],['Sam D. became a Top Rep','Level 2'],['Ella W. booked a free preview','Preview'],['Ben H. became a Coach','Level 3']];
+const fh=feed.map(f=>`<span>${f[0]} <b>${f[1]}</b></span>`).join('');
 
-  // Example earnings slider: £260 per sale, 1 sale every 10–20 calling hours
-  var hours = document.getElementById('hours'), hrs = document.getElementById('hrs'), range = document.getElementById('range');
-  function calc() {
-    var h = Number(hours.value);
-    hrs.textContent = h + ' hrs';
-    var low = Math.round(h * 4.33 * 0.05 * 260), high = Math.round(h * 4.33 * 0.1 * 260);
-    range.textContent = money(low) + ' – ' + money(high);
-  }
-  if (hours) { hours.addEventListener('input', calc); calc(); }
+
+/* leaderboard */
+const reps=[['Jamie R.','Top Rep',14],['Aisha S.','Coach',11],['Tom M.','Rep',9],['Priya K.','Rep',7],['Leo B.','Rep',5]].map(r=>({n:r[0],role:r[1],s:r[2]}));
+let mult=1;const rowsEl=$('#rows');
+reps.forEach(r=>{r.el=document.createElement('div');r.el.className='row';r.el.innerHTML=`<span class="pos"></span><span class="av">${r.n.split(' ').map(x=>x[0]).join('').replace('.','')}</span><span class="nm">${r.n}<small>${r.role}</small></span><span class="ct"></span>`;rowsEl.appendChild(r.el)});
+function draw(){const sorted=[...reps].sort((a,b)=>b.s-a.s);sorted.forEach((r,i)=>{const sc=Math.max(0,Math.round(r.s*mult));r.el.style.transform=`translateY(${i*56}px)`;r.el.className='row'+(i<3?' r'+(i+1):'');r.el.querySelector('.pos').textContent=i+1;r.el.querySelector('.ct').innerHTML=`${sc}<small>sales</small>`})}
+draw();
+$$('.seg button').forEach(b=>b.onclick=()=>{$$('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===b));mult=+b.dataset.p;draw()});
+if(!RM)setInterval(()=>{if(document.hidden)return;const r=reps[Math.floor(Math.random()*reps.length)];r.s+=1+Math.round(Math.random());if(reps.some(x=>x.s>40))reps.forEach(x=>x.s=Math.ceil(x.s/2));draw();const p=document.createElement('span');p.className='pop';p.textContent='+1 sale';p.style.top=(parseFloat(r.el.style.transform.slice(11))+18)+'px';rowsEl.appendChild(p);setTimeout(()=>p.remove(),1300)},1800);
+
+/* earnings */
+const hrs=$('#hrs');function calc(){const h=+hrs.value;$('#hrsv').textContent=h;const lo=h*4.33*.05,hi=h*4.33*.1;$('#earn').innerHTML=`${gbp(lo*260)} – ${gbp(hi*260)}<small> a month</small>`;$('#sales').textContent=`${Math.round(lo*10)/10} – ${Math.round(hi*10)/10}`.replace(/\.0/g,'');hrs.setAttribute('aria-valuetext',h+' hours a week');$('#hm').textContent=Math.round(h*4.33)}
+hrs.oninput=calc;calc();
+
+/* reveal */
+if(!RM&&'IntersectionObserver'in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});$$('.rv').forEach(el=>io.observe(el))}else $$('.rv').forEach(el=>el.classList.add('in'));
+
+const st=$('.stack3d');if(st)new IntersectionObserver(([e],o)=>{if(e.isIntersecting){st.classList.add('go');o.disconnect()}},{threshold:.4}).observe(st);
+
+const pl=$('#pathline');if(pl){const items=$$('li',pl);const upd=()=>{const r=pl.getBoundingClientRect(),vh=innerHeight;const p=Math.min(1,Math.max(0,(vh*.75-r.top)/(r.height)));pl.style.setProperty('--p',RM?1:p.toFixed(3));items.forEach((li,i)=>li.classList.toggle('on',RM||p>=(i/(items.length-1))-0.02))};addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);upd()}
+if(!RM)$$('[data-n]').forEach(el=>{const n=+el.dataset.n,pre=el.dataset.pre||'';if(!n)return;el.textContent=pre+'0';new IntersectionObserver(([e],o)=>{if(!e.isIntersecting)return;o.disconnect();const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/1100),v=Math.round(n*(1-Math.pow(1-k,3)));el.textContent=pre+v;if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)},{threshold:.6}).observe(el)});
+/* mobile bar */
+const hero=$('.hero');new IntersectionObserver(([e])=>$('#mbar').classList.toggle('on',!e.isIntersecting)).observe(hero);
+$('#li').onclick=e=>{e.preventDefault();toast('LinkedIn link still to add')};
+
+/* ===== PORTAL SANDBOX ===== */
+const ROLES=['Rep','Top Rep','Coach','Team Lead'];const RANK={All:0,Rep:1,'Top Rep':2,Coach:3,'Team Lead':4};
+const D={
+ users:[
+  {id:'u0',first:'Harvey',last:'Matthews',email:'harvey@maystone.uk',pw:'sandbox',admin:true,role:'Team Lead',partner:'p1',comm:260,status:'Active',previews:0,joined:'2026-09-01'},
+  {id:'u1',first:'Jamie',last:'Reed',email:'jamie@example.com',pw:'example1',role:'Top Rep',partner:'p1',comm:260,status:'Active',previews:21,joined:'2026-09-14'},
+  {id:'u2',first:'Aisha',last:'Shah',email:'aisha@example.com',pw:'example1',role:'Coach',partner:'p1',comm:260,status:'Active',previews:17,joined:'2026-09-20'},
+  {id:'u3',first:'Tom',last:'Marsh',email:'tom@example.com',pw:'example1',role:'Rep',partner:'p1',comm:260,status:'Active',previews:9,joined:'2026-10-05'}],
+ partners:[{id:'p1',name:'HGM Leads',sells:'Websites for local trades (free preview first)',comm:260,start:'2026-09-01',note:'Founding partner: our sister web studio',status:'Active',contact:''}],
+ sales:[
+  {id:'s1',date:'2026-10-12',rep:'u1',cust:'Example plumber, Worthing',amt:500,status:'Cleared'},
+  {id:'s2',date:'2026-11-02',rep:'u2',cust:'Example roofer, Lancing',amt:298,status:'Pending'},
+  {id:'s3',date:'2026-10-03',rep:'u1',cust:'Example electrician, Hove',amt:500,status:'Paid out'},
+  {id:'s4',date:'2026-11-05',rep:'u3',cust:'Example decorator, Shoreham',amt:298,status:'Pending'}],
+ apps:[
+  {id:'a1',first:'Priya',last:'Kaur',email:'priya@example.com',mobile:'07700 900123',based:'Brighton',exp:'None yet',time:'Evening',note:'Student, free most evenings.',date:'2026-11-06',status:'New'},
+  {id:'a2',first:'Sam',last:'Ellis',email:'sam@example.com',mobile:'07700 900456',based:'Leeds',exp:'1 to 3 years',time:'Morning',note:'',date:'2026-11-03',status:'Called'}],
+ biz:[{id:'b1',first:'Alex',last:'Example',bname:'Example Solar Ltd',email:'alex@example.com',phone:'07700 900789',web:'',sells:'Solar panel surveys',buyers:'Homeowners',price:6000,comm:300,reps:'2 to 5',note:'',date:'2026-11-04',status:'New'}],
+ training:[['Start here: how Maystone works','All','Deck'],['Rep Start Pack: day 1','Rep','Doc'],['The call script (03f)','Rep','Doc'],['Objections and emotions','Rep','Deck'],['After the yes','Rep','Deck'],['Closing on the second call','Top Rep','Video'],['Coaching new reps (Module 1)','Coach','Deck'],['Manager playbook','Team Lead','Doc']].map((t,i)=>({id:'t'+i,title:t[0],who:t[1],type:t[2]}))
+};
+let me=null,tab='overview',viewAs=null,uid=100,prefill={};
+const P=id=>D.partners.find(p=>p.id===id)||{name:'—'};
+const U=id=>D.users.find(u=>u.id===id)||{first:'?',last:''};
+const commOf=s=>{const u=U(s.rep);return u.comm||260};
+const live=s=>s.status!=='Refunded';
+function statsFor(u){const ss=D.sales.filter(s=>s.rep===u.id&&live(s));const paid=ss.filter(s=>s.status==='Paid out').reduce((a,s)=>a+commOf(s),0);const due=ss.filter(s=>s.status!=='Paid out').reduce((a,s)=>a+commOf(s),0);return{sales:ss.length,paid,due,earned:paid+due}}
+function board(){return D.users.filter(u=>!u.admin&&u.status==='Active').map(u=>({u,...statsFor(u)})).sort((a,b)=>b.sales-a.sales||b.u.previews-a.u.previews)}
+const portal=$('#portal'),pv=$('#pv');
+let returnTo='top';
+function open(view){portal.classList.add('on');document.body.classList.add('lock');portal.scrollTop=0;render(view)}
+function close(){portal.classList.remove('on');document.body.classList.remove('lock')}
+$('#back').onclick=()=>{close();history.replaceState(null,'','#'+returnTo);const t=document.getElementById(returnTo);(t||document.body).scrollIntoView({block:'start'})};
+$('#logout').onclick=()=>{me=null;viewAs=null;location.hash='login'};
+function route(){const h=location.hash.slice(1);if(['apply','reps','who-we-work-with','how-it-works','for-businesses','questions'].includes(h)){if(!portal.classList.contains('on'))returnTo=h==='apply'?'join':'top';open(h)}else if(portal.classList.contains('on'))close()}
+addEventListener('hashchange',route);
+document.addEventListener('click',e=>{const a=e.target.closest('a[data-note]');if(a)prefill.note=a.dataset.note});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&portal.classList.contains('on'))$('#back').click()});
+
+function field(id,label,o={}){const t=o.type||'text';const req=o.opt?'':' required';const lab=`<label for="${id}">${label}${o.opt?' <small>(optional)</small>':''}${o.hint?` <small>${o.hint}</small>`:''}</label>`;let ctl;
+ if(t==='select')ctl=`<select id="${id}" name="${id}"${req}>${o.ph?`<option value="">${o.ph}</option>`:''}${o.opts.map(x=>`<option${o.val===x?' selected':''}>${x}</option>`).join('')}</select>`;
+ else if(t==='textarea')ctl=`<textarea id="${id}" name="${id}"${req}>${esc(o.val||'')}</textarea>`;
+ else ctl=`<input id="${id}" name="${id}" type="${t}"${req}${o.ac?` autocomplete="${o.ac}"`:''}${o.im?` inputmode="${o.im}"`:''}${o.min?` minlength="${o.min}"`:''} value="${esc(o.val||'')}">`;
+ return `<div class="f">${lab}${ctl}<div class="err" id="${id}-e">${o.err||'Please fill this in.'}</div></div>`}
+function validate(form){let ok=true;$$('.f',form).forEach(f=>{const c=f.querySelector('input,select,textarea');let bad=c.required&&!c.value.trim();if(!bad&&c.type==='email'&&c.value&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.value)){bad=true;f.querySelector('.err').textContent='Please enter a real email address.'}if(!bad&&c.type==='tel'&&c.value&&c.value.replace(/\D/g,'').length<10){bad=true;f.querySelector('.err').textContent='Please enter at least 10 digits.'}if(!bad&&c.minLength>0&&c.value.length<c.minLength){bad=true;f.querySelector('.err').textContent=`At least ${c.minLength} characters.`}f.classList.toggle('bad',bad);if(bad&&ok){c.focus();ok=false}});
+ const tk=form.querySelector('.tick input');if(tk&&!tk.checked){ok&&tk.focus();ok=false;form.querySelector('.tick-e').style.display='block'}else if(tk)form.querySelector('.tick-e').style.display='none';
+ return ok}
+const val=(f,n)=>(f.elements[n]?.value||'').trim();
+const sandboxNote='';const API='https://script.google.com/macros/s/AKfycbyTMyA_Ut2nhNpUGAPh0Yt-DcIBOSwLOyFFeKCAOWDEAsJX8HpJdHxuADivs71IWXY/exec';
+function send(action,form){if(API.indexOf('__')===0)return Promise.resolve({ok:false,error:'Our form is being switched on. Please email hello@maystone.uk for now.'});return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,form})}).then(r=>r.json()).catch(()=>({ok:false,error:'Could not send. Check your connection, or email hello@maystone.uk.'}))}
+function busy(f,on,label){const b=f.querySelector('button[type=submit]');b.disabled=on;b.textContent=on?'Sending…':label}
+function ferr(f,m){let d=f.querySelector('.alert');if(!d){d=document.createElement('div');d.className='alert';d.setAttribute('role','alert');f.prepend(d)}d.textContent=m}
+
+function render(view){$('#logout').hidden=!me||!['admin','dashboard'].includes(view);
+ if((view==='admin'||view==='dashboard')&&!me)view='login';
+ if(view==='login'&&me)view=me.admin?'admin':'dashboard';
+ const tp=document.getElementById('pg-'+view);pv.parentElement.classList.toggle('full',!!tp);if(tp){pv.innerHTML='';pv.appendChild(tp.content.cloneNode(true));pv.querySelectorAll('.rv').forEach(e=>e.classList.add('in'));pv.querySelectorAll('[data-jump]').forEach(b=>b.onclick=()=>{const t=document.getElementById(b.dataset.jump);portal.scrollTo({top:t.offsetTop-64,behavior:RM?'auto':'smooth'})});const qs=$('#qs',pv);if(qs)qs.oninput=()=>{const v=qs.value.toLowerCase().trim();let n=0;$$('.faq details',pv).forEach(d=>{const m=!v||d.textContent.toLowerCase().includes(v);d.hidden=!m;if(m)n++;if(v&&m)d.open=true});let e=$('.qempty',pv);if(!n){if(!e){e=document.createElement('p');e.className='qempty';e.textContent='No matches. Email hello@maystone.uk and we\'ll answer it.';$('.faq',pv).after(e)}}else if(e)e.remove()};return}
+ ({login:vLogin,apply:vApply,reps:vReps,admin:vAdmin,dashboard:vDash})[view]()}
+
+function vLogin(){pv.innerHTML=`<div class="narrow"><span class="kicker">Team login</span><h1 style="font-size:2.4rem">Welcome back</h1><p class="lede" style="margin-top:10px">Log in to see your training, your numbers and the leaderboard.</p>
+<form class="form" id="lf" novalidate><div id="lerr"></div>${field('em','Email',{type:'email',ac:'email',im:'email'})}${field('pw','Password',{type:'password',ac:'current-password'})}<button class="btn btn-accent" type="submit">Log in</button></form>
+<p class="small" style="margin-top:20px">Looking for reps for your business? <a href="#reps">Tell us here</a><br>Already on the team? Log in with the details Harvey sent you. New here? <a href="#apply">Apply to join</a></p>${sandboxNote}</div>`;
+ $('#lf').onsubmit=e=>{e.preventDefault();const f=e.target;if(!validate(f))return;const em=val(f,'em').toLowerCase(),pw=f.elements.pw.value;const u=D.users.find(x=>x.email.toLowerCase()===em);const show=m=>$('#lerr').innerHTML=`<div class="alert" role="alert">${m}</div>`;
+  if(!u)return show('There\'s no login for that email. New here? Tap <a href="#apply">Apply to join</a>.');
+  if(u.pw!==pw)return show('That email and password don\'t match. Try again, or ask Harvey to reset it.');
+  if(u.status==='Paused')return show('This account is switched off. Contact Harvey.');
+  me=u;viewAs=null;tab='overview';location.hash=u.admin?'admin':'dashboard'}}
+
+function vApply(){const n=prefill.note||'';prefill={};pv.innerHTML=`<div class="narrow"><span class="kicker">Join Maystone</span><h1 style="font-size:2.4rem">Apply to join</h1><p class="lede" style="margin-top:10px">Commission-only, fully remote, with free coaching. Leave your details and we'll call you to chat about joining.</p>
+<form class="form" id="af" novalidate><div class="two">${field('fn','First name',{ac:'given-name'})}${field('ln','Last name',{ac:'family-name'})}</div>${field('em','Email',{type:'email',ac:'email',im:'email'})}${field('mob','Mobile number',{type:'tel',ac:'tel',im:'tel'})}${field('based','Where are you based?',{hint:'(town or city)',ac:'address-level2'})}
+<div class="two">${field('exp','Sales experience',{type:'select',ph:'Choose one',opts:['None yet','Under 1 year','1 to 3 years','3+ years'],err:'Please choose one.'})}${field('time','Best time to call',{type:'select',opts:['Any time','Morning','Afternoon','Evening'],val:'Any time'})}</div>
+${field('note','Anything else?',{type:'textarea',opt:1,val:n})}<label class="hp" aria-hidden="true">Leave blank<input name="website" tabindex="-1" autocomplete="off"></label>
+<label class="tick"><input type="checkbox" name="ok"> I'm happy for Maystone to call me about joining.</label><div class="err tick-e" style="color:#B42318;font-size:.84rem;display:none">Please tick this so we can call you.</div>
+<button class="btn btn-accent" type="submit">Send application</button></form>${sandboxNote}</div>`;
+ $('#af').onsubmit=async e=>{e.preventDefault();const f=e.target;if(!validate(f))return;const a={first:val(f,'fn'),last:val(f,'ln'),email:val(f,'em'),phone:val(f,'mob'),based:val(f,'based'),experience:val(f,'exp'),time:val(f,'time'),note:val(f,'note'),consent:true,website:f.elements.website.value};
+  busy(f,true);const r=await send('apply',a);if(!r.ok){busy(f,false,'Send application');return ferr(f,r.error||'Something went wrong.')}
+  pv.innerHTML=`<div class="narrow"><div class="okbox" role="status"><h2 style="font-size:1.6rem;margin-bottom:8px">Application sent</h2>Thanks, ${esc(a.first)}. Your application is in. We'll call you on ${esc(a.phone)} to chat about joining. If it's a fit, you'll get your own login.</div></div>`}}
+
+function vReps(){pv.innerHTML=`<div class="narrow"><span class="kicker">For businesses</span><h1 style="font-size:2.4rem">Get reps selling for you</h1><p class="lede" style="margin-top:10px">Trained, remote reps who sell your product by phone. No upfront fees: you pay an agreed commission only when they make a sale. Tell us about your business and we'll call you to talk it through.</p>
+<form class="form" id="bf" novalidate><div class="two">${field('fn','First name',{ac:'given-name'})}${field('ln','Last name',{ac:'family-name'})}</div>${field('bn','Business name',{ac:'organization'})}<div class="two">${field('em','Email',{type:'email',ac:'email',im:'email'})}${field('ph','Phone',{type:'tel',ac:'tel',im:'tel'})}</div>${field('web','Website',{type:'url',opt:1,im:'url'})}
+${field('sells','What do you want reps to sell?')}${field('buyers','Who buys it?')}<div class="two">${field('price','Typical sale price (£)',{im:'decimal'})}${field('comm','Commission per sale (£)',{opt:1,hint:'if you know it',im:'decimal'})}</div>
+${field('nreps','How many reps would you like?',{type:'select',opts:['1','2 to 5','6 to 10','10+','Not sure yet'],val:'Not sure yet'})}${field('note','Anything else?',{type:'textarea',opt:1})}<label class="hp" aria-hidden="true">Leave blank<input name="website2" tabindex="-1" autocomplete="off"></label>
+<label class="tick"><input type="checkbox" name="ok"> I'm happy for Maystone to call me about working together.</label><div class="err tick-e" style="color:#B42318;font-size:.84rem;display:none">Please tick this so we can call you.</div>
+<button class="btn btn-ink" type="submit">Send enquiry</button></form><p class="small" style="margin-top:18px">Looking to sell for us instead? <a href="#apply">Apply as a rep</a></p>${sandboxNote}</div>`;
+ $('#bf').onsubmit=async e=>{e.preventDefault();const f=e.target;$('#web').required=false;if(!validate(f))return;const b={first:val(f,'fn'),last:val(f,'ln'),business:val(f,'bn'),email:val(f,'em'),phone:val(f,'ph'),web:val(f,'web'),sells:val(f,'sells'),buyers:val(f,'buyers'),price:val(f,'price'),commission:val(f,'comm'),reps:val(f,'nreps'),note:val(f,'note'),consent:true,website:f.elements.website2.value};
+  busy(f,true);const r=await send('enquiry',b);if(!r.ok){busy(f,false,'Send enquiry');return ferr(f,r.error||'Something went wrong.')}
+  pv.innerHTML=`<div class="narrow"><div class="okbox" role="status"><h2 style="font-size:1.6rem;margin-bottom:8px">Enquiry sent</h2>Thanks, ${esc(b.first)}. We've got your enquiry. We'll call you on ${esc(b.phone)} to talk about reps for ${esc(b.business)}.</div></div>`}}
+
+function sel(opts,cur,attrs){return `<select ${attrs}>${opts.map(o=>{const[v,l]=Array.isArray(o)?o:[o,o];return`<option value="${esc(v)}"${v===cur?' selected':''}>${esc(l)}</option>`}).join('')}</select>`}
+function pillFor(s){return /New|Pending/.test(s)?'o':/Accepted|Agreed|Cleared|Active|Paid|Login|Partner/.test(s)?'g':/fit|Refunded|Paused/.test(s)?'r':''}
+
+function vAdmin(){if(!me.admin){location.hash='dashboard';return}
+ const nApps=D.apps.filter(a=>a.status==='New').length,nBiz=D.biz.filter(b=>b.status==='New').length;
+ const T=[['overview','Overview'],['apps','Applications',nApps],['biz','Businesses',nBiz],['team','Team'],['partners','Partners'],['sales','Sales'],['training','Training'],['as','What reps see']];
+ pv.innerHTML=`<span class="kicker">Admin</span><h1 style="font-size:2rem">Everything at a glance</h1><p class="small" style="margin-top:6px">Sandbox data, all marked Example. Nothing is saved.</p>
+ <div class="tabs" role="tablist">${T.map(t=>`<button role="tab" aria-selected="${t[0]===tab}" data-t="${t[0]}">${t[1]}${t[2]?`<span class="n">${t[2]}</span>`:''}</button>`).join('')}</div><div id="tb"></div>`;
+ $$('.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.t;vAdmin()});
+ ({overview:tOverview,apps:tApps,biz:tBiz,team:tTeam,partners:tPartners,sales:tSales,training:tTraining,as:tAs})[tab]($('#tb'))}
+
+function tOverview(el){const reps=D.users.filter(u=>!u.admin),act=reps.filter(u=>u.status==='Active');const ls=D.sales.filter(live);const tot=ls.reduce((a,s)=>a+s.amt,0);const pend=ls.filter(s=>s.status==='Pending').reduce((a,s)=>a+commOf(s),0),clr=ls.filter(s=>s.status==='Cleared').reduce((a,s)=>a+commOf(s),0),paid=ls.filter(s=>s.status==='Paid out').reduce((a,s)=>a+commOf(s),0);const nApps=D.apps.filter(a=>a.status==='New').length;
+ el.innerHTML=`<div class="kpis"><div class="kpi"><small>Active reps</small><b>${act.length}</b><span>of ${reps.length}</span></div><div class="kpi${nApps?' hot':''}"><small>To call</small><b>${nApps}</b><span>new applications</span></div><div class="kpi"><small>Partnerships</small><b>${D.partners.filter(p=>p.status==='Active').length}</b><span>active</span></div><div class="kpi"><small>Sales</small><b>${ls.length}</b><span>${gbp(tot)} total</span></div><div class="kpi"><small>Commission to pay</small><b>${gbp(pend+clr)}</b><span>${gbp(pend)} pending · ${gbp(clr)} cleared</span></div><div class="kpi"><small>Paid out</small><b>${gbp(paid)}</b><span>to reps</span></div></div>
+ <div class="panels"><div class="card"><h3 style="font-weight:700;margin-bottom:8px">What everyone is earning</h3>${act.map(u=>{const s=statsFor(u);return`<div class="mini"><span><b>${esc(u.first)} ${esc(u.last)}</b><br><small>${u.role} · ${esc(P(u.partner).name)}</small></span><span style="text-align:right">${gbp(s.earned)}<br><small>${s.sales} sale${s.sales===1?'':'s'}</small></span></div>`}).join('')||'<p class="small">No active reps yet.</p>'}</div>
+ <div class="card"><h3 style="font-weight:700;margin-bottom:8px">Who's on what</h3>${D.partners.map(p=>{const r=act.filter(u=>u.partner===p.id);return`<div class="mini"><span><b>${esc(p.name)}</b><br><small>${esc(p.sells)}</small></span><span style="text-align:right">${r.length} rep${r.length===1?'':'s'}<br><small>${r.map(u=>esc(u.first)).join(', ')||'—'}</small></span></div>`}).join('')}</div></div>`}
+
+function tApps(el){el.innerHTML=`<div class="tw"><table class="tbl"><thead><tr><th>Name</th><th>Mobile</th><th>Based</th><th>Experience</th><th>Best time</th><th>Applied</th><th>Status</th></tr></thead><tbody>${D.apps.map(a=>`<tr><td><b>${esc(a.first)} ${esc(a.last)}</b><small>${esc(a.email)}</small>${a.note?`<small>“${esc(a.note)}”</small>`:''}</td><td><a href="tel:${esc(a.mobile.replace(/\s/g,''))}">${esc(a.mobile)}</a></td><td>${esc(a.based)}</td><td>${esc(a.exp)}</td><td>${esc(a.time)}</td><td>${fdate(a.date)}</td><td>${a.status==='Login made'?'<span class="pill g">Login made</span>':sel(['New','Called','Accepted','Not a fit'],a.status,`data-app="${a.id}" aria-label="Status"`)}${a.status==='Accepted'?` <button class="btn btn-accent" data-mk="${a.id}" style="margin-top:6px">Make login</button>`:''}</td></tr>`).join('')||'<tr><td colspan="7">No applications yet.</td></tr>'}</tbody></table></div>`;
+ $$('[data-app]',el).forEach(s=>s.onchange=()=>{D.apps.find(a=>a.id===s.dataset.app).status=s.value;vAdmin()});
+ $$('[data-mk]',el).forEach(b=>b.onclick=()=>{const a=D.apps.find(x=>x.id===b.dataset.mk);prefill={first:a.first,last:a.last,email:a.email,app:a.id};tab='team';vAdmin()})}
+
+function tBiz(el){el.innerHTML=`<div class="tw"><table class="tbl"><thead><tr><th>Business</th><th>Contact</th><th>Sells / buyers</th><th>Price</th><th>Commission</th><th>Reps</th><th>Sent</th><th>Status</th></tr></thead><tbody>${D.biz.map(b=>`<tr><td><b>${esc(b.bname)}</b>${b.web?`<small>${esc(b.web)}</small>`:''}${b.note?`<small>“${esc(b.note)}”</small>`:''}</td><td>${esc(b.first)} ${esc(b.last)}<small>${esc(b.phone)}</small><small>${esc(b.email)}</small></td><td>${esc(b.sells)}<small>${esc(b.buyers)}</small></td><td>${gbp(b.price)}</td><td>${b.comm?gbp(b.comm):'—'}</td><td>${esc(b.reps)}</td><td>${fdate(b.date)}</td><td>${b.status==='Partner added'?'<span class="pill g">Partner added</span>':sel(['New','Called','Agreed','Not a fit'],b.status,`data-biz="${b.id}" aria-label="Status"`)}${b.status==='Agreed'?` <button class="btn btn-accent" data-ap="${b.id}" style="margin-top:6px">Add as partner</button>`:''}</td></tr>`).join('')}</tbody></table></div>`;
+ $$('[data-biz]',el).forEach(s=>s.onchange=()=>{D.biz.find(b=>b.id===s.dataset.biz).status=s.value;vAdmin()});
+ $$('[data-ap]',el).forEach(x=>x.onclick=()=>{const b=D.biz.find(y=>y.id===x.dataset.ap);D.partners.push({id:'p'+uid++,name:b.bname,sells:b.sells,comm:b.comm||0,start:today(),note:'From business enquiry',status:'Active',contact:`${b.first} ${b.last}, ${b.phone}`});b.status='Partner added';toast(b.bname+' added as a partner');vAdmin()})}
+
+function tTeam(el){const pf=prefill;const open=!!pf.email;
+ el.innerHTML=`<div class="bar"><h3 style="font-weight:700">Team</h3><button class="btn btn-ink btn-sm" id="tg">+ Create a login</button></div>
+ <div class="addbox${open?' on':''}" id="ab"><form id="cf" novalidate><div class="grid">${field('fn','First name',{val:pf.first})}${field('ln','Last name',{val:pf.last})}${field('em','Email',{type:'email',val:pf.email})}${field('pw','Starting password',{type:'password',min:8,hint:'(8+ characters)'})}
+ ${field('role','Role',{type:'select',opts:ROLES,val:'Rep'})}<div class="f"><label for="pt">Sells for</label>${sel(D.partners.map(p=>[p.id,p.name]),'p1','id="pt" name="pt"')}</div>${field('cm','Commission per sale (£)',{val:'260',im:'decimal'})}<button class="btn btn-accent" type="submit">Create login</button></div></form></div>
+ <div class="tw"><table class="tbl"><thead><tr><th>Name</th><th>Role</th><th>Sells for</th><th>Status</th><th>Previews</th><th>Sales</th><th>Earned</th><th>To pay</th><th>Joined</th><th></th></tr></thead><tbody>${D.users.filter(u=>!u.admin).map(u=>{const s=statsFor(u);return`<tr><td><b>${esc(u.first)} ${esc(u.last)}</b><small>${esc(u.email)}</small></td><td>${sel(ROLES,u.role,`data-role="${u.id}" aria-label="Role"`)}</td><td>${sel(D.partners.map(p=>[p.id,p.name]),u.partner,`data-pt="${u.id}" aria-label="Sells for"`)}</td><td><span class="pill ${pillFor(u.status)}">${u.status}</span></td><td>${u.previews}</td><td>${s.sales}</td><td>${gbp(s.earned)}</td><td>${gbp(s.due)}</td><td>${fdate(u.joined)}</td><td style="white-space:nowrap"><button class="btn btn-line" data-pz="${u.id}">${u.status==='Active'?'Pause':'Reactivate'}</button> <button class="btn btn-line" data-va="${u.id}">View as</button></td></tr>`}).join('')}</tbody></table></div>`;
+ $('#tg').onclick=()=>$('#ab').classList.toggle('on');
+ $('#cf').onsubmit=e=>{e.preventDefault();const f=e.target;if(!validate(f))return;const em=val(f,'em').toLowerCase();if(D.users.some(u=>u.email.toLowerCase()===em)){const ff=$('#em').closest('.f');ff.classList.add('bad');ff.querySelector('.err').textContent='There\'s already a login for this email.';return}
+  D.users.push({id:'u'+uid++,first:val(f,'fn'),last:val(f,'ln'),email:em,pw:f.elements.pw.value,role:val(f,'role'),partner:f.elements.pt.value,comm:+val(f,'cm')||260,status:'Active',previews:0,joined:today()});
+  if(pf.app){D.apps.find(a=>a.id===pf.app).status='Login made'}prefill={};toast('Login created for '+val(f,'fn'));vAdmin()};
+ $$('[data-role]',el).forEach(s=>s.onchange=()=>{U(s.dataset.role).role=s.value;toast('Role updated')});
+ $$('[data-pt]',el).forEach(s=>s.onchange=()=>{U(s.dataset.pt).partner=s.value;toast('Partner updated')});
+ $$('[data-pz]',el).forEach(b=>b.onclick=()=>{const u=U(b.dataset.pz);u.status=u.status==='Active'?'Paused':'Active';vAdmin()});
+ $$('[data-va]',el).forEach(b=>b.onclick=()=>{viewAs=b.dataset.va;tab='as';vAdmin()})}
+
+function tPartners(el){el.innerHTML=`<div class="bar"><h3 style="font-weight:700">Partners</h3><button class="btn btn-ink btn-sm" id="tg">+ Add a partner</button></div>
+ <div class="addbox" id="ab"><form id="pf" novalidate><div class="grid">${field('pn','Business name')}${field('ps','What reps sell')}${field('pc','Rep commission (£)',{im:'decimal'})}<button class="btn btn-accent" type="submit">Add partner</button></div></form></div>
+ <div class="tw"><table class="tbl"><thead><tr><th>Partner</th><th>Reps sell</th><th>Commission</th><th>Started</th><th>Status</th><th>Reps</th></tr></thead><tbody>${D.partners.map(p=>`<tr><td><b>${esc(p.name)}</b><small>${esc(p.note)}</small>${p.contact?`<small>${esc(p.contact)}</small>`:''}</td><td>${esc(p.sells)}</td><td>${gbp(p.comm)} per sale</td><td>${fdate(p.start)}</td><td><span class="pill g">${p.status}</span></td><td>${D.users.filter(u=>!u.admin&&u.partner===p.id).length}</td></tr>`).join('')}</tbody></table></div>`;
+ $('#tg').onclick=()=>$('#ab').classList.toggle('on');
+ $('#pf').onsubmit=e=>{e.preventDefault();const f=e.target;if(!validate(f))return;D.partners.push({id:'p'+uid++,name:val(f,'pn'),sells:val(f,'ps'),comm:+val(f,'pc').replace(/[^\d.]/g,'')||0,start:today(),note:'',status:'Active',contact:''});toast('Partner added');vAdmin()}}
+
+function tSales(el){const reps=D.users.filter(u=>!u.admin);el.innerHTML=`<div class="bar"><h3 style="font-weight:700">Sales</h3><button class="btn btn-ink btn-sm" id="tg">+ Log a sale</button></div>
+ <div class="addbox" id="ab"><form id="sf" novalidate><div class="grid"><div class="f"><label for="sr">Rep</label>${sel(reps.map(u=>[u.id,u.first+' '+u.last]),reps[0]?.id,'id="sr" name="sr"')}</div>${field('sc','Customer')}${field('sa','Amount (£)',{val:'500',im:'decimal'})}<button class="btn btn-accent" type="submit">Log sale</button></div></form></div>
+ <div class="tw"><table class="tbl"><thead><tr><th>Date</th><th>Rep</th><th>Partner</th><th>Customer</th><th>Sale</th><th>Commission</th><th>Status</th></tr></thead><tbody>${[...D.sales].sort((a,b)=>b.date.localeCompare(a.date)).map(s=>{const u=U(s.rep);return`<tr><td>${fdate(s.date)}</td><td>${esc(u.first)} ${esc(u.last[0]||'')}.</td><td>${esc(P(u.partner).name)}</td><td>${esc(s.cust)}</td><td>${gbp(s.amt)}</td><td>${s.status==='Refunded'?'<s>'+gbp(commOf(s))+'</s>':gbp(commOf(s))}</td><td>${sel(['Pending','Cleared','Paid out','Refunded'],s.status,`data-ss="${s.id}" aria-label="Status"`)}</td></tr>`}).join('')}</tbody></table></div>
+ <p class="small" style="margin-top:12px">Pending turns Cleared after the 14-day refund window. Mark Paid out once the rep is paid. Refunded sales don't count.</p>`;
+ $('#tg').onclick=()=>$('#ab').classList.toggle('on');
+ $('#sf').onsubmit=e=>{e.preventDefault();const f=e.target;if(!validate(f))return;D.sales.push({id:'s'+uid++,date:today(),rep:f.elements.sr.value,cust:val(f,'sc'),amt:+val(f,'sa').replace(/[^\d.]/g,'')||0,status:'Pending'});toast('Sale logged');vAdmin()};
+ $$('[data-ss]',el).forEach(s=>s.onchange=()=>{D.sales.find(x=>x.id===s.dataset.ss).status=s.value;vAdmin()})}
+
+function tTraining(el){el.innerHTML=`<div class="bar"><h3 style="font-weight:700">Training</h3><button class="btn btn-ink btn-sm" id="tg">+ Add training</button></div>
+ <div class="addbox" id="ab"><form id="tf" novalidate><div class="grid">${field('tw','Who sees it',{type:'select',opts:['All',...ROLES],val:'All'})}${field('tt','Title')}${field('ty','Type',{type:'select',opts:['Doc','Deck','Video','Link'],val:'Doc'})}<button class="btn btn-accent" type="submit">Add</button></div></form></div>
+ <div class="tw"><table class="tbl"><thead><tr><th>Title</th><th>Who sees it</th><th>Type</th></tr></thead><tbody>${D.training.map(t=>`<tr><td><b>${esc(t.title)}</b></td><td>${t.who==='All'?'Everyone':t.who+' and up'}</td><td>${t.type}</td></tr>`).join('')}</tbody></table></div>
+ <p class="small" style="margin-top:12px">Each role sees its own items and everything below it. In the real build each item links to its Google Drive file.</p>`;
+ $('#tg').onclick=()=>$('#ab').classList.toggle('on');
+ $('#tf').onsubmit=e=>{e.preventDefault();const f=e.target;if(!validate(f))return;D.training.push({id:'t'+uid++,title:val(f,'tt'),who:val(f,'tw'),type:val(f,'ty')});toast('Training added');vAdmin()}}
+
+function tAs(el){const reps=D.users.filter(u=>!u.admin);if(!viewAs||!reps.some(u=>u.id===viewAs))viewAs=reps[0]?.id;
+ el.innerHTML=`<div class="bar"><div class="f" style="min-width:240px"><label for="vs">Preview the dashboard of</label>${sel(reps.map(u=>[u.id,u.first+' '+u.last+' ('+u.role+')']),viewAs,'id="vs"')}</div></div><div class="card" style="background:var(--stone)" id="vd"></div>`;
+ $('#vs').onchange=e=>{viewAs=e.target.value;tAs(el)};dashInto($('#vd'),U(viewAs))}
+
+function dashInto(el,u){const s=statsFor(u),b=board(),rk=b.findIndex(x=>x.u.id===u.id),onb=rk>=0&&b[rk].sales>0;
+ const tr=D.training.filter(t=>RANK[t.who]<=RANK[u.role]);
+ el.innerHTML=`<div class="dash"><h2 style="font-size:2rem">Hi ${esc(u.first)}</h2><p class="small" style="margin-top:4px">${u.role} · selling for ${esc(P(u.partner).name)}</p>
+ <div class="kpis" style="margin-top:20px"><div class="kpi"><small>Sales</small><b>${s.sales}</b><span>all time</span></div><div class="kpi"><small>Previews booked</small><b>${u.previews}</b><span>from your call list</span></div><div class="kpi"><small>Earned</small><b>${gbp(s.paid)}</b><span>paid · ${gbp(s.due)} to come</span></div><div class="kpi"><small>Leaderboard</small><b>${onb?'#'+(rk+1):'—'}</b><span>${onb?'of '+b.length+' reps':'make a sale to get on it'}</span></div></div>
+ <div class="panels"><div><h3 style="font-weight:700;margin-bottom:10px">Your training</h3><div class="train">${tr.map(t=>`<a href="#" data-tr>${esc(t.title)}<span class="pill">${t.type}</span></a>`).join('')}</div></div>
+ <div><h3 style="font-weight:700;margin-bottom:10px">The leaderboard</h3><div class="tw"><table class="tbl"><tbody>${b.map((x,i)=>`<tr${x.u.id===u.id?' class="me"':''}><td style="width:40px"><b>${i+1}</b></td><td>${esc(x.u.first)} ${esc((x.u.last||'')[0]||'')}.<small>${x.u.role}</small></td><td style="text-align:right">${x.sales} sales<small>${x.u.previews} previews</small></td></tr>`).join('')}</tbody></table></div></div></div></div>`;
+ $$('[data-tr]',el).forEach(a=>a.onclick=e=>{e.preventDefault();toast('In the real build this opens the Google Drive file')})}
+
+function vDash(){if(me.admin){location.hash='admin';return}pv.innerHTML='<div id="dd"></div>';dashInto($('#dd'),me)}
+
+route();
 })();
 </script>
 </body>

@@ -228,6 +228,35 @@ body.in footer{display:none}
 .ms-vnav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .ms-vnav .ms-btn.ghost{max-width:46%;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:820px){.ms-frame{padding:6px;border-radius:16px}.ms-frame iframe{height:70vh}.ms-vnav .ms-btn{flex:1;max-width:none}}
+.ms-lesson{min-height:200px}
+.ms-load{display:flex;align-items:center;justify-content:center;gap:6px;padding:60px 20px;color:var(--muted);font-size:14px}
+.ms-load i{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:msb 1s infinite ease-in-out}.ms-load i:nth-child(2){animation-delay:.15s}.ms-load i:nth-child(3){animation-delay:.3s}.ms-load span{margin-left:8px}
+@keyframes msb{0%,80%,100%{opacity:.25;transform:scale(.8)}40%{opacity:1;transform:none}}
+.ms-doc{background:#fff;border:1px solid #E1E6ED;border-radius:22px;padding:clamp(22px,4vw,48px);font-size:16px;line-height:1.7;color:#24364F}
+.ms-doc h1{font-size:clamp(26px,3.4vw,34px);margin:0 0 14px;line-height:1.15}
+.ms-doc h2{font-size:22px;margin:34px 0 10px;padding-top:22px;border-top:1px solid #EEF1F5}
+.ms-doc h2:first-child{border:0;padding:0;margin-top:0}
+.ms-doc h3{font-size:18px;margin:24px 0 8px;color:var(--accent-dark)}.ms-doc h4{font-size:16px;margin:18px 0 6px}
+.ms-doc p{margin:0 0 12px}.ms-doc b{color:var(--ink)}
+.ms-doc ul,.ms-doc ol{margin:0 0 14px;padding-left:22px}.ms-doc li{margin:6px 0}.ms-doc li.n1{margin-left:22px}.ms-doc li.n2{margin-left:44px}
+.ms-doc ol{counter-reset:o;list-style:none;padding-left:0}.ms-doc ol>li{counter-increment:o;position:relative;padding-left:38px}
+.ms-doc ol>li::before{content:counter(o);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:#FFF1EA;color:var(--accent);font:700 13px/26px var(--head);text-align:center}
+.ms-doc ul>li::marker{color:var(--accent)}
+.ms-doc hr{border:0;border-top:1px solid #EEF1F5;margin:26px 0}
+.ms-tw{overflow-x:auto;margin:10px 0 18px;border:1px solid #E1E6ED;border-radius:14px}
+.ms-doc table{min-width:0;font-size:14px}.ms-doc th{background:#0E2138;color:#fff;letter-spacing:0;text-transform:none;font-size:13px}.ms-doc td{vertical-align:top}
+.ms-deck{display:grid;gap:12px}
+.ms-stage{position:relative;background:#0E2138;border-radius:22px;padding:10px;aspect-ratio:16/9.6;display:grid;place-items:center;overflow:hidden;box-shadow:0 30px 60px -30px rgba(14,33,56,.5);user-select:none}
+.ms-stage img{width:100%;height:100%;object-fit:contain;border-radius:14px;animation:msf .35s ease}
+@keyframes msf{from{opacity:.3}to{opacity:1}}
+.ms-stage .ms-load{position:absolute;inset:0;color:#C3CEDC}
+.ms-arrow{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:var(--ink);font:400 30px/1 var(--body);cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.25);display:grid;place-items:center;padding-bottom:4px}
+.ms-arrow.l{left:18px}.ms-arrow.r{right:18px}.ms-arrow:disabled{opacity:0;pointer-events:none}
+.ms-dbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:0 4px}
+.ms-dbar span{font-size:13px;font-weight:600;color:var(--soft)}
+.ms-dots{display:flex;gap:6px;flex-wrap:wrap}.ms-dots button{width:26px;height:6px;border-radius:999px;border:0;background:#D6DCE4;cursor:pointer;padding:0}.ms-dots button.seen{background:#F3B79C}.ms-dots button.on{background:var(--accent);width:40px}
+.ms-notes{background:#fff;border:1px solid #E1E6ED;border-left:4px solid var(--accent);border-radius:16px;padding:16px 18px}.ms-notes small{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}.ms-notes p{margin:6px 0 0;color:var(--soft);white-space:pre-line}
+@media(max-width:820px){.ms-stage{padding:4px;border-radius:14px}.ms-arrow{width:38px;height:38px;font-size:24px}.ms-arrow.l{left:8px}.ms-arrow.r{right:8px}.ms-doc{border-radius:16px}}
 @media(max-width:1000px){.ms-stats{grid-template-columns:1fr 1fr}.ms-two{grid-template-columns:1fr}.ms-hero{grid-template-columns:1fr}.ms-card{justify-self:start;transform:none}}
 @media(max-width:820px){
   .ms-app,.ms-app.preview{grid-template-columns:1fr}
@@ -543,8 +572,7 @@ body.in footer{display:none}
     var vIdx = viewing ? open.indexOf(viewing) : -1, vNext = vIdx > -1 ? open[vIdx + 1] : null, vPrev = vIdx > 0 ? open[vIdx - 1] : null;
     var views = {
       viewer: viewing ? '<div class="ms-vhd"><button class="ms-link back" data-go="tasks">← Back to the Academy</button><div class="ms-vtop"><div><p class="ms-kick dark">Module ' + (vIdx + 1) + ' of ' + open.length + ' · ' + esc(viewing.type || 'Link') + '</p><h2>' + esc(viewing.title) + '</h2><p class="ms-lead">' + esc(about(viewing)) + '</p></div><button class="ms-check big' + (viewing.done ? ' on' : '') + '" data-done="' + esc(viewing.title) + '">' + ICON.tick + '<span>' + (viewing.done ? 'Completed' : 'Mark complete') + '</span></button></div></div>' +
-        (embed(viewing.link) ? '<div class="ms-frame"><iframe src="' + esc(embed(viewing.link)) + '" title="' + esc(viewing.title) + '" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe></div><p class="ms-fnote">Not loading? You may need to be signed in to Google with the email you joined with. <a href="' + esc(viewing.link) + '" target="_blank" rel="noopener">Open it in a new tab</a>.</p>'
-          : '<div class="ms-empty">This module opens on another site. <a class="ms-btn acc" style="margin-left:10px" href="' + esc(viewing.link) + '" target="_blank" rel="noopener">Open it →</a></div>') +
+        '<div id="ms-lesson" class="ms-lesson"><div class="ms-load"><i></i><i></i><i></i><span>Loading module…</span></div></div>' +
         '<div class="ms-vnav">' + (vPrev ? '<button class="ms-btn ghost" data-view="' + esc(vPrev.title) + '">← ' + esc(vPrev.title) + '</button>' : '<span></span>') + (vNext ? '<button class="ms-btn acc" data-view="' + esc(vNext.title) + '" data-complete="' + esc(viewing.title) + '">' + (viewing.done ? 'Next module →' : 'Complete and continue →') + '</button>' : '<button class="ms-btn acc" data-go="tasks" data-complete="' + esc(viewing.title) + '">' + (viewing.done ? 'Back to the Academy' : 'Complete and finish ✓') + '</button>') + '</div>' : '',
       home:
         '<div class="ms-hero"><div class="ms-hgrid"></div><div class="ms-hl"><p class="ms-kick">' + greet + '</p><h1>Welcome back, ' + esc(first) + '.</h1><p class="ms-sub">' + (next.length ? 'You have <b>' + next.length + ' Academy module' + (next.length === 1 ? '' : 's') + '</b> to complete. Up next: <b>' + esc(next[0].title) + '</b>.' : (open.length ? 'You have completed every module. Time to get on the phones.' : 'Your Academy modules will appear here soon.')) + '</p>' +
@@ -570,6 +598,7 @@ body.in footer{display:none}
     var nav = NAV.map(function (x) { return '<button class="ms-nav' + (repTab === x[0] ? ' on' : '') + '" data-go="' + x[0] + '"' + (repTab === x[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg><span>' + x[1] + '</span>' + (x[0] === 'tasks' && next.length ? '<em>' + next.length + '</em>' : '') + '</button>'; }).join('');
     el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab === 'tasks' && viewing ? 'viewer' : repTab] + '</div></div>';
     el.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.complete) complete(b.dataset.complete); repView = null; repTab = b.dataset.go; renderRep(m, el, preview); try { el.querySelector('.ms-main').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); } catch (e) {} }); });
+    if (repTab === 'tasks' && viewing) loadLesson(m, viewing, el, preview);
     function complete(title) {
       var t = m.training.filter(function (x) { return x.title === title; })[0]; if (!t || t.done) return;
       t.done = true; if (!preview) api('markDone', { title: t.title, done: true });
@@ -583,6 +612,64 @@ body.in footer{display:none}
         api('markDone', { title: t.title, done: t.done }).then(function (r) { if (!r.ok) { t.done = !t.done; renderRep(m, el, preview); } });
       });
     });
+  }
+
+  var LESSONS = {};
+  function lessonHTML(r) {
+    if (r.kind === 'doc') {
+      var h = '', list = null;
+      r.blocks.forEach(function (b) {
+        if (b.t !== 'li' && list) { h += '</' + list + '>'; list = null; }
+        if (b.t === 'li') { var tag = b.o ? 'ol' : 'ul'; if (list !== tag) { if (list) h += '</' + list + '>'; h += '<' + tag + '>'; list = tag; } h += '<li class="n' + Math.min(b.n || 0, 3) + '">' + b.h + '</li>'; }
+        else if (b.t === 'table') h += '<div class="ms-tw"><table>' + b.rows.map(function (row, i) { return '<tr>' + row.map(function (c) { return i === 0 ? '<th>' + c + '</th>' : '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</table></div>';
+        else if (b.t === 'hr') h += '<hr>';
+        else h += '<' + b.t + '>' + b.h + '</' + b.t + '>';
+      });
+      if (list) h += '</' + list + '>';
+      return '<article class="ms-doc">' + h + '</article>';
+    }
+    if (r.kind === 'deck') {
+      return '<div class="ms-deck"><div class="ms-stage"><img id="ms-slide" alt="" hidden><div class="ms-load" id="ms-sload"><i></i><i></i><i></i><span>Loading slide…</span></div>' +
+        '<button class="ms-arrow l" id="ms-prev" aria-label="Previous slide">‹</button><button class="ms-arrow r" id="ms-next" aria-label="Next slide">›</button></div>' +
+        '<div class="ms-dbar"><span id="ms-count"></span><div class="ms-dots" id="ms-dots">' + Array.apply(null, Array(r.count)).map(function (_, i) { return '<button data-s="' + i + '" aria-label="Slide ' + (i + 1) + '"></button>'; }).join('') + '</div></div>' +
+        '<div class="ms-notes" id="ms-notes" hidden><small>Coach\'s notes</small><p></p></div></div>';
+    }
+    return '<div class="ms-empty">This module lives on another site. <a class="ms-btn acc" style="margin-left:10px" href="' + esc(r.link) + '" target="_blank" rel="noopener">Open it →</a></div>';
+  }
+  function loadLesson(m, t, el, preview) {
+    var box = el.querySelector('#ms-lesson'); if (!box) return;
+    var show = function (r) {
+      if (!r.ok) { box.innerHTML = '<div class="ms-empty">' + esc(r.error || 'Could not load this module.') + '</div>'; return; }
+      box.innerHTML = lessonHTML(r);
+      if (r.kind === 'deck') deckPlayer(t, r, box);
+    };
+    if (LESSONS[t.title]) return show(LESSONS[t.title]);
+    api('module', { title: t.title }).then(function (r) { if (r.ok) LESSONS[t.title] = r; show(r); });
+  }
+  function deckPlayer(t, r, box) {
+    var cur = 0, imgs = (r.imgs = r.imgs || {}), img = box.querySelector('#ms-slide'), ld = box.querySelector('#ms-sload');
+    function fetchSlide(n) {
+      if (imgs[n] || n < 0 || n >= r.count) return Promise.resolve(imgs[n]);
+      if (imgs['p' + n]) return imgs['p' + n];
+      return (imgs['p' + n] = api('slide', { title: t.title, n: n }).then(function (x) { if (x.ok) imgs[n] = x.img; return imgs[n]; }));
+    }
+    function go(n) {
+      cur = Math.max(0, Math.min(r.count - 1, n));
+      box.querySelector('#ms-count').textContent = 'Slide ' + (cur + 1) + ' of ' + r.count;
+      box.querySelectorAll('#ms-dots button').forEach(function (d, i) { d.className = i === cur ? 'on' : i < cur ? 'seen' : ''; });
+      box.querySelector('#ms-prev').disabled = cur === 0; box.querySelector('#ms-next').disabled = cur === r.count - 1;
+      var nt = (r.notes && r.notes[cur]) || '', nb = box.querySelector('#ms-notes'); nb.hidden = !nt; nb.querySelector('p').textContent = nt;
+      ld.hidden = !!imgs[cur]; if (!imgs[cur]) img.hidden = true;
+      var want = cur;
+      fetchSlide(cur).then(function (src) { if (want !== cur) return; if (src) { img.src = src; img.hidden = false; ld.hidden = true; img.alt = (r.texts && r.texts[cur] || '').split('\n')[0]; } else ld.querySelector('span').textContent = 'This slide could not load.'; fetchSlide(cur + 1); });
+    }
+    box.querySelector('#ms-prev').onclick = function () { go(cur - 1); };
+    box.querySelector('#ms-next').onclick = function () { go(cur + 1); };
+    box.querySelectorAll('#ms-dots button').forEach(function (d) { d.onclick = function () { go(+d.dataset.s); }; });
+    if (!window.__msKeys) { window.__msKeys = true; document.addEventListener('keydown', function (e) { var b = document.getElementById(e.key === 'ArrowRight' ? 'ms-next' : e.key === 'ArrowLeft' ? 'ms-prev' : ''); if (b && !b.disabled) b.click(); }); }
+    var sx = null; img.parentElement.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+    img.parentElement.addEventListener('touchend', function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1)); sx = null; });
+    go(0);
   }
   function repHTML(m, el) { renderRep(m, el || $('rep-app'), !!el); }
 

@@ -218,6 +218,16 @@ body.in footer{display:none}
 .ms-p{color:var(--soft);margin:8px 0 14px}
 .ms-q{border-top:1px solid #EEF1F5}.ms-q summary{cursor:pointer;padding:14px 0;font-weight:600;list-style:none}.ms-q summary::-webkit-details-marker{display:none}.ms-q summary::after{content:"+";float:right;color:var(--accent);font-size:20px;line-height:1}.ms-q[open] summary::after{content:"–"}.ms-q p{margin:0 0 14px;color:var(--soft)}
 .ms-empty{background:#fff;border:1px dashed #C9D2DD;border-radius:18px;padding:28px;text-align:center;color:var(--muted)}
+.ms-vhd{background:#fff;border:1px solid #E1E6ED;border-radius:22px;padding:20px 26px 26px}
+.ms-link.back{padding:4px 0 14px;color:var(--soft)}
+.ms-vtop{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}.ms-vtop h2{font-size:clamp(22px,3vw,30px);margin:6px 0}
+.ms-check.big{min-height:48px;padding:0 20px;font-size:15px}
+.ms-frame{background:#0E2138;border-radius:22px;padding:10px;box-shadow:0 30px 60px -30px rgba(14,33,56,.5)}
+.ms-frame iframe{display:block;width:100%;height:min(78vh,820px);border:0;border-radius:14px;background:#fff}
+.ms-fnote{margin:-8px 4px 0;font-size:13px;color:var(--muted)}
+.ms-vnav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ms-vnav .ms-btn.ghost{max-width:46%;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:820px){.ms-frame{padding:6px;border-radius:16px}.ms-frame iframe{height:70vh}.ms-vnav .ms-btn{flex:1;max-width:none}}
 @media(max-width:1000px){.ms-stats{grid-template-columns:1fr 1fr}.ms-two{grid-template-columns:1fr}.ms-hero{grid-template-columns:1fr}.ms-card{justify-self:start;transform:none}}
 @media(max-width:820px){
   .ms-app,.ms-app.preview{grid-template-columns:1fr}
@@ -479,11 +489,19 @@ body.in footer{display:none}
     tick: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-10"/></svg>'
   };
   var NAV = [['home', 'Home', '<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>'],
-             ['tasks', 'My tasks', '<path d="M9 11l3 3 8-8M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/>'],
+             ['tasks', 'Academy', '<path d="M9 11l3 3 8-8M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/>'],
              ['board', 'Leaderboard', '<path d="M4 20h4v-6H4zM10 20h4V9h-4zM16 20h4V4h-4z"/>'],
              ['pay', 'Earnings', '<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.7 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.6-.6-3-1.6M12 6v2M12 16v2"/>'],
              ['help', 'Help', '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/>']];
-  var repTab = 'home';
+  var repTab = 'home', repView = null;
+  function embed(u) {
+    u = String(u || ''); var mm;
+    if ((mm = u.match(/drive\.google\.com\/file\/d\/([\w-]+)/))) return 'https://drive.google.com/file/d/' + mm[1] + '/preview';
+    if ((mm = u.match(/docs\.google\.com\/(document|presentation|spreadsheets)\/d\/([\w-]+)/))) return 'https://docs.google.com/' + mm[1] + '/d/' + mm[2] + '/preview';
+    if ((mm = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{6,})/))) return 'https://www.youtube-nocookie.com/embed/' + mm[1];
+    if ((mm = u.match(/loom\.com\/share\/([\w-]+)/))) return 'https://www.loom.com/embed/' + mm[1];
+    return '';
+  }
   function ring(pct, size, label) {
     var r = (size - 10) / 2, c = 2 * Math.PI * r;
     return '<svg class="ms-ring" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true"><circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="8"/><circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="#FF6A2E" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + c + '" stroke-dashoffset="' + (c * (1 - pct)) + '" transform="rotate(-90 ' + size / 2 + ' ' + size / 2 + ')"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" fill="#fff" font-family="Space Grotesk" font-weight="700" font-size="' + size / 4.2 + '">' + label + '</text></svg>';
@@ -504,15 +522,15 @@ body.in footer{display:none}
       var cls = 'ms-task' + (t.done ? ' done' : '') + (t.locked ? ' locked' : '');
       var right = t.locked
         ? '<span class="ms-lockpill">' + ICON.lock + 'Unlocks at ' + esc(t.role) + '</span>'
-        : '<a class="ms-btn ghost" href="' + esc(t.link) + '" target="_blank" rel="noopener">Open</a><button class="ms-check' + (t.done ? ' on' : '') + '" data-done="' + esc(t.title) + '" aria-pressed="' + t.done + '" aria-label="Mark ' + esc(t.title) + ' as done">' + ICON.tick + '<span>' + (t.done ? 'Done' : 'Mark done') + '</span></button>';
-      return '<div class="' + cls + '"><div class="ms-ti">' + (t.locked ? ICON.lock : (ICON[t.type] || ICON.Link)) + '</div><div class="ms-tb"><div class="ms-tmeta"><span>Task ' + (i + 1) + '</span><span>' + esc(t.type || 'Link') + '</span>' + (t.role !== 'All' ? '<span>' + esc(t.role) + '</span>' : '<span>Everyone</span>') + '</div><h4>' + esc(t.title) + '</h4><p>' + esc(about(t)) + '</p></div><div class="ms-ta">' + right + '</div></div>';
+        : '<button class="ms-btn ghost" data-view="' + esc(t.title) + '">' + (t.done ? 'Review' : 'Start') + '</button><button class="ms-check' + (t.done ? ' on' : '') + '" data-done="' + esc(t.title) + '" aria-pressed="' + t.done + '" aria-label="Mark ' + esc(t.title) + ' as complete">' + ICON.tick + '<span>' + (t.done ? 'Complete' : 'Mark complete') + '</span></button>';
+      return '<div class="' + cls + '"><div class="ms-ti">' + (t.locked ? ICON.lock : (ICON[t.type] || ICON.Link)) + '</div><div class="ms-tb"><div class="ms-tmeta"><span>Module ' + (i + 1) + '</span><span>' + esc(t.type || 'Link') + '</span>' + (t.role !== 'All' ? '<span>' + esc(t.role) + '</span>' : '<span>Everyone</span>') + '</div><h4>' + esc(t.title) + '</h4><p>' + esc(about(t)) + '</p></div><div class="ms-ta">' + right + '</div></div>';
     }
     var groups = {};
     m.training.forEach(function (t) { var g = t.role === 'All' ? 'Start here' : t.role; (groups[g] = groups[g] || []).push(t); });
     var n = 0, tasksHTML = Object.keys(groups).map(function (g) {
       var items = groups[g], locked = items[0].locked;
-      return '<div class="ms-group"><div class="ms-ghd"><h3>' + esc(g) + (g === 'Start here' ? '' : ' training') + '</h3>' + (locked ? '<span class="ms-lockpill">' + ICON.lock + 'Reach ' + esc(g) + ' to unlock</span>' : '<span class="ms-count">' + items.filter(function (t) { return t.done; }).length + ' / ' + items.length + ' done</span>') + '</div>' + items.map(function (t) { return taskCard(t, n++); }).join('') + '</div>';
-    }).join('') || '<div class="ms-empty">No tasks yet. Harvey will add your training soon.</div>';
+      return '<div class="ms-group"><div class="ms-ghd"><h3>' + esc(g) + (g === 'Start here' ? '' : ' training') + '</h3>' + (locked ? '<span class="ms-lockpill">' + ICON.lock + 'Reach ' + esc(g) + ' to unlock</span>' : '<span class="ms-count">' + items.filter(function (t) { return t.done; }).length + ' / ' + items.length + ' complete</span>') + '</div>' + items.map(function (t) { return taskCard(t, n++); }).join('') + '</div>';
+    }).join('') || '<div class="ms-empty">No modules yet. Harvey will add your training soon.</div>';
 
     var podium = m.leaderboard.slice(0, 3), rest = m.leaderboard.slice(3);
     var boardHTML = m.leaderboard.length ? '<div class="ms-podium">' + [1, 0, 2].map(function (i) { var b = podium[i]; if (!b) return '<div></div>'; return '<div class="ms-pod p' + (i + 1) + (b.me ? ' me' : '') + '"><div class="ms-pav">' + esc((b.name || '?').charAt(0)) + '</div><b>' + esc(b.name) + '</b><small>' + esc(b.role) + '</small><div class="ms-pstep"><span>' + (i + 1) + '</span><em>' + b.sales + ' sales</em></div></div>'; }).join('') + '</div>' +
@@ -521,17 +539,23 @@ body.in footer{display:none}
 
     var ladderHTML = '<div class="ms-ladder">' + LADDER.map(function (r, i) { return '<div class="ms-rung' + (i < lvlIdx ? ' past' : i === lvlIdx ? ' now' : '') + '"><span>Level ' + (i + 1) + '</span><b>' + r + '</b>' + (i === lvlIdx ? '<em>You are here</em>' : '') + '</div>'; }).join('') + '</div>';
 
+    var viewing = repView && m.training.filter(function (x) { return x.title === repView && !x.locked; })[0];
+    var vIdx = viewing ? open.indexOf(viewing) : -1, vNext = vIdx > -1 ? open[vIdx + 1] : null, vPrev = vIdx > 0 ? open[vIdx - 1] : null;
     var views = {
+      viewer: viewing ? '<div class="ms-vhd"><button class="ms-link back" data-go="tasks">← Back to the Academy</button><div class="ms-vtop"><div><p class="ms-kick dark">Module ' + (vIdx + 1) + ' of ' + open.length + ' · ' + esc(viewing.type || 'Link') + '</p><h2>' + esc(viewing.title) + '</h2><p class="ms-lead">' + esc(about(viewing)) + '</p></div><button class="ms-check big' + (viewing.done ? ' on' : '') + '" data-done="' + esc(viewing.title) + '">' + ICON.tick + '<span>' + (viewing.done ? 'Completed' : 'Mark complete') + '</span></button></div></div>' +
+        (embed(viewing.link) ? '<div class="ms-frame"><iframe src="' + esc(embed(viewing.link)) + '" title="' + esc(viewing.title) + '" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe></div><p class="ms-fnote">Not loading? You may need to be signed in to Google with the email you joined with. <a href="' + esc(viewing.link) + '" target="_blank" rel="noopener">Open it in a new tab</a>.</p>'
+          : '<div class="ms-empty">This module opens on another site. <a class="ms-btn acc" style="margin-left:10px" href="' + esc(viewing.link) + '" target="_blank" rel="noopener">Open it →</a></div>') +
+        '<div class="ms-vnav">' + (vPrev ? '<button class="ms-btn ghost" data-view="' + esc(vPrev.title) + '">← ' + esc(vPrev.title) + '</button>' : '<span></span>') + (vNext ? '<button class="ms-btn acc" data-view="' + esc(vNext.title) + '" data-complete="' + esc(viewing.title) + '">' + (viewing.done ? 'Next module →' : 'Complete and continue →') + '</button>' : '<button class="ms-btn acc" data-go="tasks" data-complete="' + esc(viewing.title) + '">' + (viewing.done ? 'Back to the Academy' : 'Complete and finish ✓') + '</button>') + '</div>' : '',
       home:
-        '<div class="ms-hero"><div class="ms-hgrid"></div><div class="ms-hl"><p class="ms-kick">' + greet + '</p><h1>Welcome back, ' + esc(first) + '.</h1><p class="ms-sub">' + (next.length ? 'You have <b>' + next.length + ' task' + (next.length === 1 ? '' : 's') + '</b> waiting. Your next one: <b>' + esc(next[0].title) + '</b>.' : (open.length ? 'All your tasks are done. Time to get on the phones.' : 'Your training tasks will appear here soon.')) + '</p>' +
-          (next.length ? '<button class="ms-btn acc" data-go="tasks">Continue my tasks →</button>' : '<button class="ms-btn acc" data-go="board">See the leaderboard →</button>') + '</div>' +
+        '<div class="ms-hero"><div class="ms-hgrid"></div><div class="ms-hl"><p class="ms-kick">' + greet + '</p><h1>Welcome back, ' + esc(first) + '.</h1><p class="ms-sub">' + (next.length ? 'You have <b>' + next.length + ' Academy module' + (next.length === 1 ? '' : 's') + '</b> to complete. Up next: <b>' + esc(next[0].title) + '</b>.' : (open.length ? 'You have completed every module. Time to get on the phones.' : 'Your Academy modules will appear here soon.')) + '</p>' +
+          (next.length ? '<button class="ms-btn acc" data-go="tasks">Continue the Academy →</button>' : '<button class="ms-btn acc" data-go="board">See the leaderboard →</button>') + '</div>' +
           '<div class="ms-card"><div class="ms-cardtop"><span class="ms-cmark"><i></i><i></i><i></i></span><span>MAYSTONE</span></div><div class="ms-cname">' + esc(m.user.name || first) + '</div><div class="ms-crow"><div><small>Level</small><b>' + esc(m.user.role) + '</b></div><div><small>Member no.</small><b>' + memberNo + '</b></div><div><small>Since</small><b>' + esc(m.joined || '–') + '</b></div></div><div class="ms-cfoot">Selling for ' + esc(m.user.partner || 'Maystone') + '</div></div></div>' +
         '<div class="ms-stats"><div class="ms-stat"><small>Sales</small><b>' + m.mine.sales + '</b><span>all time</span></div><div class="ms-stat"><small>Previews booked</small><b>' + m.mine.previews + '</b><span>from your call list</span></div><div class="ms-stat"><small>Earned</small><b>' + money(earned) + '</b><span>' + money(m.mine.paidOut) + ' paid out so far</span></div><div class="ms-stat"><small>Leaderboard</small><b>' + (m.rank ? '#' + m.rank : '–') + '</b><span>' + (m.rank ? 'of ' + (m.boardSize || m.leaderboard.length) + ' reps' : 'make a sale to get on it') + '</span></div></div>' +
-        '<div class="ms-two"><div class="ms-panel dark"><div class="ms-phd"><h3>Your progress</h3><button class="ms-link" data-go="tasks">All tasks →</button></div><div class="ms-prog">' + ring(pct, 120, Math.round(pct * 100) + '%') + '<div><b>' + done + ' of ' + open.length + ' tasks done</b><p>' + (next.length ? 'Up next:' : 'Nice work. New tasks unlock as you level up.') + '</p>' + next.slice(0, 3).map(function (t) { return '<button class="ms-next" data-go="tasks"><span>' + (ICON[t.type] || ICON.Link) + '</span>' + esc(t.title) + '</button>'; }).join('') + '</div></div></div>' +
+        '<div class="ms-two"><div class="ms-panel dark"><div class="ms-phd"><h3>Maystone Academy</h3><button class="ms-link" data-go="tasks">All modules →</button></div><div class="ms-prog">' + ring(pct, 120, Math.round(pct * 100) + '%') + '<div><b>' + done + ' of ' + open.length + ' modules complete</b><p>' + (next.length ? 'Up next:' : 'Nice work. New modules unlock as you level up.') + '</p>' + next.slice(0, 3).map(function (t) { return '<button class="ms-next" data-view="' + esc(t.title) + '"><span>' + (ICON[t.type] || ICON.Link) + '</span>' + esc(t.title) + '</button>'; }).join('') + '</div></div></div>' +
         '<div class="ms-panel"><div class="ms-phd"><h3>Your level</h3></div>' + ladderHTML + '<div class="ms-nextlvl">' + (nx[0] ? '<small>Next level: <b>' + nx[0] + '</b></small>' : '') + '<p>' + nx[1] + '</p></div></div></div>' +
         '<div class="ms-panel"><div class="ms-phd"><h3>Top of the board</h3><button class="ms-link" data-go="board">Full leaderboard →</button></div>' + (m.leaderboard.slice(0, 5).map(function (b) { return '<div class="ms-lrow' + (b.me ? ' me' : '') + '"><span class="ms-lr">' + b.rank + '</span><span class="ms-ln"><b>' + esc(b.name) + (b.me ? ' (you)' : '') + '</b><small>' + esc(b.role) + '</small></span><span class="ms-lv"><b>' + b.sales + '</b><small>sales</small></span></div>'; }).join('') || '<div class="ms-empty">No sales on the board yet. Be the first.</div>') + '</div>',
       tasks:
-        '<div class="ms-phead"><div><p class="ms-kick dark">My tasks</p><h2>Your training, step by step.</h2><p class="ms-lead">Work through them in order. Open each one, then tick it off. New tasks unlock as you move up the ladder.</p></div><div class="ms-bigbar"><div class="ms-bartop"><b>' + done + ' / ' + open.length + '</b><span>' + Math.round(pct * 100) + '% complete</span></div><div class="ms-bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div></div></div>' + tasksHTML,
+        '<div class="ms-phead"><div><p class="ms-kick dark">Maystone Academy</p><h2>Your training, step by step.</h2><p class="ms-lead">Work through the modules in order. Each one opens right here. When you have finished it, mark it complete. New modules unlock as you move up the ladder.</p></div><div class="ms-bigbar"><div class="ms-bartop"><b>' + done + ' / ' + open.length + '</b><span>' + Math.round(pct * 100) + '% complete</span></div><div class="ms-bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div></div></div>' + tasksHTML,
       board:
         '<div class="ms-phead"><div><p class="ms-kick dark">Leaderboard</p><h2>Who is leading right now.</h2><p class="ms-lead">Ranked on sales, then previews booked. Updated every hour from the call lists. Top reps each month get first pick of new roles.</p></div></div>' + boardHTML,
       pay:
@@ -544,8 +568,13 @@ body.in footer{display:none}
         '<div class="ms-panel"><h3>Quick answers</h3><details class="ms-q"><summary>How do I get on the leaderboard?</summary><p>Book previews and make sales from your call list. The board updates every hour.</p></details><details class="ms-q"><summary>When do I get paid?</summary><p>Once a sale clears the customer\'s 14-day refund window, on the payday in your rep agreement.</p></details><details class="ms-q"><summary>How do I move up a level?</summary><p>Stay near the top of the board. Top Reps get first pick of new roles; Coaches train new reps and earn a bonus on their sales.</p></details><details class="ms-q"><summary>My login link expired.</summary><p>Go to maystone.uk/login and ask for a new one. Each link works once and lasts 30 minutes.</p></details></div>'
     };
     var nav = NAV.map(function (x) { return '<button class="ms-nav' + (repTab === x[0] ? ' on' : '') + '" data-go="' + x[0] + '"' + (repTab === x[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg><span>' + x[1] + '</span>' + (x[0] === 'tasks' && next.length ? '<em>' + next.length + '</em>' : '') + '</button>'; }).join('');
-    el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab] + '</div></div>';
-    el.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { repTab = b.dataset.go; renderRep(m, el, preview); try { el.querySelector('.ms-main').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); } catch (e) {} }); });
+    el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab === 'tasks' && viewing ? 'viewer' : repTab] + '</div></div>';
+    el.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.complete) complete(b.dataset.complete); repView = null; repTab = b.dataset.go; renderRep(m, el, preview); try { el.querySelector('.ms-main').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); } catch (e) {} }); });
+    function complete(title) {
+      var t = m.training.filter(function (x) { return x.title === title; })[0]; if (!t || t.done) return;
+      t.done = true; if (!preview) api('markDone', { title: t.title, done: true });
+    }
+    el.querySelectorAll('[data-view]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.complete) complete(b.dataset.complete); repTab = 'tasks'; repView = b.dataset.view; renderRep(m, el, preview); window.scrollTo(0, 0); }); });
     el.querySelectorAll('[data-done]').forEach(function (b) {
       b.addEventListener('click', function () {
         var t = m.training.filter(function (x) { return x.title === b.dataset.done; })[0]; if (!t) return;

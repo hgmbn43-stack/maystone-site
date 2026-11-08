@@ -30,6 +30,7 @@ var SHEETS = {
   Sessions: ['Session hash', 'Email', 'Expires', 'Created'],
   Applications: ['Date', 'First name', 'Last name', 'Email', 'Mobile', 'Based', 'Experience', 'Best time', 'Note', 'Status'],
   Enquiries: ['Date', 'First name', 'Last name', 'Business', 'Email', 'Phone', 'Website', 'What they sell', 'Who buys it', 'Sale price', 'Commission', 'Reps wanted', 'Note', 'Status'],
+  Progress: ['Email', 'Title', 'Done'],
   Log: ['Time', 'Who', 'Action', 'Details']
 };
 var ROLES = ['Rep', 'Top Rep', 'Coach', 'Team Lead', 'Admin'];
@@ -56,6 +57,7 @@ function doPost(e) {
     if (!me) return json_({ ok: false, error: 'Please log in again.', auth: false });
     if (a === 'me') return json_(mePayload_(me));
     if (a === 'logout') { endSession_(req.session); return json_({ ok: true }); }
+    if (a === 'markDone') { lock.waitLock(20000); return json_(markDone_(me, req.title, !!req.done)); }
     if (!isAdmin_(me)) return json_({ ok: false, error: 'Only the admin can do that.' });
     lock.waitLock(20000);
     if (a === 'adminOverview') return json_(adminOverview_());
@@ -73,6 +75,23 @@ function doPost(e) {
   } finally {
     try { lock.releaseLock(); } catch (e2) {}
   }
+}
+
+/* ---------------- task progress ---------------- */
+
+function progressFor_(email) {
+  var m = {}; if (!sheet_('Progress')) return m;
+  table_('Progress').forEach(function (r) { if (cleanEmail_(r.Email) === email) m[r.Title] = r.Done; });
+  return m;
+}
+
+function markDone_(me, title, done) {
+  title = str_(title, 200); if (!title) return { ok: false, error: 'Missing task.' };
+  ensureSheet_('Progress');
+  var sh = sheet_('Progress'), rows = sh.getDataRange().getValues();
+  for (var i = rows.length - 1; i >= 1; i--) if (cleanEmail_(rows[i][0]) === me.Email && rows[i][1] === title) sh.deleteRow(i + 1);
+  if (done) sh.appendRow([me.Email, title, new Date()]);
+  return { ok: true };
 }
 
 /* ---------------- public forms: Apply to join, Find reps ---------------- */
@@ -202,12 +221,14 @@ function mePayload_(u) {
   });
   var board = leaderboard_(act, sales), rank = 0;
   board.forEach(function (b, i) { if (b.email === u.Email) rank = i + 1; });
-  var lvl = LEVEL[u.Role] || 1;
-  var training = table_('Training').filter(function (t) { return (LEVEL[t.Role] || 0) <= lvl; })
+  var lvl = LEVEL[u.Role] || 1, done = progressFor_(u.Email);
+  var training = table_('Training')
     .sort(function (x, y) { return (LEVEL[x.Role] || 0) - (LEVEL[y.Role] || 0) || Number(x.Order || 0) - Number(y.Order || 0); })
-    .map(function (t) { return { role: t.Role, title: t.Title, link: t.Link, type: t.Type }; });
+    .map(function (t) { var locked = (LEVEL[t.Role] || 0) > lvl; return { role: t.Role, title: t.Title, link: locked ? '' : t.Link, type: t.Type, about: t.About || '', locked: locked, done: !!done[t.Title] }; });
+  var users = table_('Users'), memberNo = 0;
+  users.forEach(function (x, i) { if (cleanEmail_(x.Email) === u.Email) memberNo = i + 1; });
   return {
-    ok: true, user: publicUser_(u), admin: isAdmin_(u), mine: mine, rank: rank, training: training,
+    ok: true, user: publicUser_(u), admin: isAdmin_(u), mine: mine, rank: rank, training: training, joined: fmt_(u.Joined), memberNo: memberNo, boardSize: board.length,
     leaderboard: board.slice(0, 15).map(function (b, i) { return { rank: i + 1, name: b.name, role: b.role, previews: b.previews, sales: b.sales, me: b.email === u.Email }; })
   };
 }

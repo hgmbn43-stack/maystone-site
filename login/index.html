@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Team login – Maystone Sales Group</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#142D4C">
+<style>
+@font-face{font-family:"Montserrat";src:url("../fonts/montserrat-latin-800-normal.woff2") format("woff2");font-weight:800;font-display:swap}
+@font-face{font-family:"Montserrat";src:url("../fonts/montserrat-latin-600-normal.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Space Grotesk";src:url("../fonts/space-grotesk-latin-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Space Grotesk";src:url("../fonts/space-grotesk-latin-500-normal.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Inter";src:url("../fonts/inter-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Inter";src:url("../fonts/inter-latin-500-normal.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Inter";src:url("../fonts/inter-latin-600-normal.woff2") format("woff2");font-weight:600;font-display:swap}
+:root{color-scheme:light;--ink:#142D4C;--soft:#4A5A70;--muted:#667385;--label:#6E675B;--bg:#FFFFFF;--stone:#F6F3EE;--line:#E4DED3;--line-2:#CFC6B6;--chip:#E9E3D8;--accent:#D94A12;--accent-dark:#B23A0A;--good:#1E7A4B;--warn:#9A5B00;--bad:#B42318;
+  --head:"Space Grotesk",system-ui,sans-serif;--body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--logo:Montserrat,system-ui,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--stone);color:var(--ink);font:400 16px/1.5 var(--body)}
+a{color:var(--accent)}a:hover{color:var(--accent-dark)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+[hidden]{display:none!important}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+header.top{background:#FFFFFF;border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:72px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.brand:hover{color:var(--ink)}
+.mark{display:flex;align-items:flex-end;gap:2px}
+.mark span{display:flex;flex-direction:column-reverse;gap:2px}
+.mark i{display:block;width:12px;height:7px;border-radius:2px;background:var(--ink)}
+.mark i.a{background:var(--accent)}
+.word{display:flex;flex-direction:column;line-height:1}
+.word b{font-family:var(--logo);font-weight:800;font-size:19px;letter-spacing:1.5px}
+.word small{font-family:var(--logo);font-weight:600;font-size:9px;letter-spacing:3px;color:#8C8577;margin-top:4px}
+.who{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--soft)}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--ink);color:#FFFFFF}
+.chip.lt{background:var(--chip);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 20px;border-radius:999px;border:1px solid transparent;font:600 15px/1 var(--body);cursor:pointer;text-decoration:none}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn.acc{background:var(--accent);color:#FFFFFF}
+.btn.acc:hover{background:var(--accent-dark);color:#FFFFFF}
+.btn.out{background:#FFFFFF;border-color:var(--line-2);color:var(--ink)}
+.btn.out:hover{border-color:var(--ink)}
+.btn.sm{min-height:36px;padding:7px 14px;font-size:13px}
+h1,h2,h3{margin:0;font-family:var(--head);font-weight:700;letter-spacing:-.5px}
+h1{font-size:clamp(30px,4vw,42px);line-height:1.1}
+h2{font-size:24px}
+h3{font-size:18px}
+main{padding-block:32px 64px}
+.panel{background:#FFFFFF;border:1px solid var(--line);border-radius:20px;padding:24px}
+.grid{display:grid;gap:16px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.tile{background:#FFFFFF;border:1px solid var(--line);border-radius:18px;padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.tile span{font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.tile b{font-family:var(--head);font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile small{color:var(--soft);font-size:13px}
+.kick{margin:0;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--label)}
+.msg{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:15px}
+.msg.ok{background:#E8F5EE;color:#14532D}
+.msg.err{background:#FDECEA;color:#7A1A12}
+label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;color:var(--ink)}
+input,select,textarea{font:400 16px/1.4 var(--body);color:var(--ink);background:#FFFFFF;border:1px solid var(--line-2);border-radius:12px;padding:11px 12px;min-height:44px;width:100%}
+textarea{min-height:70px;resize:vertical}
+.check{flex-direction:row;align-items:center;gap:10px;font-weight:500}
+.check input{width:20px;height:20px;min-height:0}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;align-items:end}
+.form .wide{grid-column:1/-1}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 18px}
+.tabs button{font:600 14px/1 var(--body);padding:10px 16px;border-radius:999px;border:1px solid var(--line-2);background:#FFFFFF;color:var(--soft);cursor:pointer;min-height:40px}
+.tabs button[aria-selected="true"]{background:var(--ink);color:#FFFFFF;border-color:var(--ink)}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:#FFFFFF}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--stone)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+td small{display:block;color:var(--muted)}
+tr.me td{background:#FFF1EA}
+.st{font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--chip)}
+.st.Active,.st.Cleared{background:#E8F5EE;color:#14532D}
+.st.Paused,.st.Pending{background:#FFF4DB;color:#7A4B00}
+.st.Left,.st.Refunded,.st.Ended{background:#FDECEA;color:#7A1A12}
+.st.Paid{background:#E6EEF8;color:#1D3F6E}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.list{display:grid;gap:10px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#FFFFFF}
+.item small{display:block;color:var(--muted);font-size:13px}
+a.item{color:var(--ink);text-decoration:none}
+a.item:hover{border-color:var(--accent);color:var(--ink)}
+a.item b{color:var(--ink)}
+.login{max-width:460px;margin:7vh auto 0}
+.login h1{margin:10px 0 8px}
+.login p.lead{margin:0 0 18px;color:var(--soft)}
+.note{font-size:13px;color:var(--muted)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+details.add{margin-bottom:16px}
+details.add summary{cursor:pointer;list-style:none;display:inline-flex}
+details.add summary::-webkit-details-marker{display:none}
+details.add[open] summary{margin-bottom:14px}
+.empty{padding:22px;text-align:center;color:var(--muted)}
+footer{padding-block:24px 40px;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="../" aria-label="Maystone Sales Group website">
+    <span class="mark" aria-hidden="true"><span><i></i></span><span><i></i><i></i></span><span><i></i><i></i><i class="a"></i></span></span>
+    <span class="word"><b>MAYSTONE</b><small>SALES GROUP</small></span>
+  </a>
+  <div class="who" id="who" hidden><span id="who-name"></span><span class="chip" id="who-role"></span><button class="btn out sm" id="logout" type="button">Log out</button></div>
+  <a class="btn out sm" id="back" href="../">Back to the website</a>
+</div></header>
+
+<main class="wrap">
+  <!-- Login -->
+  <section id="v-login" class="login" hidden>
+    <div class="panel">
+      <p class="kick">Team login</p>
+      <h1>Log in to Maystone</h1>
+      <p class="lead">Enter the email you joined with. We'll send you a link that logs you straight in. No password needed.</p>
+      <form id="f-login" class="grid" novalidate>
+        <label for="login-email">Email<input id="login-email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com"></label>
+        <button class="btn acc" type="submit" id="login-btn">Email me a login link</button>
+      </form>
+      <div id="login-msg" class="msg" hidden role="status"></div>
+    </div>
+    <p class="note" style="text-align:center;margin-top:16px">Not on the team yet? <a href="../#join">Find out how to join</a>.</p>
+  </section>
+
+  <!-- Loading -->
+  <section id="v-loading" hidden><p class="empty">Loading…</p></section>
+
+  <!-- Rep dashboard -->
+  <section id="v-rep" hidden>
+    <p class="kick" id="rep-kick">Your dashboard</p>
+    <h1 id="rep-hi">Hi</h1>
+    <p style="margin:8px 0 22px;color:var(--soft)" id="rep-sub"></p>
+    <div class="tiles" id="rep-tiles"></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:22px;align-items:start">
+      <div class="panel"><h2>Your training</h2><p class="note" style="margin:6px 0 14px">Everything for your role. Links open in a new tab.</p><div class="list" id="rep-training"></div></div>
+      <div class="panel"><h2>The leaderboard</h2><p class="note" style="margin:6px 0 14px">Ranked on sales, then previews booked. Updated every hour.</p><div class="scroll" style="border:0"><table style="min-width:0"><thead><tr><th>#</th><th>Rep</th><th class="num">Previews</th><th class="num">Sales</th></tr></thead><tbody id="rep-board"></tbody></table></div></div>
+    </div>
+  </section>
+
+  <!-- Admin dashboard -->
+  <section id="v-admin" hidden>
+    <div class="sec-head">
+      <div><p class="kick">Admin</p><h1>Everything at a glance</h1></div>
+      <div class="row"><span class="note" id="sync-note"></span><button class="btn out sm" id="sync-btn" type="button">Sync from Call Lists</button></div>
+    </div>
+    <div id="admin-msg" class="msg" hidden role="status"></div>
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" aria-selected="true" data-tab="overview">Overview</button>
+      <button role="tab" aria-selected="false" data-tab="team">Team</button>
+      <button role="tab" aria-selected="false" data-tab="partners">Partners</button>
+      <button role="tab" aria-selected="false" data-tab="sales">Sales</button>
+      <button role="tab" aria-selected="false" data-tab="training">Training</button>
+      <button role="tab" aria-selected="false" data-tab="myview">What reps see</button>
+    </div>
+
+    <div data-pane="overview">
+      <div class="tiles" id="a-tiles"></div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:18px;align-items:start">
+        <div class="panel"><h2>Top of the board</h2><div class="list" id="a-top" style="margin-top:12px"></div></div>
+        <div class="panel"><h2>Who's on what</h2><div class="list" id="a-partners-sum" style="margin-top:12px"></div></div>
+      </div>
+    </div>
+
+    <div data-pane="team" hidden>
+      <details class="add" id="d-user">
+        <summary class="btn acc">+ Create a login</summary>
+        <div class="panel">
+          <h2 id="u-title">Create a login</h2>
+          <form id="f-user" class="form" style="margin-top:14px" novalidate>
+            <label for="u-name">Name<input id="u-name" required autocomplete="off"></label>
+            <label for="u-email">Email<input id="u-email" type="email" required autocomplete="off"></label>
+            <label for="u-role">Role<select id="u-role"></select></label>
+            <label for="u-partner">Sells for<select id="u-partner"></select></label>
+            <label for="u-tab">Call list tab<select id="u-tab"></select></label>
+            <label for="u-commission">Commission per sale (£)<input id="u-commission" type="number" min="0" step="1" value="260"></label>
+            <label for="u-status">Status<select id="u-status"></select></label>
+            <label for="u-phone">Phone (optional)<input id="u-phone" autocomplete="off"></label>
+            <label class="wide" for="u-notes">Notes (optional)<textarea id="u-notes"></textarea></label>
+            <label class="check wide" for="u-invite"><input id="u-invite" type="checkbox" checked> Email them a login link now</label>
+            <div class="row wide"><button class="btn acc" type="submit" id="u-save">Create login</button><button class="btn out" type="button" id="u-cancel">Cancel</button></div>
+          </form>
+        </div>
+      </details>
+      <div class="scroll"><table><thead><tr><th>Name</th><th>Role</th><th>Sells for</th><th>Status</th><th class="num">Previews</th><th class="num">Sales</th><th class="num">Earned</th><th class="num">Owed</th><th>Last login</th><th></th></tr></thead><tbody id="a-users"></tbody></table></div>
+    </div>
+
+    <div data-pane="partners" hidden>
+      <details class="add" id="d-partner">
+        <summary class="btn acc">+ Add a partner</summary>
+        <div class="panel">
+          <h2>Partner</h2>
+          <form id="f-partner" class="form" style="margin-top:14px" novalidate>
+            <label for="p-name">Business name<input id="p-name" required autocomplete="off"></label>
+            <label for="p-commission">Rep commission per sale (£)<input id="p-commission" type="number" min="0" step="1"></label>
+            <label for="p-status">Status<select id="p-status"><option>Active</option><option>Paused</option><option>Ended</option></select></label>
+            <label for="p-contact">Contact (optional)<input id="p-contact" autocomplete="off"></label>
+            <label class="wide" for="p-what">What reps sell<input id="p-what" autocomplete="off"></label>
+            <label class="wide" for="p-notes">Notes (optional)<textarea id="p-notes"></textarea></label>
+            <div class="row wide"><button class="btn acc" type="submit" id="p-save">Save partner</button></div>
+          </form>
+        </div>
+      </details>
+      <div class="list" id="a-partners"></div>
+    </div>
+
+    <div data-pane="sales" hidden>
+      <details class="add" id="d-sale">
+        <summary class="btn acc">+ Log a sale</summary>
+        <div class="panel">
+          <h2>Log a sale</h2>
+          <p class="note" style="margin:6px 0 0">Paid sales on the Call Lists sheet come in by themselves every hour. Use this for anything else.</p>
+          <form id="f-sale" class="form" style="margin-top:14px" novalidate>
+            <label for="s-rep">Rep<select id="s-rep"></select></label>
+            <label for="s-partner">Partner<select id="s-partner"></select></label>
+            <label for="s-amount">Sale amount (£)<input id="s-amount" type="number" min="0" step="1"></label>
+            <label for="s-commission">Rep commission (£, blank = their usual)<input id="s-commission" type="number" min="0" step="1"></label>
+            <label for="s-customer">Customer<input id="s-customer" autocomplete="off"></label>
+            <label for="s-date">Date<input id="s-date" type="date"></label>
+            <label for="s-status">Status<select id="s-status"></select></label>
+            <label class="wide" for="s-notes">Notes (optional)<input id="s-notes" autocomplete="off"></label>
+            <div class="row wide"><button class="btn acc" type="submit" id="s-save">Log sale</button></div>
+          </form>
+        </div>
+      </details>
+      <div class="scroll"><table><thead><tr><th>Date</th><th>Rep</th><th>Partner</th><th>Customer</th><th class="num">Sale</th><th class="num">Commission</th><th>Status</th><th>Source</th></tr></thead><tbody id="a-sales"></tbody></table></div>
+      <p class="note" style="margin-top:10px">Pending sales turn Cleared after the 14-day refund window. Mark them Paid out when the rep has been paid.</p>
+    </div>
+
+    <div data-pane="training" hidden>
+      <details class="add" id="d-train">
+        <summary class="btn acc">+ Add training</summary>
+        <div class="panel">
+          <h2>Add training</h2>
+          <form id="f-train" class="form" style="margin-top:14px" novalidate>
+            <label for="t-role">Who sees it<select id="t-role"></select></label>
+            <label for="t-type">Type<select id="t-type"><option>Deck</option><option>Doc</option><option>Video</option><option>Link</option></select></label>
+            <label class="wide" for="t-title">Title<input id="t-title" autocomplete="off"></label>
+            <label class="wide" for="t-link">Link (https://…)<input id="t-link" type="url" autocomplete="off"></label>
+            <div class="row wide"><button class="btn acc" type="submit" id="t-save">Add</button></div>
+          </form>
+        </div>
+      </details>
+      <p class="note" style="margin-bottom:12px">Each role sees its own training and everything below it (a Coach also sees the Rep training). New reps are given view access to the Drive files when their login is created.</p>
+      <div class="list" id="a-training"></div>
+    </div>
+
+    <div data-pane="myview" hidden>
+      <p class="note">This is your own rep dashboard, as a rep sees theirs.</p>
+      <div id="a-myview"></div>
+    </div>
+  </section>
+</main>
+<footer class="wrap">© 2026 Maystone Sales Group · <a href="../#privacy">Privacy</a></footer>
+
+<script>
+(function () {
+  var API = '__API_URL__';
+  var KEY = 'maystone.session';
+  var state = { session: null, me: null, admin: null, editing: null };
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var money = function (n) { n = Number(n || 0); return '£' + n.toLocaleString('en-GB', { maximumFractionDigits: 0 }); };
+  function store(v) { try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); } catch (e) {} }
+  function stored() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function show(id) { ['v-login', 'v-loading', 'v-rep', 'v-admin'].forEach(function (v) { $(v).hidden = v !== id; }); $('back').hidden = id !== 'v-login'; $('who').hidden = id === 'v-login' || id === 'v-loading'; }
+  function say(el, text, ok) { el.hidden = !text; el.textContent = text || ''; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
+
+  function api(action, data) {
+    if (API.indexOf('__') === 0) return Promise.resolve({ ok: false, error: 'The login system is being switched on. Try again soon.' });
+    var body = Object.assign({ action: action }, data || {});
+    if (state.session && !body.session) body.session = state.session;
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) { if (res && res.auth === false) { logout(true); } return res; })
+      .catch(function () { return { ok: false, error: 'Couldn\'t reach the login system. Check your connection and try again.' }; });
+  }
+  function busy(btn, on, label) { if (!btn) return; if (on) { btn.dataset.label = btn.textContent; btn.textContent = label || 'Working…'; btn.disabled = true; } else { btn.textContent = btn.dataset.label || btn.textContent; btn.disabled = false; } }
+
+  /* ---------- login ---------- */
+  $('f-login').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = $('login-email').value.trim(), btn = $('login-btn');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say($('login-msg'), 'Enter a valid email address.', false); return; }
+    busy(btn, true, 'Sending…');
+    api('requestLink', { email: email }).then(function (r) { busy(btn, false); say($('login-msg'), r.ok ? r.message : r.error, r.ok); });
+  });
+  function logout(silent) {
+    if (!silent && state.session) api('logout', {});
+    state.session = null; state.me = null; state.admin = null; store(null);
+    show('v-login');
+    if (silent) say($('login-msg'), 'Your login has ended. Enter your email to get a new link.', false);
+  }
+  $('logout').addEventListener('click', function () { logout(false); });
+
+  /* ---------- rep view ---------- */
+  function repHTML(m, el) {
+    var tiles = [
+      ['Sales', m.mine.sales, 'all time'],
+      ['Previews booked', m.mine.previews, 'from your call list'],
+      ['Earned', money(m.mine.pending + m.mine.cleared + m.mine.paidOut), money(m.mine.paidOut) + ' paid out · ' + money(m.mine.cleared) + ' cleared · ' + money(m.mine.pending) + ' pending'],
+      ['Leaderboard', m.rank ? '#' + m.rank : '–', m.rank ? 'your position' : 'make a sale to get on the board']
+    ];
+    var training = {};
+    m.training.forEach(function (t) { (training[t.role] = training[t.role] || []).push(t); });
+    var trainingHTML = Object.keys(training).map(function (role) {
+      return '<p class="kick" style="margin-top:6px">' + esc(role === 'All' ? 'Everyone' : role) + '</p>' + training[role].map(function (t) {
+        return '<a class="item" href="' + esc(t.link) + '" target="_blank" rel="noopener"><span><b>' + esc(t.title) + '</b><small>' + esc(t.type || 'Link') + '</small></span><span aria-hidden="true">→</span></a>';
+      }).join('');
+    }).join('') || '<p class="empty">No training added yet.</p>';
+    var board = m.leaderboard.map(function (b) {
+      return '<tr class="' + (b.me ? 'me' : '') + '"><td>' + b.rank + '</td><td><b>' + esc(b.name) + '</b><small>' + esc(b.role) + '</small></td><td class="num">' + b.previews + '</td><td class="num">' + b.sales + '</td></tr>';
+    }).join('') || '<tr><td colspan="4" class="empty">The board fills up as reps book previews and make sales.</td></tr>';
+    if (el) {
+      el.innerHTML = '<div class="tiles">' + tiles.map(tile).join('') + '</div><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));margin-top:18px;align-items:start"><div class="panel"><h2>Training</h2><div class="list" style="margin-top:12px">' + trainingHTML + '</div></div><div class="panel"><h2>The leaderboard</h2><div class="scroll" style="border:0;margin-top:12px"><table style="min-width:0"><thead><tr><th>#</th><th>Rep</th><th class="num">Previews</th><th class="num">Sales</th></tr></thead><tbody>' + board + '</tbody></table></div></div></div>';
+      return;
+    }
+    var first = String(m.user.name || '').split(' ')[0];
+    $('rep-hi').textContent = 'Hi ' + (first || 'there');
+    $('rep-sub').textContent = m.user.role + (m.user.partner ? ' · selling for ' + m.user.partner : '');
+    $('rep-tiles').innerHTML = tiles.map(tile).join('');
+    $('rep-training').innerHTML = trainingHTML;
+    $('rep-board').innerHTML = board;
+  }
+  function tile(t) { return '<div class="tile"><span>' + esc(t[0]) + '</span><b>' + esc(t[1]) + '</b><small>' + esc(t[2]) + '</small></div>'; }
+
+  /* ---------- admin view ---------- */
+  function fillSelect(sel, items, value, blank) {
+    sel.innerHTML = (blank ? '<option value="">' + esc(blank) + '</option>' : '') + items.map(function (i) { var v = typeof i === 'string' ? i : i.value, l = typeof i === 'string' ? i : i.label; return '<option value="' + esc(v) + '"' + (v === value ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('');
+  }
+  function renderAdmin(o) {
+    state.admin = o;
+    var t = o.totals;
+    $('a-tiles').innerHTML = [
+      ['Active reps', t.active, 'of ' + t.reps + ' on the team'],
+      ['Partnerships', t.partners, 'active partners'],
+      ['Sales', t.sales, money(t.saleValue) + ' in sales'],
+      ['Commission owed', money(t.owed), money(t.pending) + ' still in the refund window'],
+      ['Paid out', money(t.paidOut), 'to reps so far']
+    ].map(tile).join('');
+    $('sync-note').textContent = o.activityUpdated ? 'Call Lists synced ' + o.activityUpdated : '';
+    var reps = o.users.filter(function (u) { return u.role !== 'Admin'; });
+    var top = reps.slice().sort(function (a, b) { return b.sales - a.sales || b.previews - a.previews; }).slice(0, 5);
+    $('a-top').innerHTML = top.map(function (u, i) { return '<div class="item"><span><b>' + (i + 1) + '. ' + esc(u.name) + '</b><small>' + esc(u.role) + ' · ' + u.previews + ' previews · ' + u.sales + ' sales</small></span><b>' + money(u.earned) + '</b></div>'; }).join('') || '<p class="empty">No reps yet. Create the first login in the Team tab.</p>';
+    $('a-partners-sum').innerHTML = o.partners.map(function (p) { return '<div class="item"><span><b>' + esc(p.name) + '</b><small>' + esc(p.what || '') + '</small></span><span class="st ' + esc(p.status) + '">' + p.reps + ' rep' + (p.reps === 1 ? '' : 's') + '</span></div>'; }).join('') || '<p class="empty">No partners yet.</p>';
+    $('a-users').innerHTML = o.users.map(function (u) {
+      return '<tr><td><b>' + esc(u.name) + '</b><small>' + esc(u.email) + '</small></td><td>' + esc(u.role) + '</td><td>' + esc(u.partner || '–') + (u.callListTab ? '<small>tab: ' + esc(u.callListTab) + '</small>' : '') + '</td><td><span class="st ' + esc(u.status) + '">' + esc(u.status) + '</span></td><td class="num">' + u.previews + '</td><td class="num">' + u.sales + '</td><td class="num">' + money(u.earned) + '</td><td class="num">' + money(u.owed) + '</td><td>' + esc(u.lastLogin || 'Never') + '</td><td><div class="row" style="flex-wrap:nowrap"><button class="btn out sm" data-edit="' + esc(u.email) + '" type="button">Edit</button>' + (u.status === 'Active' ? '<button class="btn out sm" data-link="' + esc(u.email) + '" type="button">Send link</button>' : '') + '</div></td></tr>';
+    }).join('') || '<tr><td colspan="10" class="empty">No logins yet.</td></tr>';
+    $('a-partners').innerHTML = o.partners.map(function (p) { return '<div class="item"><span><b>' + esc(p.name) + '</b><small>' + esc(p.what || '') + ' · ' + money(p.commission) + ' per sale to the rep · since ' + esc(p.started) + (p.contact ? ' · ' + esc(p.contact) : '') + '</small></span><span class="row"><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span><span class="chip lt">' + p.reps + ' rep' + (p.reps === 1 ? '' : 's') + '</span><button class="btn out sm" type="button" data-partner="' + esc(p.name) + '">Edit</button></span></div>'; }).join('') || '<p class="empty">No partners yet.</p>';
+    var repName = {}; o.users.forEach(function (u) { repName[u.email] = u.name; });
+    $('a-sales').innerHTML = o.sales.map(function (s) {
+      var sel = '<select data-sale="' + esc(s.id) + '" aria-label="Status" style="min-height:36px;padding:6px 10px;width:auto">' + o.saleStatus.map(function (x) { return '<option' + (x === s.status ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join('') + '</select>';
+      return '<tr><td>' + esc(s.date) + '</td><td>' + esc(repName[s.rep] || s.rep) + '</td><td>' + esc(s.partner) + '</td><td>' + esc(s.customer) + (s.notes ? '<small>' + esc(s.notes) + '</small>' : '') + '</td><td class="num">' + money(s.amount) + '</td><td class="num">' + money(s.commission) + '</td><td>' + sel + '</td><td><small>' + esc(s.source) + '</small></td></tr>';
+    }).join('') || '<tr><td colspan="8" class="empty">No sales yet.</td></tr>';
+    $('a-training').innerHTML = o.training.map(function (t) { return '<a class="item" href="' + esc(t.link) + '" target="_blank" rel="noopener"><span><b>' + esc(t.title) + '</b><small>' + esc(t.role === 'All' ? 'Everyone' : t.role) + ' · ' + esc(t.type) + '</small></span><span aria-hidden="true">→</span></a>'; }).join('') || '<p class="empty">No training yet.</p>';
+    // selects
+    var partnerNames = o.partners.map(function (p) { return p.name; });
+    fillSelect($('u-role'), o.roles.filter(function (r) { return r !== 'Admin'; }), 'Rep');
+    fillSelect($('u-partner'), partnerNames, partnerNames[0] || '', 'Not set');
+    fillSelect($('u-tab'), o.callListTabs, '', 'No call list tab');
+    fillSelect($('u-status'), o.userStatus, 'Active');
+    fillSelect($('s-rep'), o.users.map(function (u) { return { value: u.email, label: u.name + ' (' + u.role + ')' }; }), '');
+    fillSelect($('s-partner'), partnerNames, partnerNames[0] || '');
+    fillSelect($('s-status'), o.saleStatus, 'Pending');
+    fillSelect($('t-role'), ['All'].concat(o.roles), 'Rep');
+  }
+  function adminSay(r) { say($('admin-msg'), r.ok ? (r.message || 'Saved.') : r.error, r.ok); if (r.ok && r.totals) renderAdmin(r); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+  $('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-tab]'); if (!b) return;
+    Array.prototype.forEach.call(document.querySelectorAll('#tabs button'), function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-pane]'), function (p) { p.hidden = p.getAttribute('data-pane') !== b.dataset.tab; });
+    if (b.dataset.tab === 'myview' && state.me) repHTML(state.me, $('a-myview'));
+  });
+
+  function resetUserForm() {
+    state.editing = null; $('f-user').reset(); $('u-title').textContent = 'Create a login'; $('u-save').textContent = 'Create login'; $('u-email').disabled = false; $('u-invite').checked = true; $('u-commission').value = 260;
+    if (state.admin) renderAdmin(state.admin);
+  }
+  $('u-cancel').addEventListener('click', function () { resetUserForm(); $('d-user').open = false; });
+  $('a-users').addEventListener('click', function (e) {
+    var ed = e.target.closest('[data-edit]'), ln = e.target.closest('[data-link]');
+    if (ln) { var b1 = ln; busy(b1, true, 'Sending…'); api('adminSendLink', { email: ln.getAttribute('data-link') }).then(function (r) { busy(b1, false); adminSay(r); }); return; }
+    if (!ed) return;
+    var u = state.admin.users.filter(function (x) { return x.email === ed.getAttribute('data-edit'); })[0]; if (!u) return;
+    state.editing = u.email;
+    $('d-user').open = true; $('u-title').textContent = 'Edit ' + u.name; $('u-save').textContent = 'Save changes';
+    $('u-name').value = u.name || ''; $('u-email').value = u.email; $('u-email').disabled = true;
+    if (u.role === 'Admin') fillSelect($('u-role'), ['Admin'], 'Admin'); else $('u-role').value = u.role;
+    $('u-partner').value = u.partner || ''; $('u-tab').value = u.callListTab || ''; $('u-commission').value = u.commission; $('u-status').value = u.status;
+    $('u-phone').value = u.phone || ''; $('u-notes').value = u.notes || ''; $('u-invite').checked = false;
+    $('d-user').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  $('f-user').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var user = { name: $('u-name').value, email: state.editing || $('u-email').value, role: $('u-role').value, partner: $('u-partner').value, callListTab: $('u-tab').value,
+                 commission: $('u-commission').value, status: $('u-status').value, phone: $('u-phone').value, notes: $('u-notes').value };
+    if (!user.name.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email.trim())) { say($('admin-msg'), 'Add a name and a valid email.', false); return; }
+    var btn = $('u-save'); busy(btn, true, 'Saving…');
+    api('adminSaveUser', { user: user, invite: $('u-invite').checked }).then(function (r) { busy(btn, false); adminSay(r); if (r.ok) { resetUserForm(); $('d-user').open = false; } });
+  });
+  $('a-partners').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-partner]'); if (!b) return;
+    var p = state.admin.partners.filter(function (x) { return x.name === b.getAttribute('data-partner'); })[0]; if (!p) return;
+    $('d-partner').open = true; $('p-name').value = p.name; $('p-commission').value = p.commission; $('p-status').value = p.status; $('p-contact').value = p.contact || ''; $('p-what').value = p.what || ''; $('p-notes').value = p.notes || '';
+    $('d-partner').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  $('f-partner').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = $('p-save'); busy(btn, true, 'Saving…');
+    api('adminSavePartner', { partner: { name: $('p-name').value, commission: $('p-commission').value, status: $('p-status').value, contact: $('p-contact').value, what: $('p-what').value, notes: $('p-notes').value } })
+      .then(function (r) { busy(btn, false); adminSay(r); if (r.ok) { $('f-partner').reset(); $('d-partner').open = false; } });
+  });
+  $('f-sale').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = $('s-save'); busy(btn, true, 'Saving…');
+    api('adminAddSale', { sale: { rep: $('s-rep').value, partner: $('s-partner').value, amount: $('s-amount').value, commission: $('s-commission').value, customer: $('s-customer').value, date: $('s-date').value, status: $('s-status').value, notes: $('s-notes').value } })
+      .then(function (r) { busy(btn, false); adminSay(r); if (r.ok) { $('f-sale').reset(); $('d-sale').open = false; } });
+  });
+  $('a-sales').addEventListener('change', function (e) {
+    var s = e.target.closest('select[data-sale]'); if (!s) return;
+    s.disabled = true; api('adminSetSaleStatus', { id: s.getAttribute('data-sale'), status: s.value }).then(function (r) { s.disabled = false; adminSay(r); });
+  });
+  $('f-train').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = $('t-save'); busy(btn, true, 'Saving…');
+    api('adminSaveTraining', { item: { role: $('t-role').value, type: $('t-type').value, title: $('t-title').value, link: $('t-link').value } })
+      .then(function (r) { busy(btn, false); adminSay(r); if (r.ok) { $('f-train').reset(); $('d-train').open = false; } });
+  });
+  $('sync-btn').addEventListener('click', function () { var b = $('sync-btn'); busy(b, true, 'Syncing…'); api('adminSync', {}).then(function (r) { busy(b, false); adminSay(r.ok ? Object.assign(r, { message: 'Synced from the Call Lists sheet.' }) : r); }); });
+
+  /* ---------- start ---------- */
+  function load() {
+    show('v-loading');
+    api('me', {}).then(function (m) {
+      if (!m.ok) { if (m.auth !== false) { logout(true); say($('login-msg'), m.error, false); } return; }
+      state.me = m;
+      $('who-name').textContent = m.user.name || m.user.email; $('who-role').textContent = m.user.role;
+      if (m.admin) { show('v-admin'); api('adminOverview', {}).then(function (o) { if (o.ok) renderAdmin(o); else say($('admin-msg'), o.error, false); }); }
+      else { repHTML(m); show('v-rep'); }
+    });
+  }
+  function handleHash() {
+    var hash = location.hash.match(/[#&]t=([a-f0-9]+)/);
+    if (!hash) return false;
+    history.replaceState(null, '', location.pathname);
+    show('v-loading');
+    api('verify', { token: hash[1] }).then(function (r) {
+      if (r.ok) { state.session = r.session; store(r.session); load(); }
+      else { show('v-login'); say($('login-msg'), r.error, false); }
+    });
+    return true;
+  }
+  window.addEventListener('hashchange', handleHash);
+  if (!handleHash()) {
+    state.session = stored();
+    if (state.session) load(); else show('v-login');
+  }
+})();
+</script>
+</body>
+</html>

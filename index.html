@@ -24,7 +24,7 @@
 <style>
 :root{
   --navy:#142D4C; --deep:#0B1A2E; --cream:#F5F0E7; --paper:#FBF8F2; --card:#FFFFFF;
-  --sand:#D6CBB5; --line:#E4DCCB; --orange:#E2551C; --orange-ink:#B23F0E;
+  --sand:#D6CBB5; --line:#E4DCCB; --orange:#E2551C; --orange-ink:#B23F0E; --orange-btn:#C9480F; --orange-btn-hover:#B23F0E;
   --ink:#142D4C; --soft:#4A5A6E; --on-dark:#F5F0E7; --on-dark-soft:#C9C0AE;
   --serif:Cambria,"Hoefler Text",Georgia,"Times New Roman",serif;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,Calibri,Arial,sans-serif;
@@ -61,8 +61,8 @@ nav.links a:hover{color:var(--ink)}
 @media (min-width:860px){nav.links{display:flex}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:999px;font:600 1rem/1 var(--sans);text-decoration:none;border:2px solid transparent;transition:transform .15s ease,background .15s ease}
 .btn:hover{transform:translateY(-1px)}
-.btn-main{background:var(--orange);color:#fff}
-.btn-main:hover{background:#C9480F}
+.btn-main{background:var(--orange-btn);color:#fff}
+.btn-main:hover{background:var(--orange-btn-hover)}
 .btn-ghost{border-color:var(--sand);color:var(--ink);background:transparent}
 .btn-small{min-height:40px;padding:0 16px;font-size:.92rem}
 

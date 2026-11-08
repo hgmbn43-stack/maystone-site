@@ -235,8 +235,13 @@ body.in footer{display:none}
   .ms-prog{flex-direction:column;align-items:flex-start}
   .ms-lrow{grid-template-columns:30px 1fr auto;gap:10px}.ms-lrow .ms-lv:last-child:not(:nth-child(3)){display:none}
 }
-@media(max-width:640px){body.in header.top .wrap{flex-wrap:nowrap;min-height:60px}body.in #who-name,body.in #who-role{display:none}}
+@media(max-width:640px){header.top .wrap{flex-wrap:nowrap;min-height:60px}#who-name,#who-role{display:none}.who{flex-wrap:nowrap;gap:6px}.who .btn.sm{padding:7px 12px}.word small{display:none}.pwb input{width:100%}.pwb form{width:100%}}
 @media(prefers-reduced-motion:reduce){.ms-card,.ms-task,.ms-bar i{transition:none}.ms-card{transform:none}}
+.or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.pwb{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:#fff;border:1px solid #F5C9B3;border-left:4px solid var(--accent);border-radius:18px;padding:18px 20px;margin-bottom:20px}
+.pwb b{font:700 17px var(--head)}.pwb p{margin:4px 0 0;font-size:14px;color:var(--soft)}
+.pwb form{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.pwb input{width:220px}
+.pwb .x{border:0;background:none;color:var(--muted);font:500 14px var(--body);cursor:pointer;min-height:44px;padding:0 8px}
 </style>
 </head>
 <body>
@@ -245,20 +250,24 @@ body.in footer{display:none}
     <span class="mark" aria-hidden="true"><span><i></i></span><span><i></i><i></i></span><span><i></i><i></i><i class="a"></i></span></span>
     <span class="word"><b>MAYSTONE</b><small>SALES GROUP</small></span>
   </a>
-  <div class="who" id="who" hidden><span id="who-name"></span><span class="chip" id="who-role"></span><button class="btn out sm" id="logout" type="button">Log out</button></div>
+  <div class="who" id="who" hidden><span id="who-name"></span><span class="chip" id="who-role"></span><button class="btn out sm" id="pw-open" type="button">Password</button><button class="btn out sm" id="logout" type="button">Log out</button></div>
   <a class="btn out sm" id="back" href="../">Back to the website</a>
 </div></header>
 
 <main class="wrap">
+  <div id="pw-banner" class="pwb" hidden></div>
   <!-- Login -->
   <section id="v-login" class="login" hidden>
     <div class="panel">
       <p class="kick">Team login</p>
       <h1>Log in to Maystone</h1>
-      <p class="lead">Enter the email you joined with. We'll send you a link that logs you straight in. No password needed.</p>
+      <p class="lead">Log in with your email and password. First time, or forgotten it? Use the email link instead.</p>
       <form id="f-login" class="grid" novalidate>
-        <label for="login-email">Email<input id="login-email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com"></label>
-        <button class="btn acc" type="submit" id="login-btn">Email me a login link</button>
+        <label for="login-email">Email<input id="login-email" type="email" autocomplete="username" inputmode="email" required placeholder="you@example.com"></label>
+        <label for="login-pw">Password<input id="login-pw" type="password" autocomplete="current-password" placeholder="Your password"></label>
+        <button class="btn acc" type="submit" id="login-btn">Log in</button>
+        <div class="or"><span>or</span></div>
+        <button class="btn out" type="button" id="link-btn">Email me a login link</button>
       </form>
       <div id="login-msg" class="msg" hidden role="status"></div>
     </div>
@@ -396,7 +405,7 @@ body.in footer{display:none}
   var money = function (n) { n = Number(n || 0); return '£' + n.toLocaleString('en-GB', { maximumFractionDigits: 0 }); };
   function store(v) { try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); } catch (e) {} }
   function stored() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
-  function show(id) { ['v-login', 'v-loading', 'v-rep', 'v-admin'].forEach(function (v) { $(v).hidden = v !== id; }); document.body.classList.toggle('in', id === 'v-rep'); $('back').hidden = id !== 'v-login'; $('who').hidden = id === 'v-login' || id === 'v-loading'; }
+  function show(id) { ['v-login', 'v-loading', 'v-rep', 'v-admin'].forEach(function (v) { $(v).hidden = v !== id; }); document.body.classList.toggle('in', id === 'v-rep'); if (id === 'v-login' || id === 'v-loading') $('pw-banner').hidden = true; $('back').hidden = id !== 'v-login'; $('who').hidden = id === 'v-login' || id === 'v-loading'; }
   function say(el, text, ok) { el.hidden = !text; el.textContent = text || ''; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
 
   function api(action, data) {
@@ -411,10 +420,22 @@ body.in footer{display:none}
   function busy(btn, on, label) { if (!btn) return; if (on) { btn.dataset.label = btn.textContent; btn.textContent = label || 'Working…'; btn.disabled = true; } else { btn.textContent = btn.dataset.label || btn.textContent; btn.disabled = false; } }
 
   /* ---------- login ---------- */
+  function emailOK(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
   $('f-login').addEventListener('submit', function (e) {
     e.preventDefault();
-    var email = $('login-email').value.trim(), btn = $('login-btn');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { say($('login-msg'), 'Enter a valid email address.', false); return; }
+    var email = $('login-email').value.trim(), pw = $('login-pw').value, btn = $('login-btn');
+    if (!emailOK(email)) { say($('login-msg'), 'Enter a valid email address.', false); return; }
+    if (!pw) { say($('login-msg'), 'Enter your password, or tap "Email me a login link".', false); $('login-pw').focus(); return; }
+    busy(btn, true, 'Logging in…');
+    api('loginPassword', { email: email, password: pw }).then(function (r) {
+      busy(btn, false);
+      if (!r.ok) { say($('login-msg'), r.error, false); return; }
+      $('login-pw').value = ''; say($('login-msg'), '', true); state.session = r.session; store(r.session); load();
+    });
+  });
+  $('link-btn').addEventListener('click', function () {
+    var email = $('login-email').value.trim(), btn = $('link-btn');
+    if (!emailOK(email)) { say($('login-msg'), 'Enter your email address first.', false); $('login-email').focus(); return; }
     busy(btn, true, 'Sending…');
     api('requestLink', { email: email }).then(function (r) { busy(btn, false); say($('login-msg'), r.ok ? r.message : r.error, r.ok); });
   });
@@ -425,6 +446,7 @@ body.in footer{display:none}
     if (silent) say($('login-msg'), 'Your login has ended. Enter your email to get a new link.', false);
   }
   $('logout').addEventListener('click', function () { logout(false); });
+  $('pw-open').addEventListener('click', function () { if (state.me) { pwBanner(state.me, true); window.scrollTo(0, 0); } });
 
   /* ---------- rep app (Maystone HQ) ---------- */
   var LADDER = ['Rep', 'Top Rep', 'Coach', 'Team Lead'];
@@ -501,7 +523,7 @@ body.in footer{display:none}
 
     var views = {
       home:
-        '<div class="ms-hero"><div class="ms-hgrid"></div><div class="ms-hl"><p class="ms-kick">' + greet + '</p><h1>Welcome back, ' + esc(first) + '.</h1><p class="ms-sub">' + (next.length ? 'You have <b>' + next.length + ' task' + (next.length === 1 ? '' : 's') + '</b> waiting. Your next one: <b>' + esc(next[0].title) + '</b>.' : 'All your tasks are done. Time to get on the phones.') + '</p>' +
+        '<div class="ms-hero"><div class="ms-hgrid"></div><div class="ms-hl"><p class="ms-kick">' + greet + '</p><h1>Welcome back, ' + esc(first) + '.</h1><p class="ms-sub">' + (next.length ? 'You have <b>' + next.length + ' task' + (next.length === 1 ? '' : 's') + '</b> waiting. Your next one: <b>' + esc(next[0].title) + '</b>.' : (open.length ? 'All your tasks are done. Time to get on the phones.' : 'Your training tasks will appear here soon.')) + '</p>' +
           (next.length ? '<button class="ms-btn acc" data-go="tasks">Continue my tasks →</button>' : '<button class="ms-btn acc" data-go="board">See the leaderboard →</button>') + '</div>' +
           '<div class="ms-card"><div class="ms-cardtop"><span class="ms-cmark"><i></i><i></i><i></i></span><span>MAYSTONE</span></div><div class="ms-cname">' + esc(m.user.name || first) + '</div><div class="ms-crow"><div><small>Level</small><b>' + esc(m.user.role) + '</b></div><div><small>Member no.</small><b>' + memberNo + '</b></div><div><small>Since</small><b>' + esc(m.joined || '–') + '</b></div></div><div class="ms-cfoot">Selling for ' + esc(m.user.partner || 'Maystone') + '</div></div></div>' +
         '<div class="ms-stats"><div class="ms-stat"><small>Sales</small><b>' + m.mine.sales + '</b><span>all time</span></div><div class="ms-stat"><small>Previews booked</small><b>' + m.mine.previews + '</b><span>from your call list</span></div><div class="ms-stat"><small>Earned</small><b>' + money(earned) + '</b><span>' + money(m.mine.paidOut) + ' paid out so far</span></div><div class="ms-stat"><small>Leaderboard</small><b>' + (m.rank ? '#' + m.rank : '–') + '</b><span>' + (m.rank ? 'of ' + (m.boardSize || m.leaderboard.length) + ' reps' : 'make a sale to get on it') + '</span></div></div>' +
@@ -643,11 +665,25 @@ body.in footer{display:none}
   $('sync-btn').addEventListener('click', function () { var b = $('sync-btn'); busy(b, true, 'Syncing…'); api('adminSync', {}).then(function (r) { busy(b, false); adminSay(r.ok ? Object.assign(r, { message: 'Synced from the Call Lists sheet.' }) : r); }); });
 
   /* ---------- start ---------- */
+  function pwBanner(m, force) {
+    var el = $('pw-banner'), skip = false; try { skip = localStorage.getItem('maystone.pwskip') === '1'; } catch (e) {}
+    if ((m.hasPassword || skip) && !force) { el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = '<div><b>' + (m.hasPassword ? 'Change your password' : 'Set a password') + '</b><p>Then you can log in with your email and password, without waiting for a link.</p></div><form id="f-pw" novalidate><input id="pw-new" type="password" autocomplete="new-password" placeholder="New password (8+ characters)" aria-label="New password"><button class="btn acc sm" type="submit">Save password</button><button class="x" type="button" id="pw-x">Not now</button></form>';
+    $('pw-x').onclick = function () { try { localStorage.setItem('maystone.pwskip', '1'); } catch (e) {} el.hidden = true; };
+    $('f-pw').onsubmit = function (e) {
+      e.preventDefault(); var v = $('pw-new').value, btn = el.querySelector('button[type=submit]');
+      if (v.length < 8) { $('pw-new').focus(); el.querySelector('p').textContent = 'Use at least 8 characters.'; return; }
+      busy(btn, true, 'Saving…');
+      api('setPassword', { password: v }).then(function (r) { busy(btn, false); if (!r.ok) { el.querySelector('p').textContent = r.error; return; } m.hasPassword = true; el.innerHTML = '<div><b>Password saved.</b><p>Next time, log in at maystone.uk/login with your email and password.</p></div>'; setTimeout(function () { el.hidden = true; }, 5000); });
+    };
+  }
   function load() {
     show('v-loading');
     api('me', {}).then(function (m) {
       if (!m.ok) { if (m.auth !== false) { logout(true); say($('login-msg'), m.error, false); } return; }
       state.me = m;
+      pwBanner(m);
       $('who-name').textContent = m.user.name || m.user.email; $('who-role').textContent = m.user.role;
       if (m.admin) { show('v-admin'); api('adminOverview', {}).then(function (o) { if (o.ok) renderAdmin(o); else say($('admin-msg'), o.error, false); }); }
       else { repHTML(m); show('v-rep'); }

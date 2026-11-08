@@ -2,191 +2,168 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Maystone – websites for Sussex tradespeople | Shoreham-by-Sea</title>
-<meta name="description" content="Maystone builds simple websites for local tradespeople from their Google reviews. You see a free preview first – no card, no contract. £500 one-off, or £298 today then £49 a month.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maystone Sales Group – remote sales agency | Shoreham-by-Sea, Sussex</title>
+<meta name="description" content="Maystone Sales Group is a UK sales agency. Self-employed reps sell by phone from anywhere – right now, websites for local tradespeople. Join as a rep, or find out why we rang you.">
 <link rel="canonical" href="https://maystone.uk/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#142D4C">
+<link rel="preload" href="fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+<meta name="theme-color" content="#0B1A2E">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Maystone">
-<meta property="og:title" content="Maystone – websites for Sussex tradespeople">
-<meta property="og:description" content="A proper website for your trade, built from your Google reviews. Free preview first – no card, no contract.">
+<meta property="og:site_name" content="Maystone Sales Group">
+<meta property="og:title" content="Maystone Sales Group – a sales team that works from anywhere">
+<meta property="og:description" content="A UK sales agency. Self-employed reps sell by phone – right now, websites for local tradespeople.">
 <meta property="og:url" content="https://maystone.uk/">
 <meta property="og:image" content="https://maystone.uk/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"ProfessionalService","name":"Maystone","url":"https://maystone.uk/","email":"hello@maystone.uk","description":"Websites for local tradespeople, built from their Google reviews.","address":{"@type":"PostalAddress","addressLocality":"Shoreham-by-Sea","addressRegion":"West Sussex","addressCountry":"GB"},"areaServed":[{"@type":"AdministrativeArea","name":"West Sussex"},{"@type":"AdministrativeArea","name":"East Sussex"}],"founder":{"@type":"Person","name":"Harvey-George Matthews"}}
+{"@context":"https://schema.org","@type":"Organization","name":"Maystone Sales Group","url":"https://maystone.uk/","email":"hello@maystone.uk","description":"A UK sales agency: self-employed reps selling by phone. Currently selling websites for local tradespeople.","address":{"@type":"PostalAddress","addressLocality":"Shoreham-by-Sea","addressRegion":"West Sussex","addressCountry":"GB"},"sameAs":["https://www.linkedin.com/company/maystonesales"],"founder":{"@type":"Person","name":"Harvey-George Matthews"}}
 </script>
 <style>
+/* Layout: agency homepage. A navy hero with a "Now selling" board, then three doors (join as a rep / did we ring you / sell through us), each its own band, then who we are and privacy. */
+@font-face{font-family:"Archivo";src:url("fonts/archivo-var.woff2") format("woff2");font-weight:100 900;font-stretch:62% 125%;font-style:normal;font-display:swap}
 :root{
-  --navy:#142D4C; --deep:#0B1A2E; --cream:#F5F0E7; --paper:#FBF8F2; --card:#FFFFFF;
-  --sand:#D6CBB5; --line:#E4DCCB; --orange:#E2551C; --orange-ink:#B23F0E; --orange-btn:#C9480F; --orange-btn-hover:#B23F0E;
-  --ink:#142D4C; --soft:#4A5A6E; --on-dark:#F5F0E7; --on-dark-soft:#C9C0AE;
-  --serif:Cambria,"Hoefler Text",Georgia,"Times New Roman",serif;
-  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Calibri,Arial,sans-serif;
-  --r:18px;
+  --navy:#142D4C; --deep:#0B1A2E; --stone:#D6CBB5; --orange:#E2551C;
+  --bg:#FAFAF7; --surface:#FFFFFF; --line:#E3DED3; --ink:#142D4C; --soft:#4A5A6E;
+  --orange-ink:#B23F0E; --orange-btn:#C9480F; --orange-btn-hover:#B23F0E;
+  --band:#142D4C; --band-2:#0B1A2E; --band-card:rgba(245,240,231,.07); --band-line:rgba(245,240,231,.14);
+  --on-band:#F5F0E7; --on-band-soft:#C9C0AE; --on-band-accent:#F2875A;
+  --chip:#EEE9DF;
+  --display:"Archivo","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
+  --body:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
 }
 @media (prefers-color-scheme:dark){
-  :root{--cream:#0B1A2E; --paper:#0F223B; --card:#132A47; --line:#24405F; --sand:#3A5574;
-    --ink:#F5F0E7; --soft:#C9C0AE; --orange-ink:#F2875A; --navy:#0E2440}
+  :root:not([data-theme="light"]){--bg:#0B1A2E; --surface:#12263F; --line:#24405F; --ink:#F5F0E7; --soft:#C9C0AE; --orange-ink:#F2875A;
+    --band:#102540; --band-2:#081424; --chip:#1A3556; color-scheme:dark}
 }
+:root[data-theme="dark"]{--bg:#0B1A2E; --surface:#12263F; --line:#24405F; --ink:#F5F0E7; --soft:#C9C0AE; --orange-ink:#F2875A;
+  --band:#102540; --band-2:#081424; --chip:#1A3556; color-scheme:dark}
+
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--cream);color:var(--ink);font:17px/1.6 var(--sans);overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body);font-stretch:100%}
 a{color:inherit}
 :focus-visible{outline:3px solid var(--orange);outline-offset:3px;border-radius:6px}
-.skip{position:absolute;left:-999px;top:8px;background:var(--card);padding:8px 14px;border-radius:8px;z-index:9}
-.skip:focus{left:16px}
-.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
-@media (min-width:720px){.wrap{padding:0 28px}}
-h1,h2,h3{font-family:var(--serif);line-height:1.15;margin:0;font-weight:700;letter-spacing:-.01em}
-h2{font-size:clamp(1.7rem,3.6vw,2.4rem)}
-h3{font-size:1.2rem}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+@media (min-width:760px){.wrap{padding-left:max(32px, env(safe-area-inset-left, 0px));padding-right:max(32px, env(safe-area-inset-right, 0px))}}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.02;text-wrap:balance}
+h1,h2{font-weight:850;font-stretch:72%;letter-spacing:-.005em;text-transform:uppercase}
+h2{font-size:clamp(2.1rem,5.4vw,3.5rem)}
+h3{font-weight:750;font-size:1.15rem;line-height:1.25}
 p{margin:0}
-.kicker{font:700 .78rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--orange-ink)}
-.lead{font-size:1.12rem;color:var(--soft);max-width:38em}
-
-/* header */
-header.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--cream) 92%,transparent);backdrop-filter:saturate(1.2) blur(8px);-webkit-backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid var(--line)}
-.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:700 1.15rem/1 var(--serif);letter-spacing:.02em}
-.brand svg{width:30px;height:24px;flex:none}
-nav.links{display:none;gap:22px;font-size:.95rem}
-nav.links a{text-decoration:none;color:var(--soft)}
-nav.links a:hover{color:var(--ink)}
-@media (min-width:860px){nav.links{display:flex}}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:999px;font:600 1rem/1 var(--sans);text-decoration:none;border:2px solid transparent;transition:transform .15s ease,background .15s ease}
+.kicker{font:700 .78rem/1.2 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--orange-ink)}
+.lead{font-size:1.12rem;color:var(--soft);max-width:36em}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;font:700 1rem/1 var(--body);text-decoration:none;border:2px solid transparent;transition:transform .15s ease,background .15s ease}
 .btn:hover{transform:translateY(-1px)}
 .btn-main{background:var(--orange-btn);color:#fff}
 .btn-main:hover{background:var(--orange-btn-hover)}
-.btn-ghost{border-color:var(--sand);color:var(--ink);background:transparent}
+.btn-line{border-color:rgba(245,240,231,.4);color:var(--on-band)}
+.btn-line:hover{border-color:var(--on-band)}
+
+/* header (navy in both themes) */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--band-2)}
+header.top{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:var(--band-2);color:var(--on-band);border-bottom:1px solid var(--band-line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;min-width:0}
+.brand svg{width:30px;height:24px;flex:none}
+.brand b{font:850 1.3rem/1 var(--display);font-stretch:80%;text-transform:uppercase;letter-spacing:.04em}
+.brand small{display:block;font:700 .6rem/1 var(--body);letter-spacing:.24em;text-transform:uppercase;color:var(--on-band-soft);margin-top:3px}
+nav.links{display:none;gap:24px;font-size:.95rem}
+nav.links a{text-decoration:none;color:var(--on-band-soft)}
+nav.links a:hover{color:var(--on-band)}
+@media (min-width:900px){nav.links{display:flex}}
 .btn-small{min-height:40px;padding:0 16px;font-size:.92rem}
 
 /* hero */
-.hero{padding:44px 0 56px}
-.hero-grid{display:grid;gap:40px;align-items:center}
-@media (min-width:900px){.hero-grid{grid-template-columns:1.15fr .85fr;gap:56px}.hero{padding:72px 0 84px}}
-.hero h1{font-size:clamp(2.2rem,6vw,3.6rem);margin:14px 0 18px}
-.hero h1 em{font-style:normal;color:var(--orange-ink)}
-.hero .lead{font-size:1.18rem}
-.ticks{display:flex;flex-wrap:wrap;gap:8px 18px;margin:22px 0 28px;padding:0;list-style:none;font-weight:600}
-.ticks li{display:flex;align-items:center;gap:8px}
-.ticks li::before{content:"";width:18px;height:18px;border-radius:50%;background:var(--orange) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 6.5' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;flex:none}
-.cta-row{display:flex;flex-wrap:wrap;gap:12px}
-.where{margin-top:20px;font-size:.95rem;color:var(--soft)}
-
-/* phone mock */
-.phone-wrap{display:flex;justify-content:center;position:relative}
-.phone-wrap::before{content:"";position:absolute;inset:8% 4% -4%;background:radial-gradient(closest-side,color-mix(in srgb,var(--orange) 22%,transparent),transparent);filter:blur(10px);z-index:0}
-.phone{position:relative;z-index:1;width:min(300px,82vw);aspect-ratio:9/18.5;background:#0B1A2E;border-radius:42px;padding:12px;box-shadow:0 30px 60px -20px rgba(11,26,46,.45),inset 0 0 0 2px #24405F}
-.screen{height:100%;background:#FBF8F2;border-radius:31px;overflow:hidden;color:#142D4C;font-size:12px;line-height:1.4;display:flex;flex-direction:column}
-.notch{height:22px;display:flex;justify-content:center;padding-top:7px}
-.notch span{width:70px;height:8px;border-radius:9px;background:#0B1A2E}
-.s-top{display:flex;align-items:center;justify-content:space-between;padding:6px 14px 8px;border-bottom:1px solid #EAE2D3}
-.s-logo{font:700 12px/1 var(--serif)}
-.s-tag{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:#E2551C;color:#fff;padding:3px 7px;border-radius:9px}
-.s-hero{padding:14px 14px 10px;background:linear-gradient(160deg,#142D4C,#1E3E66);color:#F5F0E7}
-.s-hero b{display:block;font:700 17px/1.2 var(--serif);margin-bottom:6px}
-.s-stars{color:#FFC861;letter-spacing:2px;font-size:12px}
-.s-stars small{color:#C9C0AE;letter-spacing:0;margin-left:4px}
-.s-btns{display:grid;gap:7px;padding:12px 14px}
-.s-btn{border-radius:10px;padding:9px 10px;font-weight:700;text-align:center;font-size:12px}
-.s-btn.call{background:#E2551C;color:#fff}
-.s-btn.wa{background:#1F8F5A;color:#fff}
-.s-btn.quote{border:1.5px solid #142D4C}
-.s-rev{margin:2px 14px 0;padding:10px;border:1px solid #EAE2D3;border-radius:12px;background:#fff}
-.s-rev .ln{height:7px;border-radius:4px;background:#E8E1D3;margin:6px 0}
-.s-rev .ln.w2{width:80%}.s-rev .ln.w3{width:55%}
-.s-rev small{display:block;color:#6B7785;font-size:10px;margin-top:6px}
-.s-sec{margin:12px 14px 6px;font:700 10px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#6B7785}
-.s-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 14px}
-.s-grid i{display:block;aspect-ratio:4/3;border-radius:9px;background:linear-gradient(135deg,#D6CBB5,#EAE2D3)}
-.s-grid i:nth-child(2),.s-grid i:nth-child(3){background:linear-gradient(135deg,#C4D0DD,#E3E9EF)}
-.s-areas{display:flex;flex-wrap:wrap;gap:5px;margin:10px 14px 0}
-.s-areas span{font-size:9.5px;font-weight:700;padding:4px 8px;border-radius:9px;background:#EFE8DA}
-.example{position:absolute;z-index:2;bottom:-12px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--line);color:var(--soft);font-size:.8rem;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.hero{background:var(--band-2);color:var(--on-band);padding-block:48px 64px;overflow:hidden;position:relative}
+.hero::after{content:"";position:absolute;right:-180px;top:-140px;width:560px;height:560px;border-radius:50%;background:radial-gradient(closest-side,rgba(226,85,28,.28),transparent);pointer-events:none}
+.hero .wrap{position:relative;z-index:1;display:grid;gap:40px;align-items:center}
+@media (min-width:940px){.hero{padding-block:84px 96px}.hero .wrap{grid-template-columns:1.2fr .8fr;gap:56px}}
+.hero .kicker{color:var(--on-band-accent)}
+.hero h1{font-size:clamp(2.9rem,8.6vw,5.6rem);margin:16px 0 20px}
+.hero h1 em{font-style:normal;color:var(--on-band-accent)}
+.hero .lead{color:var(--on-band-soft);font-size:1.18rem}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.board{background:rgba(245,240,231,.05);border:1px solid var(--band-line);border-radius:20px;padding:18px;display:grid;gap:10px;min-width:0}
+.board-head{display:flex;justify-content:space-between;align-items:center;font:700 .74rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--on-band-soft);padding:2px 4px 6px}
+.live{display:inline-flex;align-items:center;gap:7px;color:#9FE3B8}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:#3CCB7F;box-shadow:0 0 0 4px rgba(60,203,127,.18)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px;border-radius:14px;background:var(--band-card);border:1px solid var(--band-line)}
+.row div{min-width:0}
+.row b{display:block;font:800 1.15rem/1.15 var(--display);font-stretch:85%}
+.row small{display:block;color:var(--on-band-soft);font-size:.86rem;margin-top:4px}
+.pill{flex:none;font:700 .72rem/1 var(--body);letter-spacing:.06em;text-transform:uppercase;padding:7px 10px;border-radius:999px;border:1px solid var(--band-line);color:var(--on-band-soft);white-space:nowrap}
+.pill.on{background:var(--orange);border-color:var(--orange);color:#fff}
+.board-foot{font-size:.86rem;color:var(--on-band-soft);padding:4px 4px 0}
 
 /* sections */
-section{padding:64px 0}
-@media (min-width:900px){section{padding:88px 0}}
-.head{display:grid;gap:12px;margin-bottom:34px;max-width:44em}
+section{padding-block:72px}
+@media (min-width:940px){section{padding-block:96px}}
+.head{display:grid;gap:14px;margin-bottom:36px;max-width:46em}
 
-/* rang you band */
-.band{background:var(--deep);color:var(--on-dark)}
-@media (prefers-color-scheme:dark){.band{background:#102540;border-block:1px solid #24405F}}
-.band .kicker{color:#F2875A}
-.band .lead{color:var(--on-dark-soft)}
-.promise{display:grid;gap:14px;margin:0;padding:0;list-style:none}
-@media (min-width:760px){.promise{grid-template-columns:1fr 1fr;gap:16px 28px}}
-.promise li{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:14px;background:rgba(245,240,231,.06);border:1px solid rgba(245,240,231,.12)}
+/* join */
+.join-grid{display:grid;gap:18px}
+@media (min-width:900px){.join-grid{grid-template-columns:.9fr 1.1fr;gap:28px;align-items:start}}
+.pay{background:var(--band);color:var(--on-band);border-radius:24px;padding:28px 26px;display:grid;gap:18px}
+.pay .big{font:850 clamp(4.2rem,13vw,6.6rem)/.9 var(--display);font-stretch:70%;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.pay .big span{color:var(--on-band-accent)}
+.pay p{color:var(--on-band-soft)}
+.pay .what{color:var(--on-band);font-size:1.06rem}
+.small-print{display:grid;gap:8px;margin:0;padding:16px 0 0;list-style:none;border-top:1px solid var(--band-line);font-size:.95rem}
+.small-print li{display:flex;gap:10px;color:var(--on-band-soft)}
+.small-print li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--orange);margin-top:.6em}
+.facts{display:grid;gap:12px}
+@media (min-width:560px){.facts{grid-template-columns:1fr 1fr}}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px}
+.fact h3{margin-bottom:6px}
+.fact p{color:var(--soft);font-size:.97rem}
+.steps{margin:22px 0 0;padding:0;list-style:none;display:grid;gap:10px;counter-reset:s}
+.steps li{display:flex;gap:14px;align-items:flex-start;counter-increment:s}
+.steps li::before{content:counter(s);flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--chip);color:var(--ink);font:800 .95rem/1 var(--display)}
+.steps b{display:block}
+.steps span{color:var(--soft);font-size:.95rem}
+.apply{margin-top:22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.apply small{color:var(--soft)}
+.mailtext{font-weight:700;color:var(--orange-ink);word-break:break-word}
+
+/* rang */
+.band{background:var(--band);color:var(--on-band);border-block:1px solid var(--band-line)}
+.band .kicker{color:var(--on-band-accent)}
+.band .lead{color:var(--on-band-soft)}
+.promise{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+@media (min-width:760px){.promise{grid-template-columns:1fr 1fr;gap:14px 24px}}
+.promise li{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:14px;background:var(--band-card);border:1px solid var(--band-line)}
 .promise svg{flex:none;width:22px;height:22px;margin-top:2px}
-.promise b{display:block;font-weight:700}
-.promise span{color:var(--on-dark-soft);font-size:.96rem}
+.promise b{display:block}
+.promise span{color:var(--on-band-soft);font-size:.95rem}
+.offer{margin-top:40px;display:grid;gap:16px}
+@media (min-width:900px){.offer{grid-template-columns:1fr 1fr 1fr}}
+.offer-card{border-radius:18px;padding:22px;background:rgba(245,240,231,.06);border:1px solid var(--band-line);display:flex;flex-direction:column;gap:10px}
+.offer-card .lab{font:700 .74rem/1 var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--on-band-accent)}
+.offer-card .price{font:850 2.6rem/1 var(--display);font-stretch:75%}
+.offer-card ul{margin:4px 0 0;padding-left:18px;color:var(--on-band-soft);font-size:.95rem;display:grid;gap:6px}
+.offer-card p{color:var(--on-band-soft);font-size:.95rem}
+.offer-note{margin-top:18px;color:var(--on-band-soft);font-size:.95rem}
 
-/* steps */
-.steps{display:grid;gap:16px;counter-reset:s;margin:0;padding:0;list-style:none}
-@media (min-width:760px){.steps{grid-template-columns:repeat(2,1fr)}}
-@media (min-width:1000px){.steps{grid-template-columns:repeat(4,1fr)}}
-.steps li{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px 20px;counter-increment:s;position:relative}
-.steps li::before{content:counter(s);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:var(--navy);color:#F5F0E7;font:700 1.05rem/1 var(--serif);margin-bottom:14px}
-@media (prefers-color-scheme:dark){.steps li::before{background:#E2551C}}
-.steps h3{margin-bottom:6px}
-.steps p{color:var(--soft);font-size:.97rem}
+/* suppliers */
+.suppliers{display:grid;gap:24px;align-items:center}
+@media (min-width:900px){.suppliers{grid-template-columns:1.2fr .8fr;gap:48px}}
+.supply-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:26px;display:grid;gap:14px}
+.supply-card ol{margin:0;padding-left:20px;display:grid;gap:8px;color:var(--soft)}
 
-/* get */
-.get{display:grid;gap:16px}
-@media (min-width:760px){.get{grid-template-columns:repeat(2,1fr)}}
-.feat{display:flex;gap:16px;align-items:flex-start;padding:20px;border-radius:var(--r);background:var(--paper);border:1px solid var(--line)}
-.feat .ic{flex:none;width:44px;height:44px;border-radius:12px;background:var(--navy);display:grid;place-items:center}
-@media (prefers-color-scheme:dark){.feat .ic{background:#24405F}}
-.feat .ic svg{width:22px;height:22px}
-.feat h3{margin-bottom:4px}
-.feat p{color:var(--soft);font-size:.97rem}
-.honest{margin-top:22px;padding:18px 20px;border-left:4px solid var(--orange);background:var(--paper);border-radius:0 12px 12px 0;color:var(--soft)}
-.honest b{color:var(--ink)}
-
-/* prices */
-.prices{display:grid;gap:18px}
-@media (min-width:820px){.prices{grid-template-columns:1fr 1fr;gap:24px}}
-.plan{border-radius:22px;padding:28px 24px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
-.plan.dark{background:var(--deep);color:var(--on-dark);border-color:var(--deep)}
-@media (prefers-color-scheme:dark){.plan.dark{background:#1A3556;border-color:#2C4C72}}
-.plan .lab{font:700 .78rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--orange-ink)}
-.plan.dark .lab{color:#F2875A}
-.price{font:700 clamp(2.4rem,6vw,3.1rem)/1 var(--serif);margin:14px 0 4px}
-.plan .sub{color:var(--soft);font-weight:600}
-.plan.dark .sub{color:var(--on-dark-soft)}
-.plan ul{margin:20px 0 0;padding:0;list-style:none;display:grid;gap:10px}
-.plan li{position:relative;padding-left:26px}
-.plan li::before{content:"";position:absolute;left:0;top:.45em;width:14px;height:14px;border-radius:50%;border:3px solid var(--orange)}
-.plan .total{margin-top:auto;padding-top:20px;font-size:.95rem;color:var(--soft)}
-.plan.dark .total{color:var(--on-dark-soft)}
-.price-note{margin-top:20px;color:var(--soft);font-size:.97rem}
-
-/* about */
+/* about + privacy */
 .about{display:grid;gap:28px}
-@media (min-width:900px){.about{grid-template-columns:1.1fr .9fr;gap:48px;align-items:start}}
+@media (min-width:900px){.about{grid-template-columns:1fr 1fr;gap:48px;align-items:start}}
 .about p+p{margin-top:14px}
-.facts{margin:0;padding:22px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);display:grid;gap:14px}
-.facts div{display:grid;gap:2px}
-.facts dt{font:700 .75rem/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
-.facts dd{margin:0;font-weight:600}
-.facts a{color:var(--orange-ink);font-weight:700}
-
-/* preview link + contact */
-.contact{background:var(--navy);color:var(--on-dark);border-radius:26px;padding:34px 24px;display:grid;gap:18px}
-@media (prefers-color-scheme:dark){.contact{background:#1A3556}}
-@media (min-width:820px){.contact{grid-template-columns:1.3fr auto;align-items:center;padding:44px 48px}}
-.contact h2{font-size:clamp(1.6rem,3.4vw,2.2rem)}
-.contact p{color:var(--on-dark-soft);margin-top:10px}
-.mail{font:700 clamp(1.15rem,3.6vw,1.45rem)/1.2 var(--sans);color:#fff;word-break:break-word}
-
-/* privacy */
-.privacy{font-size:.96rem}
+dl.facts-list{margin:0;padding:22px;border-radius:18px;background:var(--surface);border:1px solid var(--line);display:grid;gap:14px}
+dl.facts-list div{display:grid;gap:2px}
+dl.facts-list dt{font:700 .72rem/1.2 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
+dl.facts-list dd{margin:0;font-weight:600}
+dl.facts-list a{color:var(--orange-ink);font-weight:700}
+.privacy{font-size:.96rem;border-top:1px solid var(--line)}
 .privacy .grid{display:grid;gap:22px}
 @media (min-width:820px){.privacy .grid{grid-template-columns:1fr 1fr;gap:26px 40px}}
 .privacy h3{font-size:1.05rem;margin-bottom:6px}
@@ -195,80 +172,97 @@ section{padding:64px 0}
 .privacy li+li{margin-top:4px}
 .privacy a{color:var(--orange-ink);font-weight:600}
 .updated{margin-top:26px;font-size:.88rem;color:var(--soft)}
-
-footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:.9rem;color:var(--soft)}
-footer .row{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between}
-footer a{color:var(--soft)}
-
+footer{background:var(--band-2);color:var(--on-band-soft);padding-block:28px 40px;font-size:.9rem}
+footer .row2{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:space-between}
+footer a{color:var(--on-band)}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.btn:hover{transform:none}}
 </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
 
 <header class="top">
   <div class="wrap bar">
-    <a class="brand" href="#top" aria-label="Maystone, back to top">
-      <svg viewBox="0 0 62 49" aria-hidden="true"><rect x="15" y="0" width="32" height="13" rx="6.5" fill="#E2551C"/><rect x="7" y="16.5" width="48" height="14" rx="7" fill="currentColor"/><rect x="0" y="34" width="62" height="15" rx="7.5" fill="currentColor"/></svg>
-      Maystone
+    <a class="brand" href="#top" aria-label="Maystone Sales Group, back to top">
+      <svg viewBox="0 0 62 49" aria-hidden="true"><rect x="15" y="0" width="32" height="13" rx="6.5" fill="#F5F0E7"/><rect x="7" y="16.5" width="48" height="14" rx="7" fill="#F5F0E7"/><rect x="0" y="34" width="62" height="15" rx="7.5" fill="#F5F0E7"/></svg>
+      <span><b>Maystone</b><small>Sales Group</small></span>
     </a>
     <nav class="links" aria-label="Main">
-      <a href="#how">How it works</a>
-      <a href="#prices">Prices</a>
+      <a href="#join">Join as a rep</a>
       <a href="#rang">Did we ring you?</a>
+      <a href="#suppliers">Sell through us</a>
       <a href="#privacy">Privacy</a>
     </nav>
-    <a class="btn btn-main btn-small" href="mailto:hello@maystone.uk">Email us</a>
+    <a class="btn btn-main btn-small" href="#join">Join the team</a>
   </div>
 </header>
 
 <main id="main">
   <div id="top" class="hero">
-    <div class="wrap hero-grid">
+    <div class="wrap">
       <div>
-        <p class="kicker">Websites for Sussex tradespeople</p>
-        <h1>A proper website for your trade, built from your <em>Google reviews</em>.</h1>
-        <p class="lead">We make you a free preview first, so you can see it on your phone before you decide anything. Don't like it? We take it down.</p>
-        <ul class="ticks" aria-label="The free preview">
-          <li>Free to look at</li>
-          <li>No card</li>
-          <li>No contract</li>
-        </ul>
+        <p class="kicker">Maystone Sales Group · Sussex, UK</p>
+        <h1>A sales team that works from <em>anywhere</em>.</h1>
+        <p class="lead">We're a UK sales agency. Our self-employed reps ring businesses, offer them something worth having, and close the sale. Right now that's websites for local tradespeople.</p>
         <div class="cta-row">
-          <a class="btn btn-main" href="mailto:hello@maystone.uk?subject=Website%20preview">Email hello@maystone.uk</a>
-          <a class="btn btn-ghost" href="#prices">See the prices</a>
+          <a class="btn btn-main" href="#join">Join as a rep</a>
+          <a class="btn btn-line" href="#rang">Did we just ring you?</a>
         </div>
-        <p class="where">A small web team based near Shoreham-by-Sea, West Sussex.</p>
       </div>
-
-      <div class="phone-wrap" aria-hidden="true">
-        <div class="phone">
-          <div class="screen">
-            <div class="notch"><span></span></div>
-            <div class="s-top"><span class="s-logo">Your Trade Co.</span><span class="s-tag">Preview</span></div>
-            <div class="s-hero"><b>Plumbing &amp; heating in your town</b><span class="s-stars">★★★★★<small>your Google reviews</small></span></div>
-            <div class="s-btns">
-              <div class="s-btn call">Call now</div>
-              <div class="s-btn wa">WhatsApp a photo</div>
-              <div class="s-btn quote">Get a quote</div>
-            </div>
-            <div class="s-rev"><div class="ln"></div><div class="ln w2"></div><div class="ln w3"></div><small>Your real reviews go here</small></div>
-            <div class="s-sec">Recent jobs</div>
-            <div class="s-grid"><i></i><i></i><i></i><i></i></div>
-            <div class="s-areas"><span>Your town</span><span>Nearby town</span><span>And around</span></div>
-          </div>
-        </div>
-        <span class="example">Example layout – not a real business</span>
+      <div class="board" aria-label="What Maystone sells">
+        <div class="board-head"><span>Now selling</span><span class="live">Live</span></div>
+        <div class="row"><div><b>Websites for local trades</b><small>Sussex · a free preview first, no card, no contract</small></div><span class="pill on">Selling now</span></div>
+        <div class="row"><div><b>Your product or service?</b><small>For businesses that sell to small businesses</small></div><span class="pill">Open to suppliers</span></div>
+        <p class="board-foot">Every sale is made by phone, by a self-employed Maystone rep. Reps never take card details.</p>
       </div>
     </div>
   </div>
+
+  <section id="join" aria-labelledby="join-h">
+    <div class="wrap">
+      <div class="head">
+        <p class="kicker">Join the team</p>
+        <h2 id="join-h">Remote sales. Commission only. Your hours.</h2>
+        <p class="lead">You phone tradespeople who don't have a proper website and offer them a free preview. Our team builds it. You ring back and close the sale.</p>
+      </div>
+      <div class="join-grid">
+        <div class="pay">
+          <p class="kicker" style="color:var(--on-band-accent)">Per website sale</p>
+          <p class="big"><span>£</span>260</p>
+          <p class="what">Paid to you for every website you sell.</p>
+          <ul class="small-print">
+            <li>Commission only: there's no basic pay.</li>
+            <li>You must be registered as self-employed with HMRC.</li>
+            <li>UK-based. No fees to join, ever.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="facts">
+            <div class="fact"><h3>No set hours</h3><p>Work from home, around uni or another job. Calls happen 8am to 7pm, Monday to Saturday.</p></div>
+            <div class="fact"><h3>Leads provided</h3><p>You get the numbers to call. You don't hunt for leads or build anything.</p></div>
+            <div class="fact"><h3>Free training</h3><p>Our call script, practice calls and coaching from our sales manager before your first real call.</p></div>
+            <div class="fact"><h3>A daily leaderboard</h3><p>Previews booked and sales, not dials. As we add new offers, top reps get first pick.</p></div>
+          </div>
+          <ol class="steps" aria-label="How to join">
+            <li><div><b>Email us</b><span>Send a few lines about you to harvey@maystone.uk with the subject JOIN.</span></div></li>
+            <li><div><b>Intro call</b><span>Harvey explains how Maystone works and answers your questions.</span></div></li>
+            <li><div><b>Sign the rep agreement</b><span>Commission, payments and the rules, in writing.</span></div></li>
+            <li><div><b>Training, then your first calls</b><span>Learn the script, practise it, then start.</span></div></li>
+          </ol>
+          <div class="apply">
+            <a class="btn btn-main" href="mailto:harvey@maystone.uk?subject=JOIN">Email harvey@maystone.uk</a>
+            <small>Subject: JOIN</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section id="rang" class="band" aria-labelledby="rang-h">
     <div class="wrap">
       <div class="head">
         <p class="kicker">Did we just ring you?</p>
-        <h2 id="rang-h">Probably. Here's what to expect from us.</h2>
-        <p class="lead">We ring local trades to offer a free preview website. Every call works the same way.</p>
+        <h2 id="rang-h">Probably. Here's what to expect.</h2>
+        <p class="lead">Our reps ring local trades to offer a free preview website. Every call works the same way.</p>
       </div>
       <ul class="promise">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2875A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><div><b>We say who we are</b><span>Our name, that we're from Maystone, and that it's a sales call.</span></div></li>
@@ -278,72 +272,43 @@ footer a{color:var(--soft)}
         <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2875A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><div><b>Calls may be recorded for training</b><span>Rather not? Say so and we'll switch it off.</span></div></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2875A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h4l2 5-2.5 1.5a11 11 0 0 0 5 5L14 14l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 3 6a1 1 0 0 1 1-1z"/><path d="M15 3l6 6M21 3l-6 6"/></svg><div><b>Don't want calls? Tell us once.</b><span>We'll put your number on our do-not-call list, and nobody here will ring it again.</span></div></li>
       </ul>
-    </div>
-  </section>
-
-  <section id="how" aria-labelledby="how-h">
-    <div class="wrap">
-      <div class="head">
-        <p class="kicker">How it works</p>
-        <h2 id="how-h">Four steps. You decide at the end.</h2>
-      </div>
-      <ol class="steps">
-        <li><h3>A quick chat</h3><p>Two minutes on the phone about your work, and what people find when they look you up.</p></li>
-        <li><h3>Your free preview</h3><p>Say yes, and we build a preview website from your Google reviews and business details. We send the link by text, WhatsApp or email – your choice.</p></li>
-        <li><h3>Have a look</h3><p>Open it on your phone and tell us what you'd change. It's not on Google, and we don't share the link with anyone.</p></li>
-        <li><h3>Your call</h3><p>Like it? Pick an option below and pay on Stripe's secure page. Not for you? We take it down. No chasing.</p></li>
-      </ol>
-    </div>
-  </section>
-
-  <section aria-labelledby="get-h" style="padding-top:0">
-    <div class="wrap">
-      <div class="head">
-        <p class="kicker">What you get</p>
-        <h2 id="get-h">Built to get you calls, not to look clever.</h2>
-      </div>
-      <div class="get">
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5F0E7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h4l2 5-2.5 1.5a11 11 0 0 0 5 5L14 14l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 3 6a1 1 0 0 1 1-1z"/></svg></div><div><h3>Calls and quotes to your phone</h3><p>Call and WhatsApp buttons, and a quote form that comes straight to you.</p></div></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5F0E7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1.1 6L12 16.6 6.7 19.5l1.1-6L3.4 9.3l6-.8z"/></svg></div><div><h3>Your reviews up front</h3><p>The reviews you've already earned do the talking.</p></div></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5F0E7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg></div><div><h3>We write it all</h3><p>You just check it, then send your logo, photos and any badges through a quick form.</p></div></div>
-        <div class="feat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5F0E7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div><div><h3>Your name on the web address</h3><p>The domain is registered in your name, not ours.</p></div></div>
-      </div>
-      <p class="honest"><b>What we won't promise:</b> more jobs, more leads or the top of Google. Nobody honest can. A good website makes the people who already look you up more likely to ring you.</p>
-    </div>
-  </section>
-
-  <section id="prices" aria-labelledby="prices-h" style="padding-top:0">
-    <div class="wrap">
-      <div class="head">
-        <p class="kicker">Prices</p>
-        <h2 id="prices-h">Two options. Both prices in full.</h2>
-      </div>
-      <div class="prices">
-        <div class="plan">
+      <div class="offer">
+        <div class="offer-card">
+          <span class="lab">How the preview works</span>
+          <p>Say yes and our team builds a preview website from your Google reviews. You get the link by text, WhatsApp or email. Look at it on your phone and tell us what you'd change. Not for you? We take it down. No chasing.</p>
+          <p>Preview links are private: not on Google, and we don't share them.</p>
+        </div>
+        <div class="offer-card">
           <span class="lab">One-off</span>
-          <p class="price">£500</p>
-          <p class="sub">paid once</p>
-          <ul>
-            <li>First year's hosting included</li>
-            <li>Then hosting is £10 a month, or £100 a year</li>
-            <li>The site's yours, and the domain's in your name</li>
-            <li>Stop the hosting any time and we send you the website files</li>
-          </ul>
+          <span class="price">£500</span>
+          <ul><li>First year's hosting included</li><li>Then £10 a month, or £100 a year</li><li>The site's yours, and the domain's in your name</li><li>Stop the hosting and we send you the files</li></ul>
         </div>
-        <div class="plan dark">
+        <div class="offer-card">
           <span class="lab">Monthly</span>
-          <p class="price">£298 today</p>
-          <p class="sub">then £49 a month</p>
-          <ul>
-            <li>£298 is the £249 set-up plus your first month</li>
-            <li>£49 covers hosting, security, domain renewal, support and up to 3 small changes a month</li>
-            <li>No contract: it rolls month to month. Cancel with 30 days' notice</li>
-            <li>Domain in your name. The site's yours after 12 months, or buy it out for £150 before then</li>
-          </ul>
-          <p class="total">That's £886 in the first year.</p>
+          <span class="price">£298 today</span>
+          <ul><li>Then £49 a month (£298 = £249 set-up + first month)</li><li>Covers hosting, security, domain renewal, support and up to 3 small changes a month</li><li>No contract: cancel with 30 days' notice</li><li>Yours after 12 months, or a £150 buyout before then. £886 in year one</li></ul>
         </div>
       </div>
-      <p class="price-note">Those are the only prices: no discounts, no add-ons, no surprises. Payments are taken by Stripe.</p>
+      <p class="offer-note">Those are the only prices. We can't promise more jobs, leads or the top of Google, and nobody honest can. Questions, or want your preview taken down? Email hello@maystone.uk, or ring back the number that called you.</p>
+    </div>
+  </section>
+
+  <section id="suppliers" aria-labelledby="sup-h">
+    <div class="wrap suppliers">
+      <div class="head" style="margin-bottom:0">
+        <p class="kicker">Sell through Maystone</p>
+        <h2 id="sup-h">Got something small businesses need?</h2>
+        <p class="lead">Our reps could sell it for you, paid per sale. We add new offers one at a time, so each one gets a team that knows it properly.</p>
+      </div>
+      <div class="supply-card">
+        <h3>How it starts</h3>
+        <ol>
+          <li>Email hello@maystone.uk: what you sell, who buys it, and the price.</li>
+          <li>We talk it through and agree the commission per sale.</li>
+          <li>We write a script, train a few reps on it, and start calling.</li>
+        </ol>
+        <p class="mailtext">hello@maystone.uk</p>
+      </div>
     </div>
   </section>
 
@@ -351,32 +316,21 @@ footer a{color:var(--soft)}
     <div class="wrap about">
       <div>
         <p class="kicker">Who we are</p>
-        <h2 id="about-h" style="margin:12px 0 18px">A small team near Shoreham.</h2>
-        <p>Maystone builds websites for local tradespeople across Sussex: plumbers, electricians, roofers, builders, decorators, gardeners and more.</p>
-        <p>Lots of good trades have brilliant Google reviews and nowhere to send people who look them up. We fix that, simply, at a price you know up front.</p>
+        <h2 id="about-h" style="margin:12px 0 18px">Started near Shoreham. Built to grow.</h2>
+        <p>Maystone Sales Group is run by Harvey Matthews near Shoreham-by-Sea, West Sussex. We're building a team of self-employed reps who sell by phone from wherever they are.</p>
+        <p>We started with websites for local trades because lots of good tradespeople have brilliant Google reviews and nowhere to send the people who look them up.</p>
       </div>
-      <dl class="facts">
-        <div><dt>Business</dt><dd>Maystone is a trading name of Harvey-George Matthews, a sole trader.</dd></div>
+      <dl class="facts-list">
+        <div><dt>Business</dt><dd>Maystone Sales Group is a trading name of Harvey-George Matthews, a sole trader.</dd></div>
         <div><dt>Company number</dt><dd>None – we're not a limited company.</dd></div>
         <div><dt>Based</dt><dd>Near Shoreham-by-Sea, West Sussex</dd></div>
         <div><dt>Email</dt><dd><a href="mailto:hello@maystone.uk">hello@maystone.uk</a></dd></div>
+        <div><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/company/maystonesales" rel="noopener">Maystone Sales Group</a></dd></div>
       </dl>
     </div>
   </section>
 
-  <section aria-labelledby="contact-h" style="padding-top:0">
-    <div class="wrap">
-      <div class="contact">
-        <div>
-          <h2 id="contact-h">Got a preview link from us?</h2>
-          <p>It's private: not on Google, and we don't share it. Questions, changes, or want it taken down? Email us, or ring back the number that called you.</p>
-        </div>
-        <a class="mail" href="mailto:hello@maystone.uk">hello@maystone.uk</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="privacy" class="privacy" aria-labelledby="privacy-h" style="padding-top:0">
+  <section id="privacy" class="privacy" aria-labelledby="privacy-h">
     <div class="wrap">
       <div class="head">
         <p class="kicker">Privacy</p>
@@ -385,13 +339,13 @@ footer a{color:var(--soft)}
       <div class="grid">
         <div>
           <h3>Who's responsible</h3>
-          <p>Harvey-George Matthews, trading as Maystone. Contact: <a href="mailto:hello@maystone.uk">hello@maystone.uk</a>.</p>
+          <p>Harvey-George Matthews, trading as Maystone Sales Group. Contact: <a href="mailto:hello@maystone.uk">hello@maystone.uk</a>.</p>
         </div>
         <div>
           <h3>What we use</h3>
           <ul>
-            <li>Business details that are public on Google: your business name, trade, area, business phone number, rating and reviews.</li>
-            <li>What you give us: your email or mobile, logo, photos, and notes from our calls.</li>
+            <li>Businesses we call: details that are public on Google (business name, trade, area, business phone number, rating and reviews), plus what you give us and notes from our calls.</li>
+            <li>People who apply to join: what you send us.</li>
             <li>Call recordings, when a call is recorded.</li>
           </ul>
         </div>
@@ -400,18 +354,20 @@ footer a{color:var(--soft)}
           <ul>
             <li>To tell local businesses about a service that could help them, and to build your preview if you say yes (legitimate interests).</li>
             <li>To build and run your website if you buy (our contract with you).</li>
+            <li>To consider your application if you want to join.</li>
             <li>To keep accounts records (the law requires it).</li>
           </ul>
         </div>
         <div>
           <h3>Who sees it</h3>
-          <p>The Maystone team, and the services we use to run the business: Google Workspace (email and files), GitHub (hosting previews and websites) and Stripe (payments). We never sell your details.</p>
+          <p>The Maystone team, and the services we use to run the business: Google Workspace (email and files), GitHub (hosting websites and previews) and Stripe (payments). We never sell your details.</p>
         </div>
         <div>
           <h3>How long we keep it</h3>
           <ul>
             <li>Call recordings: up to 30 days, only for training. Object, and we delete yours the same day.</li>
             <li>Sales notes: up to 12 months after we last spoke, then deleted.</li>
+            <li>Applications: up to 12 months if you don't join.</li>
             <li>Customers: while we look after your site, plus 6 years for accounts records.</li>
             <li>Do-not-call list: your number stays on it, so nobody here rings you again.</li>
           </ul>
@@ -435,8 +391,8 @@ footer a{color:var(--soft)}
 </main>
 
 <footer>
-  <div class="wrap row">
-    <span>© 2026 Maystone · A trading name of Harvey-George Matthews, sole trader · Near Shoreham-by-Sea, West Sussex</span>
+  <div class="wrap row2">
+    <span>© 2026 Maystone Sales Group · A trading name of Harvey-George Matthews, sole trader · Near Shoreham-by-Sea, West Sussex</span>
     <a href="mailto:hello@maystone.uk">hello@maystone.uk</a>
   </div>
 </footer>

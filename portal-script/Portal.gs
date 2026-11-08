@@ -60,6 +60,8 @@ function doPost(e) {
     if (a === 'me') return json_(mePayload_(me));
     if (a === 'logout') { endSession_(req.session); return json_({ ok: true }); }
     if (a === 'setPassword') { lock.waitLock(20000); return json_(setPassword_(me, req.password)); }
+    if (a === 'module') return json_(module_(me, req.title));
+    if (a === 'slide') return json_(slide_(me, req.title, req.n));
     if (a === 'markDone') { lock.waitLock(20000); return json_(markDone_(me, req.title, !!req.done)); }
     if (!isAdmin_(me)) return json_({ ok: false, error: 'Only the admin can do that.' });
     lock.waitLock(20000);
@@ -117,6 +119,107 @@ function loginPassword_(email, password) {
   if (u.Status !== 'Active') return { ok: false, error: 'This login is switched off. Contact Harvey.' };
   cache.remove(key);
   return startSession_(u, 'logged in (password)');
+}
+
+/* ---------------- Academy: training as members-only pages ---------------- */
+// Docs are read live and turned into page blocks. Decks are rendered to slide images once by refreshAcademy()
+// (run it from the editor after changing a deck) and kept in the private "Maystone Academy (site)" Drive folder.
+
+var ACADEMY_FOLDER = 'Maystone Academy (site)';
+function academyFolder_() { var it = DriveApp.getFoldersByName(ACADEMY_FOLDER); return it.hasNext() ? it.next() : DriveApp.createFolder(ACADEMY_FOLDER); }
+function fileIdFrom_(link) { var m = String(link || '').match(/\/d\/([\w-]{20,})/); return m ? m[1] : ''; }
+function trainingFor_(me, title) {
+  var lvl = LEVEL[me.Role] || 1, t = table_('Training').filter(function (x) { return x.Title === title; })[0];
+  if (!t) return null;
+  if ((LEVEL[t.Role] || 0) > lvl) return { locked: true };
+  return t;
+}
+function module_(me, title) {
+  var t = trainingFor_(me, String(title || ''));
+  if (!t) return { ok: false, error: 'Module not found.' };
+  if (t.locked) return { ok: false, error: 'This module unlocks at a higher level.' };
+  var id = fileIdFrom_(t.Link);
+  if (!id) return { ok: true, kind: 'link', link: t.Link };
+  var f = DriveApp.getFileById(id), mt = f.getMimeType();
+  if (mt === MimeType.GOOGLE_DOCS) return { ok: true, kind: 'doc', blocks: docBlocks_(id) };
+  var meta = deckMeta_(id);
+  if (meta) return { ok: true, kind: 'deck', count: meta.slides.length, notes: meta.slides.map(function (x) { return x.notes; }), texts: meta.slides.map(function (x) { return x.text; }) };
+  return { ok: true, kind: 'link', link: t.Link };
+}
+function deckMeta_(id) {
+  var it = academyFolder_().getFilesByName(id + '.json');
+  return it.hasNext() ? JSON.parse(it.next().getBlob().getDataAsString()) : null;
+}
+function slide_(me, title, n) {
+  var t = trainingFor_(me, String(title || ''));
+  if (!t || t.locked) return { ok: false, error: 'Module not found.' };
+  var meta = deckMeta_(fileIdFrom_(t.Link)); n = Number(n) || 0;
+  if (!meta || !meta.slides[n]) return { ok: false, error: 'Slide not found.' };
+  var cache = CacheService.getScriptCache(), key = 'sl:' + meta.slides[n].img, hit = cache.get(key);
+  if (hit) return { ok: true, img: hit };
+  var b = DriveApp.getFileById(meta.slides[n].img).getBlob(), data = 'data:' + b.getContentType() + ';base64,' + Utilities.base64Encode(b.getBytes());
+  if (data.length < 95000) cache.put(key, data, 21600);
+  return { ok: true, img: data };
+}
+
+/** Run from the editor whenever a deck changes: renders every deck in the Training tab to slide images. */
+function refreshAcademy() {
+  var folder = academyFolder_(), done = [];
+  table_('Training').forEach(function (t) {
+    var id = fileIdFrom_(t.Link); if (!id) return;
+    var f; try { f = DriveApp.getFileById(id); } catch (e) { done.push('missing: ' + t.Title); return; }
+    var mt = f.getMimeType(); if (mt === MimeType.GOOGLE_DOCS || mt.indexOf('presentation') === -1) return;
+    var presId = id, temp = null;
+    if (mt !== MimeType.GOOGLE_SLIDES) { temp = Drive.Files.copy({ name: '(temp) ' + f.getName(), mimeType: MimeType.GOOGLE_SLIDES }, id, { supportsAllDrives: true }); presId = temp.id; }
+    var old = folder.getFilesByName(id + '.json'); while (old.hasNext()) { var o = old.next(); try { JSON.parse(o.getBlob().getDataAsString()).slides.forEach(function (x) { DriveApp.getFileById(x.img).setTrashed(true); }); } catch (e) {} o.setTrashed(true); }
+    var pres = SlidesApp.openById(presId), token = ScriptApp.getOAuthToken(), slides = [];
+    pres.getSlides().forEach(function (sl, i) {
+      var png = UrlFetchApp.fetch('https://docs.google.com/presentation/d/' + presId + '/export/png?pageid=' + sl.getObjectId(), { headers: { Authorization: 'Bearer ' + token } }).getBlob().setName(id + '-' + (i + 1) + '.png');
+      var img = folder.createFile(png);
+      var notes = ''; try { notes = sl.getNotesPage().getSpeakerNotesShape().getText().asString().trim(); } catch (e) {}
+      var text = sl.getShapes().map(function (sh) { try { return sh.getText().asString().trim(); } catch (e) { return ''; } }).filter(String).join('\n').slice(0, 2000);
+      slides.push({ img: img.getId(), notes: notes, text: text });
+    });
+    folder.createFile(id + '.json', JSON.stringify({ title: t.Title, built: new Date(), slides: slides }), 'application/json');
+    if (temp) DriveApp.getFileById(temp.id).setTrashed(true);
+    done.push(t.Title + ': ' + slides.length + ' slides');
+  });
+  console.log(done.join('\n'));
+  return done.join('\n');
+}
+
+function docBlocks_(id) {
+  var body = DocumentApp.openById(id).getBody(), out = [], E = DocumentApp.ElementType, H = DocumentApp.ParagraphHeading;
+  for (var i = 0; i < body.getNumChildren(); i++) {
+    var el = body.getChild(i), type = el.getType();
+    if (type === E.PARAGRAPH) {
+      var p = el.asParagraph(); if (!p.getText().trim()) continue;
+      var h = p.getHeading(), tag = (h === H.TITLE) ? 'h1' : (h === H.HEADING1 || h === H.SUBTITLE) ? 'h2' : (h === H.HEADING2) ? 'h3' : (h === H.HEADING3 || h === H.HEADING4 || h === H.HEADING5 || h === H.HEADING6) ? 'h4' : 'p';
+      out.push({ t: tag, h: rich_(p) });
+    } else if (type === E.LIST_ITEM) {
+      var li = el.asListItem(); if (!li.getText().trim()) continue;
+      var g = li.getGlyphType(), ordered = g === DocumentApp.GlyphType.NUMBER || g === DocumentApp.GlyphType.LATIN_LOWER || g === DocumentApp.GlyphType.LATIN_UPPER || g === DocumentApp.GlyphType.ROMAN_LOWER || g === DocumentApp.GlyphType.ROMAN_UPPER;
+      out.push({ t: 'li', h: rich_(li), n: li.getNestingLevel(), o: ordered, id: li.getListId() });
+    } else if (type === E.TABLE) {
+      var tb = el.asTable(), rows = [];
+      for (var r = 0; r < tb.getNumRows(); r++) { var row = tb.getRow(r), cells = []; for (var c = 0; c < row.getNumCells(); c++) cells.push(esc_(row.getCell(c).getText())); rows.push(cells); }
+      out.push({ t: 'table', rows: rows });
+    } else if (type === E.HORIZONTAL_RULE) out.push({ t: 'hr' });
+  }
+  return out;
+}
+function esc_(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function rich_(el) {
+  var t = el.editAsText(), s = t.getText(), idx = t.getTextAttributeIndices(), html = '';
+  for (var k = 0; k < idx.length; k++) {
+    var a = idx[k], b = k + 1 < idx.length ? idx[k + 1] : s.length; if (b <= a) continue;
+    var seg = esc_(s.substring(a, b)), url = t.getLinkUrl(a);
+    if (t.isBold(a)) seg = '<b>' + seg + '</b>';
+    if (t.isItalic(a)) seg = '<i>' + seg + '</i>';
+    if (url && /^https?:\/\//.test(url)) seg = '<a href="' + esc_(url) + '" target="_blank" rel="noopener">' + seg + '</a>';
+    html += seg;
+  }
+  return html;
 }
 
 /* ---------------- task progress ---------------- */

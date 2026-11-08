@@ -64,6 +64,8 @@ function doPost(e) {
     if (a === 'setPassword') { lock.waitLock(20000); return json_(setPassword_(me, req.password)); }
     if (a === 'module') return json_(module_(me, req.title));
     if (a === 'slide') return json_(slide_(me, req.title, req.n));
+    if (a === 'leads') return json_(leads_(me, req.tab));
+    if (a === 'saveLead') { lock.waitLock(20000); return json_(saveLead_(me, req.tab, req.row, req.id, req.fields || {})); }
     if (a === 'callbacks') return json_(callbacks_(me));
     if (a === 'saveCallback') { lock.waitLock(20000); return json_(saveCallback_(me, req.cb || {})); }
     if (a === 'deleteCallback') { lock.waitLock(20000); return json_(deleteCallback_(me, req.id)); }
@@ -648,6 +650,55 @@ function selfTest() {
   out.push('bad token refused: ' + (!verify_('abc').ok));
   console.log(out.join('\n'));
   return out.join('\n');
+}
+
+/* ---------------- leads: the rep's Call Lists tab, worked from the website ---------------- */
+// The Google Sheet stays the database, so syncActivity, previews and everything else that reads it keep working.
+// Reps can only change the columns below; everything else is read-only on the site.
+
+var LEAD_EDIT = { 'Called (tick)': 60, 'Outcome': 120, 'Client email': 120, 'Call notes': 3000, 'TPS': 40, 'Next contact': 'date', 'Do not call': 'bool', 'Interested in': 80, 'OK to refer': 'bool', 'Last offer': 60, 'Details': 1000 };
+function leadTab_(me, tab) {
+  var name = isAdmin_(me) && tab ? String(tab) : String(me['Call list tab'] || '').trim();
+  if (!name) return { error: 'You do not have a call list yet. Ask Harvey to set one up.' };
+  var sh; try { sh = SpreadsheetApp.openById(CALL_LISTS_ID).getSheetByName(name); } catch (e) { return { error: 'Could not open the call lists.' }; }
+  if (!sh) return { error: 'Your call list tab "' + name + '" was not found.' };
+  return { sh: sh, name: name };
+}
+function leadVal_(x) { if (x instanceof Date) return isNaN(x.getTime()) ? '' : Utilities.formatDate(x, 'Europe/London', 'yyyy-MM-dd'); return x; }
+function leads_(me, tab) {
+  var t = leadTab_(me, tab); if (t.error) return { ok: false, error: t.error };
+  var sh = t.sh, lr = sh.getLastRow(), lc = sh.getLastColumn();
+  if (lr < 2) return { ok: true, tab: t.name, head: [], leads: [] };
+  var v = sh.getRange(1, 1, lr, lc).getValues(), head = v[0].map(String), out = [];
+  for (var i = 1; i < v.length; i++) {
+    if (!String(v[i][0]).trim()) continue;
+    var o = { _row: i + 1 }; head.forEach(function (h, c) { if (h) o[h] = leadVal_(v[i][c]); }); out.push(o);
+  }
+  var tabs = isAdmin_(me) ? SpreadsheetApp.openById(CALL_LISTS_ID).getSheets().map(function (s) { return s.getName(); }).filter(function (n) { return n !== 'Summary'; }) : [];
+  return { ok: true, tab: t.name, tabs: tabs, head: head, editable: Object.keys(LEAD_EDIT), leads: out };
+}
+function saveLead_(me, tab, row, id, f) {
+  var t = leadTab_(me, tab); if (t.error) return { ok: false, error: t.error };
+  var sh = t.sh, lc = sh.getLastColumn(), head = sh.getRange(1, 1, 1, lc).getValues()[0].map(String);
+  row = Number(row); id = String(id || '').trim(); if (!id) return { ok: false, error: 'Missing lead.' };
+  if (!(row >= 2 && row <= sh.getLastRow() && String(sh.getRange(row, 1).getValue()).trim() === id)) {
+    var ids = sh.getRange(1, 1, sh.getLastRow(), 1).getValues(); row = 0;
+    for (var i = 1; i < ids.length; i++) if (String(ids[i][0]).trim() === id) { row = i + 1; break; }
+    if (!row) return { ok: false, error: 'That lead has moved or been removed. Refresh and try again.' };
+  }
+  var cur = sh.getRange(row, 1, 1, lc).getValues()[0], changed = [];
+  Object.keys(f).forEach(function (h) {
+    var rule = LEAD_EDIT[h], c = head.indexOf(h); if (!rule || c === -1) return;
+    var val = f[h];
+    if (rule === 'bool') val = val === true || val === 'true';
+    else if (rule === 'date') { var m = String(val || '').match(/^(\d{4})-(\d{2})-(\d{2})$/); val = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : ''; }
+    else val = String(val == null ? '' : val).replace(/[\u0000-\u0009\u000b-\u001f]/g, ' ').trim().slice(0, rule);
+    if (String(leadVal_(cur[c])) === String(leadVal_(val))) return;
+    cur[c] = val; changed.push(h); sh.getRange(row, c + 1).setValue(val);
+  });
+  if (changed.length) { log_(me.Email, 'updated lead', t.name + ' ' + id + ': ' + changed.join(', ')); }
+  var o = { _row: row }; head.forEach(function (h, c) { if (h) o[h] = leadVal_(cur[c]); });
+  return { ok: true, lead: o, changed: changed };
 }
 
 /* ---------------- team events: group calls, trainings (set by the admin, seen by everyone at that level) ---------------- */

@@ -123,6 +123,7 @@ body.in footer{display:none}
 .ms-nav{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:#C3CEDC;font:500 15px var(--body);padding:12px;border-radius:12px;cursor:pointer;text-align:left;min-height:46px;transition:background .2s,color .2s}
 .ms-nav:hover{background:rgba(255,255,255,.06);color:#fff}
 .ms-nav.on{background:#fff;color:var(--ink);font-weight:600}
+.ms-nav span b{font-weight:inherit}
 .ms-nav em{margin-left:auto;font-style:normal;background:var(--accent);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:2px 8px}
 .ms-sidefoot{margin-top:auto;font-size:12px;color:#7F90A6;padding:6px;line-height:1.6}
 .ms-main{min-width:0;display:grid;gap:20px}
@@ -262,6 +263,40 @@ body.in footer{display:none}
 .ms-docwrap.ms-full{position:fixed;inset:0;z-index:1000;background:#F6F8FB;overflow:auto;padding:12px}
 .ms-docwrap.ms-full .ms-doc{max-width:900px;margin:0 auto;font-size:18px}
 body.ms-noscroll{overflow:hidden}
+.ms-lstats{display:flex;gap:10px;flex-wrap:wrap}.ms-lstats div{background:#F4F6F9;border-radius:14px;padding:10px 16px;min-width:84px}.ms-lstats b{display:block;font-size:22px;color:var(--ink)}.ms-lstats small{font-size:12px;font-weight:600;color:var(--soft)}
+.ms-lpanel{padding:18px;min-width:0;overflow:hidden}
+#ms-leads,#ms-cal,.ms-main>*{min-width:0}
+.ms-ltools{display:flex;gap:10px;flex-wrap:wrap}.ms-search{flex:1;min-width:220px;display:flex!important;flex-direction:row;align-items:center;gap:8px;border:1.5px solid #DCE2EA;border-radius:12px;padding:0 12px;color:var(--soft);background:#fff}
+.ms-search input{border:0;outline:0;font:500 15px var(--body);color:var(--ink);padding:11px 0;width:100%;background:none;min-width:0}
+.ms-ltools select,.ms-mbox select{font:500 15px var(--body);color:var(--ink);border:1.5px solid #DCE2EA;border-radius:12px;padding:10px 12px;background:#fff;min-width:0;width:100%}.ms-ltools select{width:auto}
+.ms-lfil{display:flex;gap:6px;overflow-x:auto;margin:14px 0 6px;padding-bottom:4px;scrollbar-width:none}.ms-lfil::-webkit-scrollbar{display:none}
+.ms-lfil button{flex:none;border:1px solid #DCE2EA;background:#fff;border-radius:999px;padding:8px 14px;font:600 13px var(--body);color:var(--ink);cursor:pointer}.ms-lfil button span{color:var(--soft);font-weight:600;margin-left:3px}
+.ms-lfil button.on{background:var(--ink);border-color:var(--ink);color:#fff}.ms-lfil button.on span{color:#C3CEDC}
+.ms-lhead,.ms-lrow2{display:grid;grid-template-columns:44px minmax(0,2.4fr) minmax(0,1.1fr) minmax(0,1.2fr) minmax(0,.8fr);gap:12px;align-items:center}
+.ms-lhead{padding:10px 10px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);border-bottom:1px solid #EDF0F4}
+.ms-lrow2{width:100%;text-align:left;background:#fff;border:0;border-bottom:1px solid #EDF0F4;padding:13px 10px;font:500 14px var(--body);color:var(--ink);cursor:pointer;border-radius:10px}.ms-lrow2:hover{background:#F6F8FB}
+.ms-lbiz b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ms-lbiz small,.ms-lsub{display:block;font-size:12.5px;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ms-lph{font-variant-numeric:tabular-nums;white-space:nowrap}.ms-lnext{font-size:13px;color:var(--soft)}
+.ms-pri{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:800;font-size:13px;background:#EEF2F6;color:var(--soft)}.ms-pri.pA{background:#FDE7DD;color:var(--accent)}.ms-pri.pB{background:#EAF1FD;color:#2F6FDB}
+.ms-st{display:inline-block;font-style:normal;font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:#EEF2F6;color:var(--soft);white-space:nowrap}
+.ms-st.todo{background:#F4F6F9;color:var(--ink)}.ms-st.callback{background:#EAF1FD;color:#2F6FDB}.ms-st.called{background:#FFF4DB;color:#9A6700}.ms-st.yes{background:#E3F6EA;color:#1A7F43}.ms-st.no{background:#F1F2F4;color:#6B7785}.ms-st.dnc{background:#FDECEC;color:#B42318}
+.ms-more{width:100%;margin-top:12px}
+.ms-modal.ms-drawer{place-items:stretch end;padding:0;overflow:hidden}
+.ms-dbox{width:min(560px,100%);border-radius:22px 0 0 22px;height:100vh;height:100dvh;align-content:start;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;overflow-y:auto;overflow-x:hidden;box-sizing:border-box;min-width:0}
+.ms-dbox>*{min-width:0}.ms-dbox .ms-phd{align-items:flex-start;gap:12px}
+.ms-lid{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--soft)}.ms-dsub{margin:2px 0 0;color:var(--soft)}.ms-dbox h3{font-size:22px}
+.ms-dbox h4{margin:6px 0 -4px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.ms-dact{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ms-dinfo,.ms-pipe{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#F6F8FB;border-radius:14px;padding:14px}.ms-dinfo:empty,.ms-pipe:empty{display:none}
+.ms-dinfo small,.ms-pipe small{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}.ms-dinfo b,.ms-pipe b{font-size:14px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.ms-pipe a{color:var(--accent)}
+.ms-chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.ms-checks{display:flex;gap:18px;flex-wrap:wrap}.ms-tick{display:flex!important;align-items:center;gap:8px;font-size:15px!important;color:var(--ink)!important}.ms-tick input{width:20px!important;height:20px;accent-color:var(--accent)}
+.ms-warn{margin:0;background:#FDECEC;color:#B42318;border-radius:12px;padding:10px 14px;font-weight:600;font-size:14px}
+.ms-mact .ms-sp{flex:1}.ms-dbox .ms-mact{position:sticky;bottom:-24px;background:#fff;padding:12px 0 4px;margin-bottom:-4px;flex-wrap:wrap}
+@media(max-width:820px){.ms-lhead{display:none}.ms-lrow2{grid-template-columns:36px minmax(0,1fr) auto;grid-template-areas:"p b s" "p ph n";row-gap:4px}.ms-lrow2>.ms-pri{grid-area:p;align-self:start}.ms-lrow2>.ms-lbiz{grid-area:b}.ms-lrow2>.ms-lph{grid-area:ph;font-size:13px;color:var(--soft)}.ms-lrow2>span:nth-child(4){grid-area:s;text-align:right}.ms-lrow2>.ms-lnext{grid-area:n;text-align:right}.ms-lsub{display:none}
+  .ms-dbox{border-radius:0;width:100%}.ms-lstats{display:grid;grid-template-columns:repeat(4,1fr);width:100%;gap:6px}.ms-lstats div{min-width:0;padding:8px 10px}.ms-lstats small{font-size:11px;white-space:nowrap}.ms-search{min-width:0;flex-basis:100%}
+  .ms-dbox .ms-mact{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ms-dbox .ms-mact .ms-sp{display:none}.ms-dbox .ms-mact .ms-btn{padding:0 10px}.ms-dbox .ms-mact .ms-btn.acc{grid-column:1/-1}.ms-lstats b{font-size:18px}.ms-dinfo,.ms-pipe{grid-template-columns:1fr}.ms-ltools select{flex:1}}
 .ms-calside{display:grid;gap:20px}
 .ms-cd u{position:absolute;left:7px;bottom:8px;width:8px;height:8px;border-radius:50%;background:#2F6FDB;text-decoration:none}.ms-cd.sel u{background:#9CC0FF}
 .ms-evtag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#2F6FDB;margin-bottom:3px}
@@ -313,10 +348,11 @@ body.ms-noscroll{overflow:hidden}
   .ms-side{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:30;min-height:0;border-radius:18px 18px 0 0;padding:6px 6px calc(6px + env(safe-area-inset-bottom));flex-direction:row}
   .ms-app.preview .ms-side{position:static;border-radius:18px}
   .ms-sidehd,.ms-sidefoot{display:none}
-  .ms-navs{grid-template-columns:repeat(6,minmax(0,1fr));width:100%;gap:2px}
+  .ms-navs{grid-template-columns:repeat(7,minmax(0,1fr));width:100%;gap:2px}
   .ms-nav{flex-direction:column;gap:4px;font-size:10.5px;padding:8px 1px;min-width:0;letter-spacing:-.01em;justify-content:center;text-align:center;position:relative}
   .ms-nav em{position:absolute;top:2px;right:18%;margin:0;font-size:10px;padding:1px 6px}
   .ms-nav span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ms-nav span b{display:none}.ms-nav span::after{content:attr(data-s)}.ms-nav span b{font-weight:inherit}
   body.in main.wrap{padding-bottom:96px}
   .ms-stats.three{grid-template-columns:1fr}
   .ms-task{grid-template-columns:40px 1fr;gap:12px;padding:16px}
@@ -592,10 +628,11 @@ body.ms-noscroll{overflow:hidden}
     tick: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-10"/></svg>'
   };
   var NAV = [['home', 'Home', '<path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>'],
+             ['leads', 'Leads', '<path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/>'],
              ['tasks', 'Academy', '<path d="M9 11l3 3 8-8M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/>'],
              ['calls', 'Calendar', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M8 14h2M14 14h2M8 17h2"/>'],
-             ['board', 'Leaderboard', '<path d="M4 20h4v-6H4zM10 20h4V9h-4zM16 20h4V4h-4z"/>'],
-             ['pay', 'Earnings', '<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.7 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.6-.6-3-1.6M12 6v2M12 16v2"/>'],
+             ['board', 'Leaderboard', '<path d="M4 20h4v-6H4zM10 20h4V9h-4zM16 20h4V4h-4z"/>', 'Board'],
+             ['pay', 'Earnings', '<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.7 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.6-.6-3-1.6M12 6v2M12 16v2"/>', 'Pay'],
              ['help', 'Help', '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.7-2.5 2-2.5 3.5M12 17h.01"/>']];
   var repTab = 'home', repView = null;
   function embed(u) {
@@ -659,6 +696,8 @@ body.ms-noscroll{overflow:hidden}
         '<div class="ms-panel"><div class="ms-phd"><h3>Top of the board</h3><button class="ms-link" data-go="board">Full leaderboard →</button></div>' + (m.leaderboard.slice(0, 5).map(function (b) { return '<div class="ms-lrow' + (b.me ? ' me' : '') + '"><span class="ms-lr">' + b.rank + '</span><span class="ms-ln"><b>' + esc(b.name) + (b.me ? ' (you)' : '') + '</b><small>' + esc(b.role) + '</small></span><span class="ms-lv"><b>' + b.sales + '</b><small>sales</small></span></div>'; }).join('') || '<div class="ms-empty">No sales on the board yet. Be the first.</div>') + '</div>',
       tasks:
         '<div class="ms-phead"><div><p class="ms-kick dark">Maystone Academy</p><h2>Your training, step by step.</h2><p class="ms-lead">Work through the modules in order. Each one opens right here. When you have finished it, mark it complete. New modules unlock as you move up the ladder.</p></div><div class="ms-bigbar"><div class="ms-bartop"><b>' + done + ' / ' + open.length + '</b><span>' + Math.round(pct * 100) + '% complete</span></div><div class="ms-bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div></div></div>' + tasksHTML,
+      leads:
+        '<div class="ms-phead"><div><p class="ms-kick dark">Leads</p><h2>Your call list.</h2><p class="ms-lead">Every lead on your list. Tap one to call it, log what happened and add notes. Changes save straight to your call list.</p></div><div class="ms-lstats" id="ms-lstats"></div></div><div id="ms-leads"><div class="ms-load"><i></i><i></i><i></i><span>Loading your leads…</span></div></div>',
       calls:
         '<div class="ms-phead"><div><p class="ms-kick dark">Calendar</p><h2>Group calls and your call-backs.</h2><p class="ms-lead">Team group calls and trainings show here for everyone. When a lead says "call me back", book it straight away. Only you can see your call-backs.</p></div><button class="ms-btn acc" data-cbnew>+ Book a call-back</button></div><div id="ms-cal"><div class="ms-load"><i></i><i></i><i></i><span>Loading your calendar…</span></div></div>',
       board:
@@ -672,11 +711,12 @@ body.ms-noscroll{overflow:hidden}
         '<div class="ms-two"><div class="ms-panel"><h3>Coaching and calls</h3><p class="ms-p">Fin coaches and manages reps. Ask about scripts, objections, a call that went wrong, or how to improve your numbers.</p></div><div class="ms-panel"><h3>Your account and pay</h3><p class="ms-p">Harvey runs Maystone. Ask about your login, payments, your rep agreement or moving up a level.</p><a class="ms-btn ghost" href="mailto:harvey@maystone.uk">harvey@maystone.uk</a></div></div>' +
         '<div class="ms-panel"><h3>Quick answers</h3><details class="ms-q"><summary>How do I get on the leaderboard?</summary><p>Book previews and make sales from your call list. The board updates every hour.</p></details><details class="ms-q"><summary>When do I get paid?</summary><p>Once a sale clears the customer\'s 14-day refund window, on the payday in your rep agreement.</p></details><details class="ms-q"><summary>How do I move up a level?</summary><p>Stay near the top of the board. Top Reps get first pick of new roles; Coaches train new reps and earn a bonus on their sales.</p></details><details class="ms-q"><summary>My login link expired.</summary><p>Go to maystone.uk/login and ask for a new one. Each link works once and lasts 30 minutes.</p></details></div>'
     };
-    var nav = NAV.map(function (x) { return '<button class="ms-nav' + (repTab === x[0] ? ' on' : '') + '" data-go="' + x[0] + '"' + (repTab === x[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg><span>' + x[1] + '</span>' + (x[0] === 'tasks' && next.length ? '<em>' + next.length + '</em>' : '') + '</button>'; }).join('');
+    var nav = NAV.map(function (x) { return '<button class="ms-nav' + (repTab === x[0] ? ' on' : '') + '" data-go="' + x[0] + '"' + (repTab === x[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg><span data-s="' + (x[3] || x[1]) + '"><b>' + x[1] + '</b></span>' + (x[0] === 'tasks' && next.length ? '<em>' + next.length + '</em>' : '') + '</button>'; }).join('');
     el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab === 'tasks' && viewing ? 'viewer' : repTab] + '</div></div>';
     el.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.complete) complete(b.dataset.complete); repView = null; repTab = b.dataset.go; renderRep(m, el, preview); try { el.querySelector('.ms-main').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); } catch (e) {} }); });
     if (repTab === 'tasks' && viewing) loadLesson(m, viewing, el, preview);
     if (repTab === 'calls') loadCalendar(el, preview, m);
+    if (repTab === 'leads') loadLeads(el, m);
     function complete(title) {
       var t = m.training.filter(function (x) { return x.title === title; })[0]; if (!t || t.done) return;
       t.done = true; if (!preview) api('markDone', { title: t.title, done: true });
@@ -758,6 +798,107 @@ body.ms-noscroll{overflow:hidden}
     img.parentElement.addEventListener('touchend', function (e) { if (sx === null) return; var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1)); sx = null; });
     go(0);
   }
+  /* ---------- leads (the rep's call list, worked from the site) ---------- */
+  var LD = { data: null, tab: '', q: '', f: 'todo', pri: '', open: null };
+  var CALLED = ['No answer', 'Voicemail', 'Answered', 'Busy', 'Number not recognised'];
+  var OUTCOMES = ['Yes – send preview', 'Call back', 'Not interested', 'Already has a website', 'Not trading'];
+  var INTEREST = ['Marketing support', 'Google profile', 'Missed-call text-back', 'Photos/video', 'Branding/print', 'Bookkeeping/MTD', 'Other'];
+  var OFFERS = ['Website', 'Marketing bundle', 'Google profile', 'Missed-call text-back', 'Other'];
+  var LFILTERS = [['todo', 'To call'], ['callback', 'Call back'], ['called', 'Called'], ['yes', 'Interested'], ['no', 'Not interested'], ['dnc', 'Do not call'], ['all', 'All']];
+  function ldStatus(l) {
+    var o = String(l['Outcome'] || ''), c = String(l['Called (tick)'] || '');
+    if (l['Do not call'] === true) return 'dnc';
+    if (/^\s*yes/i.test(o) || l['Preview link']) return 'yes';
+    if (/call\s*back/i.test(o)) return 'callback';
+    if (o.trim()) return 'no';
+    if (c.trim()) return 'called';
+    return 'todo';
+  }
+  var LSTAT = { todo: 'To call', callback: 'Call back', called: 'Called', yes: 'Interested', no: 'Not interested', dnc: 'Do not call' };
+  function loadLeads(el, m) {
+    if (LD.data) return drawLeads(el, m);
+    api('leads', { tab: LD.tab }).then(function (r) {
+      var box = el.querySelector('#ms-leads'); if (!box) return;
+      if (!r.ok) { box.innerHTML = '<div class="ms-empty">' + esc(r.error || 'Could not load your leads.') + '</div>'; return; }
+      LD.data = r; LD.tab = r.tab; drawLeads(el, m);
+    });
+  }
+  function ldFiltered() {
+    var q = LD.q.trim().toLowerCase();
+    return LD.data.leads.filter(function (l) {
+      if (LD.f !== 'all' && ldStatus(l) !== LD.f) return false;
+      if (LD.pri && String(l['Priority']) !== LD.pri) return false;
+      if (q && [l['Lead ID'], l['Business'], l['Trade'], l['Town'], l['Phone'], l['Call notes']].join(' ').toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    }).sort(function (a, b) { return String(a['Priority'] || 'Z').localeCompare(String(b['Priority'] || 'Z')) || (Number(b['Google reviews']) || 0) - (Number(a['Google reviews']) || 0); });
+  }
+  function telOf(p) { return String(p || '').replace(/[^\d+]/g, ''); }
+  function drawLeads(el, m) {
+    var box = el.querySelector('#ms-leads'); if (!box) return;
+    var all = LD.data.leads, cnt = {}; all.forEach(function (l) { var s = ldStatus(l); cnt[s] = (cnt[s] || 0) + 1; });
+    var st = el.querySelector('#ms-lstats'); if (st) st.innerHTML = [['To call', cnt.todo || 0], ['Call back', cnt.callback || 0], ['Interested', cnt.yes || 0], ['On list', all.length]].map(function (s) { return '<div><b>' + s[1] + '</b><small>' + s[0] + '</small></div>'; }).join('');
+    var list = ldFiltered(), shown = list.slice(0, LD.limit || 60);
+    box.innerHTML = '<div class="ms-panel ms-lpanel"><div class="ms-ltools"><label class="ms-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="ld-q" placeholder="Search business, town, phone, notes…" value="' + esc(LD.q) + '"></label>' +
+      '<select id="ld-pri" aria-label="Priority"><option value="">All priorities</option>' + ['A', 'B', 'C'].map(function (p) { return '<option' + (LD.pri === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select>' +
+      (LD.data.tabs && LD.data.tabs.length ? '<select id="ld-tab" aria-label="Call list">' + LD.data.tabs.map(function (t) { return '<option' + (t === LD.tab ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('') + '</select>' : '') + '</div>' +
+      '<div class="ms-lfil">' + LFILTERS.map(function (f) { var n = f[0] === 'all' ? all.length : (cnt[f[0]] || 0); return '<button class="' + (LD.f === f[0] ? 'on' : '') + '" data-lf="' + f[0] + '">' + f[1] + ' <span>' + n + '</span></button>'; }).join('') + '</div>' +
+      '<div class="ms-lhead"><span>Pri</span><span>Business</span><span>Phone</span><span>Status</span><span>Next contact</span></div>' +
+      (shown.map(function (l) { var s = ldStatus(l); return '<button class="ms-lrow2" data-lead="' + esc(l['Lead ID']) + '"><span class="ms-pri p' + esc(l['Priority'] || '') + '">' + esc(l['Priority'] || '–') + '</span><span class="ms-lbiz"><b>' + esc(l['Business']) + '</b><small>' + esc([l['Trade'], l['Town']].filter(String).join(' · ')) + (l['Google rating'] ? ' · ' + esc(l['Google rating']) + '★ (' + esc(l['Google reviews']) + ')' : '') + '</small></span><span class="ms-lph">' + esc(l['Phone']) + '</span><span><em class="ms-st ' + s + '">' + LSTAT[s] + '</em>' + (l['Called (tick)'] && s !== 'todo' ? '<small class="ms-lsub">' + esc(l['Called (tick)']) + '</small>' : '') + '</span><span class="ms-lnext">' + (l['Next contact'] ? esc(l['Next contact'].split('-').reverse().join('/')) : '') + '</span></button>'; }).join('') || '<div class="ms-empty">No leads match. Try another filter.</div>') +
+      (list.length > shown.length ? '<button class="ms-btn ghost ms-more" id="ld-more">Show more (' + (list.length - shown.length) + ' left)</button>' : '') + '</div>';
+    var q = box.querySelector('#ld-q'), t;
+    q.oninput = function () { clearTimeout(t); t = setTimeout(function () { LD.q = q.value; LD.limit = 60; var pos = q.selectionStart; drawLeads(el, m); var nq = el.querySelector('#ld-q'); nq.focus(); try { nq.setSelectionRange(pos, pos); } catch (e) {} }, 200); };
+    box.querySelector('#ld-pri').onchange = function () { LD.pri = this.value; drawLeads(el, m); };
+    var tb = box.querySelector('#ld-tab'); if (tb) tb.onchange = function () { LD.tab = this.value; LD.data = null; box.innerHTML = '<div class="ms-load"><i></i><i></i><i></i><span>Loading…</span></div>'; loadLeads(el, m); };
+    box.querySelectorAll('[data-lf]').forEach(function (b) { b.onclick = function () { LD.f = b.dataset.lf; LD.limit = 60; drawLeads(el, m); }; });
+    var mo = box.querySelector('#ld-more'); if (mo) mo.onclick = function () { LD.limit = (LD.limit || 60) + 60; drawLeads(el, m); };
+    box.querySelectorAll('[data-lead]').forEach(function (b) { b.onclick = function () { leadDrawer(el, m, b.dataset.lead); }; });
+  }
+  function leadDrawer(el, m, id) {
+    var l = LD.data.leads.filter(function (x) { return String(x['Lead ID']) === id; })[0]; if (!l) return;
+    var old = document.querySelector('.ms-drawer'); if (old) old.remove();
+    var ov = document.createElement('div'); ov.className = 'ms-modal ms-drawer';
+    var opt = function (arr, cur) { var a = arr.slice(); if (cur && a.indexOf(cur) === -1) a.unshift(cur); return '<option value="">—</option>' + a.map(function (x) { return '<option' + (x === cur ? ' selected' : '') + '>' + esc(x) + '</option>'; }).join(''); };
+    var chips = function (name, arr, cur) { return '<div class="ms-quick">' + arr.map(function (x) { return '<button type="button" class="ms-chip' + (String(cur).trim().toLowerCase() === x.toLowerCase() ? ' on' : '') + '" data-set="' + name + '" data-v="' + esc(x) + '">' + esc(x) + '</button>'; }).join('') + '</div>'; };
+    var info = function (k, v) { return v === '' || v == null || v === false ? '' : '<div><small>' + k + '</small><b>' + v + '</b></div>'; };
+    var s = ldStatus(l), maps = String(l['Google Maps'] || ''), prev = String(l['Preview link'] || '');
+    ov.innerHTML = '<form class="ms-mbox ms-dbox" novalidate><div class="ms-phd"><div><small class="ms-lid">' + esc(l['Lead ID']) + ' · Priority ' + esc(l['Priority'] || '–') + '</small><h3>' + esc(l['Business']) + '</h3><p class="ms-dsub">' + esc([l['Trade'], l['Town']].filter(String).join(' · ')) + '</p></div><button type="button" class="ms-x" aria-label="Close">×</button></div>' +
+      '<div class="ms-dact">' + (l['Phone'] ? '<a class="ms-btn acc" href="tel:' + esc(telOf(l['Phone'])) + '">Call ' + esc(l['Phone']) + '</a>' : '') + (maps ? '<a class="ms-btn ghost" href="' + esc(maps) + '" target="_blank" rel="noopener">Google Maps</a>' : '') + '<em class="ms-st ' + s + '">' + LSTAT[s] + '</em></div>' +
+      (l['Do not call'] === true ? '<p class="ms-warn">Marked Do not call. Don\'t ring this number.</p>' : '') +
+      '<div class="ms-dinfo">' + info('What\'s wrong online', esc(l['What\'s wrong online'])) + info('What to mention', esc(l['What to mention'])) + info('Google', l['Google rating'] ? esc(l['Google rating']) + '★ from ' + esc(l['Google reviews']) + ' reviews' : '') + info('TPS', esc(l['TPS'])) + '</div>' +
+      '<h4>Call</h4>' + chips('Called (tick)', CALLED, l['Called (tick)']) + '<label>What happened on the call<input name="Called (tick)" maxlength="60" value="' + esc(l['Called (tick)'] || '') + '"></label>' +
+      '<h4>Outcome</h4>' + chips('Outcome', OUTCOMES, l['Outcome']) + '<label>Outcome<input name="Outcome" maxlength="120" value="' + esc(l['Outcome'] || '') + '"></label>' +
+      '<label>Call notes<textarea name="Call notes" rows="4" maxlength="3000" placeholder="Who you spoke to, what they said, what to open with next time">' + esc(l['Call notes'] || '') + '</textarea></label>' +
+      '<div class="ms-f2"><label>Client email<input name="Client email" type="email" maxlength="120" value="' + esc(l['Client email'] || '') + '"></label><label>Next contact<input name="Next contact" type="date" value="' + esc(l['Next contact'] || '') + '"></label></div>' +
+      '<div class="ms-f2"><label>Last offer<select name="Last offer">' + opt(OFFERS, l['Last offer']) + '</select></label><label>Interested in<select name="Interested in">' + opt(INTEREST, l['Interested in']) + '</select></label></div>' +
+      '<div class="ms-f2"><label>TPS<select name="TPS">' + opt(['Not checked', 'Checked', 'On TPS'], l['TPS']) + '</select></label><label>Details<input name="Details" maxlength="1000" value="' + esc(l['Details'] || '') + '"></label></div>' +
+      '<div class="ms-checks"><label class="ms-tick"><input type="checkbox" name="OK to refer"' + (l['OK to refer'] === true ? ' checked' : '') + '> OK to refer</label><label class="ms-tick"><input type="checkbox" name="Do not call"' + (l['Do not call'] === true ? ' checked' : '') + '> Do not call</label></div>' +
+      '<div class="ms-pipe">' + info('Preview link', prev ? '<a href="' + esc(prev) + '" target="_blank" rel="noopener">Open preview</a>' : '') + info('Approved', l['Approved (Harvey)'] === true ? 'Yes' : '') + info('Sent to client', esc(l['Sent to client'])) + info('Views', esc(l['Views'])) + info('Hot?', esc(l['Hot?'])) + info('Package', esc(l['Package'])) + info('Paid', esc(l['Paid'])) + info('Live site', esc(l['Live site'])) + '</div>' +
+      '<p class="ms-err" hidden></p><div class="ms-mact"><button type="button" class="ms-btn ghost" data-cbk>Book call-back</button><span class="ms-sp"></span><button class="ms-btn ghost" type="submit" data-stay>Save</button><button class="ms-btn acc" type="submit">Save &amp; next →</button></div></form>';
+    document.body.appendChild(ov); document.body.classList.add('ms-noscroll');
+    var f = ov.querySelector('form'), err = ov.querySelector('.ms-err'), close = function () { ov.remove(); document.body.classList.remove('ms-noscroll'); };
+    ov.querySelector('.ms-x').onclick = close; ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    ov.querySelectorAll('[data-set]').forEach(function (b) { b.onclick = function () { f.elements[b.dataset.set].value = b.dataset.v; ov.querySelectorAll('[data-set="' + b.dataset.set + '"]').forEach(function (x) { x.classList.toggle('on', x === b); }); }; });
+    var cbk = function () { var nc = f.elements['Next contact'].value, d = nc ? new Date(nc + 'T10:00') : null; cbForm(el, false, null, d, { name: l['Business'], business: l['Trade'] || '', phone: l['Phone'] || '', note: f.elements['Call notes'].value }); };
+    ov.querySelector('[data-cbk]').onclick = cbk;
+    var stay = false; ov.querySelector('[data-stay]').onclick = function () { stay = true; };
+    f.onsubmit = function (e) {
+      e.preventDefault(); err.hidden = true;
+      var fields = {}; ['Called (tick)', 'Outcome', 'Call notes', 'Client email', 'Next contact', 'Last offer', 'Interested in', 'TPS', 'Details'].forEach(function (k) { fields[k] = f.elements[k].value; });
+      fields['OK to refer'] = f.elements['OK to refer'].checked; fields['Do not call'] = f.elements['Do not call'].checked;
+      var btns = ov.querySelectorAll('[type=submit]'); btns.forEach(function (b) { b.disabled = true; }); var lab = stay ? btns[0] : btns[1], was = lab.textContent; lab.textContent = 'Saving…';
+      api('saveLead', { tab: LD.tab, row: l._row, id: l['Lead ID'], fields: fields }).then(function (r) {
+        btns.forEach(function (b) { b.disabled = false; }); lab.textContent = was;
+        if (!r.ok) { err.textContent = r.error || 'Could not save. Try again.'; err.hidden = false; stay = false; return; }
+        var i = LD.data.leads.indexOf(l); LD.data.leads[i] = r.lead;
+        var list = ldFiltered(), here = list.map(function (x) { return String(x['Lead ID']); }).indexOf(id);
+        var wantCb = /call\s*back/i.test(fields['Outcome']) && !/call\s*back/i.test(String(l['Outcome'] || ''));
+        drawLeads(el, m);
+        if (stay) { stay = false; leadDrawer(el, m, id); }
+        else { var nx = list[here + 1] || list[here] || null; close(); if (nx && String(nx['Lead ID']) !== id) leadDrawer(el, m, String(nx['Lead ID'])); }
+        if (wantCb) { var nc = fields['Next contact'], d = nc ? new Date(nc + 'T10:00') : null; cbForm(el, false, null, d, { name: r.lead['Business'], business: r.lead['Trade'] || '', phone: r.lead['Phone'] || '', note: fields['Call notes'] }); }
+      });
+    };
+  }
   /* ---------- call-backs calendar ---------- */
   var CB = { list: null, month: null, day: null, edit: null, events: [] };
   var DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -770,11 +911,10 @@ body.ms-noscroll{overflow:hidden}
     var nb = el.querySelector('[data-cbnew]'); if (nb) nb.onclick = function () { cbForm(el, preview, null); };
     if (!CB.month) { var n = new Date(); CB.month = new Date(n.getFullYear(), n.getMonth(), 1); CB.day = dkey(n); }
     if (CB.list) return drawCal(el, preview);
-    if (preview) { CB.list = []; return drawCal(el, preview); }
     api('callbacks', {}).then(function (r) { CB.list = r.ok ? r.callbacks : []; drawCal(el, preview); });
   }
   function cbSave(el, preview, action, data) {
-    if (preview) { if (action === 'saveCallback') { if (data.cb.id) CB.list = CB.list.map(function (x) { return x.id === data.cb.id ? Object.assign({}, x, data.cb) : x; }); else CB.list.push(Object.assign({ id: 'p' + Date.now(), status: 'Open' }, data.cb)); } else CB.list = CB.list.filter(function (x) { return x.id !== data.id; }); CB.list.sort(function (a, b) { return a.when - b.when; }); return Promise.resolve({ ok: true }); }
+    if (false) { if (action === 'saveCallback') { if (data.cb.id) CB.list = CB.list.map(function (x) { return x.id === data.cb.id ? Object.assign({}, x, data.cb) : x; }); else CB.list.push(Object.assign({ id: 'p' + Date.now(), status: 'Open' }, data.cb)); } else CB.list = CB.list.filter(function (x) { return x.id !== data.id; }); CB.list.sort(function (a, b) { return a.when - b.when; }); return Promise.resolve({ ok: true }); }
     return api(action, data).then(function (r) { if (r.ok) CB.list = r.callbacks; return r; });
   }
   function evWhen(e) { var d = new Date(e.when), end = new Date(e.when + e.minutes * 60000); return dayLabel(d) + ' · ' + hm(e.when) + '–' + hm(end.getTime()); }
@@ -821,7 +961,8 @@ body.ms-noscroll{overflow:hidden}
     box.querySelectorAll('[data-cbst]').forEach(function (b) { b.onclick = function () { var c = L.filter(function (x) { return x.id === b.dataset.id; })[0]; b.disabled = true; cbSave(el, preview, 'saveCallback', { cb: Object.assign({}, c, { status: b.dataset.cbst }) }).then(function () { drawCal(el, preview); }); }; });
     box.querySelectorAll('[data-cbedit]').forEach(function (b) { b.onclick = function () { cbForm(el, preview, L.filter(function (x) { return x.id === b.dataset.cbedit; })[0]); }; });
   }
-  function cbForm(el, preview, c, onDay) {
+  function cbForm(el, preview, c, onDay, pre) {
+    var pv = c || pre || {};
     var d = c ? new Date(c.when) : onDay ? new Date(onDay) : new Date();
     if (!c) { if (onDay && dkey(onDay) !== dkey(new Date())) d.setHours(10, 0, 0, 0); else { d.setMinutes(0, 0, 0); d.setHours(d.getHours() + 1); } }
     var date = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()), time = pad(d.getHours()) + ':' + pad(d.getMinutes());
@@ -829,9 +970,9 @@ body.ms-noscroll{overflow:hidden}
     ov.innerHTML = '<form class="ms-mbox" novalidate><div class="ms-phd"><h3>' + (c ? 'Edit call-back' : 'Book a call-back') + '</h3><button type="button" class="ms-x" aria-label="Close">×</button></div>' +
       '<div class="ms-f2"><label>Date<input type="date" name="date" value="' + date + '" required></label><label>Time<input type="time" name="time" value="' + time + '" step="300" required></label></div>' +
       '<div class="ms-quick">' + [['In 1 hour', 60], ['Tomorrow 10am', 't10'], ['Tomorrow 4pm', 't16']].map(function (q) { return '<button type="button" class="ms-chip" data-q="' + q[1] + '">' + q[0] + '</button>'; }).join('') + '</div>' +
-      '<label>Who to call<input name="name" maxlength="120" placeholder="e.g. Dave" value="' + esc(c ? c.name : '') + '" required></label>' +
-      '<div class="ms-f2"><label>Business<input name="business" maxlength="120" placeholder="e.g. Dave\'s Roofing" value="' + esc(c ? c.business : '') + '"></label><label>Phone<input name="phone" type="tel" maxlength="40" placeholder="07…" value="' + esc(c ? c.phone : '') + '"></label></div>' +
-      '<label>Note<textarea name="note" rows="3" maxlength="1000" placeholder="What did they say? What to open with next time?">' + esc(c ? c.note : '') + '</textarea></label>' +
+      '<label>Who to call<input name="name" maxlength="120" placeholder="e.g. Dave" value="' + esc(pv.name || '') + '" required></label>' +
+      '<div class="ms-f2"><label>Business<input name="business" maxlength="120" placeholder="e.g. Dave\'s Roofing" value="' + esc(pv.business || '') + '"></label><label>Phone<input name="phone" type="tel" maxlength="40" placeholder="07…" value="' + esc(pv.phone || '') + '"></label></div>' +
+      '<label>Note<textarea name="note" rows="3" maxlength="1000" placeholder="What did they say? What to open with next time?">' + esc(pv.note || '') + '</textarea></label>' +
       '<p class="ms-err" hidden></p><div class="ms-mact">' + (c ? '<button type="button" class="ms-btn ghost danger" data-del>Delete</button>' : '<span></span>') + '<button class="ms-btn acc" type="submit">' + (c ? 'Save changes' : 'Book it') + '</button></div></form>';
     document.body.appendChild(ov); document.body.classList.add('ms-noscroll');
     var f = ov.querySelector('form'), close = function () { ov.remove(); document.body.classList.remove('ms-noscroll'); };

@@ -163,7 +163,18 @@ function slide_(me, title, n) {
 }
 
 /** Run from the editor whenever a deck changes: renders every deck in the Training tab to slide images. */
-function refreshAcademy() {
+function pngFetch_(presId, pageId, token) {
+  for (var k = 0; k < 7; k++) {
+    var r = UrlFetchApp.fetch('https://docs.google.com/presentation/d/' + presId + '/export/png?pageid=' + pageId, { headers: { Authorization: 'Bearer ' + token }, muteHttpExceptions: true });
+    if (r.getResponseCode() === 200) { Utilities.sleep(1200); return r.getBlob(); }
+    Utilities.sleep(2000 * Math.pow(2, k));
+  }
+  throw new Error('Slide export kept failing - run refreshAcademy again in a few minutes.');
+}
+/** Rebuild every deck, even ones already built (run after editing a deck). */
+function rebuildAcademy() { return refreshAcademy(true); }
+function refreshAcademy(force) {
+  force = force === true;
   var folder = academyFolder_(), done = [];
   table_('Training').forEach(function (t) {
     var id = fileIdFrom_(t.Link); if (!id) return;
@@ -171,10 +182,11 @@ function refreshAcademy() {
     var mt = f.getMimeType(); if (mt === MimeType.GOOGLE_DOCS || mt.indexOf('presentation') === -1) return;
     var presId = id, temp = null;
     if (mt !== MimeType.GOOGLE_SLIDES) { temp = Drive.Files.copy({ name: '(temp) ' + f.getName(), mimeType: MimeType.GOOGLE_SLIDES }, id, { supportsAllDrives: true }); presId = temp.id; }
+    if (!force && folder.getFilesByName(id + '.json').hasNext()) { done.push(t.Title + ': already built'); return; }
     var old = folder.getFilesByName(id + '.json'); while (old.hasNext()) { var o = old.next(); try { JSON.parse(o.getBlob().getDataAsString()).slides.forEach(function (x) { DriveApp.getFileById(x.img).setTrashed(true); }); } catch (e) {} o.setTrashed(true); }
     var pres = SlidesApp.openById(presId), token = ScriptApp.getOAuthToken(), slides = [];
     pres.getSlides().forEach(function (sl, i) {
-      var png = UrlFetchApp.fetch('https://docs.google.com/presentation/d/' + presId + '/export/png?pageid=' + sl.getObjectId(), { headers: { Authorization: 'Bearer ' + token } }).getBlob().setName(id + '-' + (i + 1) + '.png');
+      var png = pngFetch_(presId, sl.getObjectId(), token).setName(id + '-' + (i + 1) + '.png');
       var img = folder.createFile(png);
       var notes = ''; try { notes = sl.getNotesPage().getSpeakerNotesShape().getText().asString().trim(); } catch (e) {}
       var text = sl.getShapes().map(function (sh) { try { return sh.getText().asString().trim(); } catch (e) { return ''; } }).filter(String).join('\n').slice(0, 2000);

@@ -31,6 +31,7 @@ var SHEETS = {
   Applications: ['Date', 'First name', 'Last name', 'Email', 'Mobile', 'Based', 'Experience', 'Best time', 'Note', 'Status'],
   Enquiries: ['Date', 'First name', 'Last name', 'Business', 'Email', 'Phone', 'Website', 'What they sell', 'Who buys it', 'Sale price', 'Commission', 'Reps wanted', 'Note', 'Status'],
   Progress: ['Email', 'Title', 'Done'],
+  Passwords: ['Email', 'Hash', 'Salt', 'Set'],
   Log: ['Time', 'Who', 'Action', 'Details']
 };
 var ROLES = ['Rep', 'Top Rep', 'Coach', 'Team Lead', 'Admin'];
@@ -52,11 +53,13 @@ function doPost(e) {
     var a = String(req.action || '');
     if (a === 'requestLink') return json_(requestLink_(req.email));
     if (a === 'verify') return json_(verify_(req.token));
+    if (a === 'loginPassword') return json_(loginPassword_(req.email, req.password));
     if (a === 'apply' || a === 'enquiry') { lock.waitLock(20000); return json_(publicForm_(a, req.form || {})); }
     var me = auth_(req.session);
     if (!me) return json_({ ok: false, error: 'Please log in again.', auth: false });
     if (a === 'me') return json_(mePayload_(me));
     if (a === 'logout') { endSession_(req.session); return json_({ ok: true }); }
+    if (a === 'setPassword') { lock.waitLock(20000); return json_(setPassword_(me, req.password)); }
     if (a === 'markDone') { lock.waitLock(20000); return json_(markDone_(me, req.title, !!req.done)); }
     if (!isAdmin_(me)) return json_({ ok: false, error: 'Only the admin can do that.' });
     lock.waitLock(20000);
@@ -75,6 +78,45 @@ function doPost(e) {
   } finally {
     try { lock.releaseLock(); } catch (e2) {}
   }
+}
+
+/* ---------------- passwords (optional, after a first email-link login) ---------------- */
+
+function startSession_(u, how) {
+  var now = new Date(), session = randomToken_();
+  appendRow_('Sessions', [sha_(session), u.Email, new Date(Date.now() + SESSION_DAYS * 86400000), now]);
+  setUserField_(u.Email, 'Last login', now);
+  log_(u.Email, how, '');
+  return { ok: true, session: session, user: publicUser_(u) };
+}
+function pwHash_(password, salt) { var h = salt + '|' + password; for (var i = 0; i < 300; i++) h = sha_(salt + h); return h; }
+function pwRow_(email) {
+  if (!sheet_('Passwords')) return null;
+  var rows = sheet_('Passwords').getDataRange().getValues();
+  for (var i = 1; i < rows.length; i++) if (cleanEmail_(rows[i][0]) === email) return { row: i + 1, hash: rows[i][1], salt: rows[i][2] };
+  return null;
+}
+function hasPassword_(email) { return !!pwRow_(email); }
+function setPassword_(me, password) {
+  password = String(password || '');
+  if (password.length < 8 || password.length > 100) return { ok: false, error: 'Use at least 8 characters.' };
+  ensureSheet_('Passwords'); var sh = sheet_('Passwords');
+  try { sh.hideSheet(); } catch (e) {}
+  var salt = randomToken_().slice(0, 32), hash = pwHash_(password, salt), r = pwRow_(me.Email);
+  if (r) sh.getRange(r.row, 2, 1, 3).setValues([[hash, salt, new Date()]]); else sh.appendRow([me.Email, hash, salt, new Date()]);
+  log_(me.Email, 'password set', '');
+  return { ok: true };
+}
+function loginPassword_(email, password) {
+  email = cleanEmail_(email); var bad = { ok: false, error: 'That email and password don\'t match. Try again, or use "Email me a login link".' };
+  if (!email || !password) return { ok: false, error: 'Enter your email and password.' };
+  var cache = CacheService.getScriptCache(), key = 'pw:' + email, n = Number(cache.get(key) || 0);
+  if (n >= 6) return { ok: false, error: 'Too many tries. Wait 15 minutes, or use "Email me a login link".' };
+  var u = findUser_(email), r = pwRow_(email);
+  if (!u || !r || pwHash_(String(password), r.salt) !== r.hash) { cache.put(key, String(n + 1), 900); log_(email, 'password login refused', ''); return bad; }
+  if (u.Status !== 'Active') return { ok: false, error: 'This login is switched off. Contact Harvey.' };
+  cache.remove(key);
+  return startSession_(u, 'logged in (password)');
 }
 
 /* ---------------- task progress ---------------- */
@@ -174,11 +216,7 @@ function verify_(token) {
     sh.getRange(i + 1, 4).setValue(now);
     var u = findUser_(rows[i][1]);
     if (!u || u.Status !== 'Active') return { ok: false, error: 'This login is switched off. Contact Harvey.' };
-    var session = randomToken_();
-    appendRow_('Sessions', [sha_(session), u.Email, new Date(Date.now() + SESSION_DAYS * 86400000), now]);
-    setUserField_(u.Email, 'Last login', now);
-    log_(u.Email, 'logged in', '');
-    return { ok: true, session: session, user: publicUser_(u) };
+    return startSession_(u, 'logged in (link)');
   }
   return { ok: false, error: 'That login link is not valid. Ask for a new one.' };
 }
@@ -228,7 +266,7 @@ function mePayload_(u) {
   var users = table_('Users'), memberNo = 0;
   users.forEach(function (x, i) { if (cleanEmail_(x.Email) === u.Email) memberNo = i + 1; });
   return {
-    ok: true, user: publicUser_(u), admin: isAdmin_(u), mine: mine, rank: rank, training: training, joined: fmt_(u.Joined), memberNo: memberNo, boardSize: board.length,
+    ok: true, user: publicUser_(u), admin: isAdmin_(u), hasPassword: hasPassword_(u.Email), mine: mine, rank: rank, training: training, joined: fmt_(u.Joined), memberNo: memberNo, boardSize: board.length,
     leaderboard: board.slice(0, 15).map(function (b, i) { return { rank: i + 1, name: b.name, role: b.role, previews: b.previews, sales: b.sales, me: b.email === u.Email }; })
   };
 }

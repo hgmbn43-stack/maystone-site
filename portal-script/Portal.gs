@@ -32,6 +32,7 @@ var SHEETS = {
   Enquiries: ['Date', 'First name', 'Last name', 'Business', 'Email', 'Phone', 'Website', 'What they sell', 'Who buys it', 'Sale price', 'Commission', 'Reps wanted', 'Note', 'Status'],
   Progress: ['Email', 'Title', 'Done'],
   Passwords: ['Email', 'Hash', 'Salt', 'Set'],
+  Callbacks: ['ID', 'Email', 'When', 'Name', 'Business', 'Phone', 'Note', 'Status', 'Created'],
   Log: ['Time', 'Who', 'Action', 'Details']
 };
 var ROLES = ['Rep', 'Top Rep', 'Coach', 'Team Lead', 'Admin'];
@@ -62,6 +63,9 @@ function doPost(e) {
     if (a === 'setPassword') { lock.waitLock(20000); return json_(setPassword_(me, req.password)); }
     if (a === 'module') return json_(module_(me, req.title));
     if (a === 'slide') return json_(slide_(me, req.title, req.n));
+    if (a === 'callbacks') return json_(callbacks_(me));
+    if (a === 'saveCallback') { lock.waitLock(20000); return json_(saveCallback_(me, req.cb || {})); }
+    if (a === 'deleteCallback') { lock.waitLock(20000); return json_(deleteCallback_(me, req.id)); }
     if (a === 'markDone') { lock.waitLock(20000); return json_(markDone_(me, req.title, !!req.done)); }
     if (!isAdmin_(me)) return json_({ ok: false, error: 'Only the admin can do that.' });
     lock.waitLock(20000);
@@ -640,6 +644,43 @@ function selfTest() {
   out.push('bad token refused: ' + (!verify_('abc').ok));
   console.log(out.join('\n'));
   return out.join('\n');
+}
+
+/* ---------------- callbacks calendar (each rep sees only their own) ---------------- */
+// 'When' is stored as epoch milliseconds so time zones never shift it.
+
+function cbOut_(r) { return { id: String(r.ID), when: Number(r.When) || 0, name: String(r.Name || ''), business: String(r.Business || ''), phone: String(r.Phone || ''), note: String(r.Note || ''), status: String(r.Status || 'Open') }; }
+function callbacks_(me) {
+  if (!sheet_('Callbacks')) return { ok: true, callbacks: [] };
+  var list = table_('Callbacks').filter(function (r) { return cleanEmail_(r.Email) === me.Email && r.Status !== 'Deleted'; }).map(cbOut_);
+  list.sort(function (x, y) { return x.when - y.when; });
+  return { ok: true, callbacks: list };
+}
+function saveCallback_(me, cb) {
+  var when = Number(cb.when), name = str_(cb.name, 120);
+  if (!when || when < 1.6e12 || when > 2.2e12) return { ok: false, error: 'Pick a date and time.' };
+  if (!name) return { ok: false, error: 'Add who you are calling back.' };
+  var status = ['Open', 'Done', 'No answer'].indexOf(cb.status) > -1 ? cb.status : 'Open';
+  var row = { When: when, Name: name, Business: str_(cb.business, 120), Phone: str_(cb.phone, 40), Note: str_(cb.note, 1000), Status: status };
+  var sh = ensureSheet_('Callbacks'), head = SHEETS.Callbacks;
+  if (cb.id) {
+    var v = sh.getDataRange().getValues();
+    for (var i = 1; i < v.length; i++) if (String(v[i][0]) === String(cb.id) && cleanEmail_(v[i][1]) === me.Email) {
+      head.forEach(function (h, c) { if (row[h] !== undefined) v[i][c] = row[h]; });
+      sh.getRange(i + 1, 1, 1, head.length).setValues([v[i]]);
+      return callbacks_(me);
+    }
+    return { ok: false, error: 'Call-back not found.' };
+  }
+  row.ID = 'cb' + Utilities.getUuid().slice(0, 8); row.Email = me.Email; row.Created = new Date();
+  appendObj_('Callbacks', row);
+  return callbacks_(me);
+}
+function deleteCallback_(me, id) {
+  var sh = sheet_('Callbacks'); if (!sh) return { ok: false, error: 'Call-back not found.' };
+  var v = sh.getDataRange().getValues(), col = SHEETS.Callbacks.indexOf('Status') + 1;
+  for (var i = 1; i < v.length; i++) if (String(v[i][0]) === String(id) && cleanEmail_(v[i][1]) === me.Email) { sh.getRange(i + 1, col).setValue('Deleted'); return callbacks_(me); }
+  return { ok: false, error: 'Call-back not found.' };
 }
 
 /* ---------------- helpers ---------------- */

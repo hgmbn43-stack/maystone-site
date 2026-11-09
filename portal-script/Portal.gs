@@ -657,7 +657,7 @@ function setup() {
      ['Rep', 'Rep Start Pack – day 1', g('10ACY4FIFCEHj6DwTEp9DuHSnVGav1gjZyCgXa_yyv-w'), 'Doc', 2],
      ['Rep', 'The call script (03f)', g('1uhWBJG3UJ36SxWvOezGCw9kUfh1WPgHelQG2u7HKZT8'), 'Doc', 3],
      ['Rep', 'Deck 01 – The call script', d('15k0cqTfWfpSbsOMpYLixyMOf7WBfAQJO'), 'Deck', 4],
-     ['Rep', 'Deck 02 – Objections and emotions', d('1qDOfBKbAA-Sj1yefhcecAQ9D6OiiIg-O1'), 'Deck', 5],
+     ['Rep', 'Deck 02 – Objections and emotions', d('1qOfBKbAA-Sj1yefhcecAQ9D6OiiIg-O1'), 'Deck', 5],
      ['Rep', 'Deck 04 – After the yes', d('1bFkG7FpFnkxjrREPMjiHo4Q1fIGC2Ck1'), 'Deck', 6],
      ['Rep', 'Rep Training Pack v4', g('1jevyDcwmLZs31rYQVL-Doi0CYQjUEC-d89Qy0brtLoA'), 'Doc', 7],
      ['Coach', 'Deck 03 – Training Module 1 (for coaches)', d('1V6Xox6yBp2LImkkZlJQr8BNsfwgp-cOh'), 'Deck', 10],

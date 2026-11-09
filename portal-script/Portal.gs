@@ -36,8 +36,10 @@ var SHEETS = {
   Callbacks: ['ID', 'Email', 'When', 'Name', 'Business', 'Phone', 'Note', 'Status', 'Created'],
   Log: ['Time', 'Who', 'Action', 'Details']
 };
-var ROLES = ['Rep', 'Top Rep', 'Coach', 'Team Lead', 'Admin'];
-var LEVEL = { 'All': 0, 'Rep': 1, 'Top Rep': 2, 'Coach': 3, 'Team Lead': 4, 'Admin': 9 };
+var ROLES = ['Rep', 'Top Rep', 'Coach', 'Team Lead', 'Manager', 'Admin'];
+var MANAGER_CAN_SET = ['Rep', 'Top Rep', 'Coach', 'Team Lead'];
+var ADMIN_ONLY = ['adminSavePartner', 'adminAddSale', 'adminSetSaleStatus'];
+var LEVEL = { 'All': 0, 'Rep': 1, 'Top Rep': 2, 'Coach': 3, 'Team Lead': 4, 'Manager': 6, 'Admin': 9 };
 var USER_STATUS = ['Active', 'Paused', 'Left'];
 var SALE_STATUS = ['Pending', 'Cleared', 'Paid out', 'Refunded'];
 
@@ -65,13 +67,14 @@ function doPost(e) {
     if (a === 'module') return json_(module_(me, req.title));
     if (a === 'slide') return json_(slide_(me, req.title, req.n));
     if (a === 'leads') return json_(leads_(me, req.tab));
-    if (a === 'adminPreviews') { if (!isAdmin_(me)) return json_({ ok: false, error: 'Admins only.' }); return json_(adminPreviews_()); }
+    if (a === 'adminPreviews') { if (!isStaff_(me)) return json_({ ok: false, error: 'Admins only.' }); return json_(adminPreviews_()); }
     if (a === 'saveLead') { lock.waitLock(20000); return json_(saveLead_(me, req.tab, req.row, req.id, req.fields || {})); }
     if (a === 'callbacks') return json_(callbacks_(me));
     if (a === 'saveCallback') { lock.waitLock(20000); return json_(saveCallback_(me, req.cb || {})); }
     if (a === 'deleteCallback') { lock.waitLock(20000); return json_(deleteCallback_(me, req.id)); }
     if (a === 'markDone') { lock.waitLock(20000); return json_(markDone_(me, req.title, !!req.done)); }
-    if (!isAdmin_(me)) return json_({ ok: false, error: 'Only the admin can do that.' });
+    if (!isStaff_(me)) return json_({ ok: false, error: 'Only the admin can do that.' });
+    if (!isAdmin_(me) && ADMIN_ONLY.indexOf(a) !== -1) return json_({ ok: false, error: 'Only Harvey can change partners and sales.' });
     lock.waitLock(20000);
     if (a === 'adminOverview') return json_(adminOverview_());
     if (a === 'adminSaveUser') return json_(adminSaveUser_(me, req.user || {}, !!req.invite));
@@ -369,6 +372,9 @@ function endSession_(session) {
 }
 
 function isAdmin_(u) { return u && u.Role === 'Admin' && cleanEmail_(u.Email) === ADMIN_EMAIL; }
+/** Manager: runs the reps (team, logins, training, group calls, previews list, every rep's leads) but not money, partners or the admin's own list. */
+function isManager_(u) { return !!u && u.Role === 'Manager' && u.Status === 'Active'; }
+function isStaff_(u) { return isAdmin_(u) || isManager_(u); }
 
 /* ---------------- what a rep sees ---------------- */
 
@@ -391,7 +397,7 @@ function mePayload_(u) {
   var users = table_('Users'), memberNo = 0;
   users.forEach(function (x, i) { if (cleanEmail_(x.Email) === u.Email) memberNo = i + 1; });
   return {
-    ok: true, user: publicUser_(u), admin: isAdmin_(u), hasPassword: hasPassword_(u.Email), mine: mine, rank: rank, training: training, events: eventsFor_(lvl), dash: dash_(u, board), joined: fmt_(u.Joined), memberNo: memberNo, boardSize: board.length,
+    ok: true, user: publicUser_(u), admin: isStaff_(u), manager: isManager_(u), hasPassword: hasPassword_(u.Email), mine: mine, rank: rank, training: training, events: eventsFor_(lvl), dash: dash_(u, board), joined: fmt_(u.Joined), memberNo: memberNo, boardSize: board.length,
     leaderboard: board.slice(0, 15).map(function (b, i) { return { rank: i + 1, name: b.name, role: b.role, previews: b.previews, sales: b.sales, me: b.email === u.Email }; })
   };
 }
@@ -480,10 +486,12 @@ function adminSaveUser_(me, d, invite) {
   var name = str_(d.name, 80);
   if (!name) return { ok: false, error: 'Add their name.' };
   var role = ROLES.indexOf(d.role) !== -1 ? d.role : 'Rep';
+  if (!isAdmin_(me)) { var tgt = findUser_(email); if (tgt && (tgt.Role === 'Admin' || tgt.Role === 'Manager')) return { ok: false, error: 'Only Harvey can change that login.' }; if (MANAGER_CAN_SET.indexOf(role) === -1) return { ok: false, error: 'You can set reps up to Team Lead.' }; }
   if (role === 'Admin' && email !== ADMIN_EMAIL) return { ok: false, error: 'Only ' + ADMIN_EMAIL + ' can be the admin.' };
   var status = USER_STATUS.indexOf(d.status) !== -1 ? d.status : 'Active';
   if (email === ADMIN_EMAIL) { role = 'Admin'; status = 'Active'; }          // the admin can't lock himself out
   var commission = Math.max(0, Math.min(100000, Number(d.commission) || 0));
+  if (!isAdmin_(me)) { var ex = findUser_(email), pt = table_('Partners').filter(function (x) { return x.Name === d.partner; })[0]; commission = ex ? Number(ex['Commission per sale'] || 0) : Number((pt || {})['Commission per sale'] || 0); }   // pay rates are Harvey's call
   var rowData = { 'Email': email, 'Name': name, 'Role': role, 'Partner': str_(d.partner, 80), 'Status': status,
                   'Call list tab': str_(d.callListTab, 60), 'Commission per sale': commission, 'Phone': str_(d.phone, 30), 'Notes': str_(d.notes, 500) };
   var existing = findUser_(email), isNew = !existing, madeTab = '';
@@ -508,6 +516,7 @@ function adminSendLink_(me, email) {
   var u = findUser_(email);
   if (!u) return { ok: false, error: 'No login with that email.' };
   if (u.Status !== 'Active') return { ok: false, error: 'That login is ' + u.Status + '. Set it to Active first.' };
+  if (!isAdmin_(me) && (u.Role === 'Admin' || u.Role === 'Manager') && cleanEmail_(u.Email) !== me.Email) return { ok: false, error: 'Only Harvey can do that.' };
   sendLoginLink_(u, false);
   return { ok: true, message: 'Login link sent to ' + u.Email + '.' };
 }
@@ -688,8 +697,10 @@ function selfTest() {
 // Reps can only change the columns below; everything else is read-only on the site.
 
 var LEAD_EDIT = { 'Called (tick)': 60, 'Outcome': 120, 'Client email': 120, 'Call notes': 3000, 'TPS': 40, 'Next contact': 'date', 'Do not call': 'bool', 'Interested in': 80, 'OK to refer': 'bool', 'Last offer': 60, 'Details': 1000 };
+function adminTab_() { var a = findUser_(ADMIN_EMAIL); return a ? String(a['Call list tab'] || '').trim() : ''; }
 function leadTab_(me, tab) {
-  var name = isAdmin_(me) && tab ? String(tab) : String(me['Call list tab'] || '').trim();
+  var name = isStaff_(me) && tab ? String(tab) : String(me['Call list tab'] || '').trim();
+  if (isManager_(me) && tab && name === adminTab_()) return { error: 'That call list is private.' };
   if (!name) return { error: 'You do not have a call list yet. Ask Harvey to set one up.' };
   var sh; try { sh = SpreadsheetApp.openById(CALL_LISTS_ID).getSheetByName(name); } catch (e) { return { error: 'Could not open the call lists.' }; }
   if (!sh) return { error: 'Your call list tab "' + name + '" was not found.' };
@@ -705,7 +716,7 @@ function leads_(me, tab) {
     if (!String(v[i][0]).trim()) continue;
     var o = { _row: i + 1 }; head.forEach(function (h, c) { if (h) o[h] = leadVal_(v[i][c]); }); out.push(o);
   }
-  var tabs = isAdmin_(me) ? SpreadsheetApp.openById(CALL_LISTS_ID).getSheets().map(function (s) { return s.getName(); }).filter(function (n) { return n !== 'Summary'; }) : [];
+  var tabs = isStaff_(me) ? SpreadsheetApp.openById(CALL_LISTS_ID).getSheets().map(function (s) { return s.getName(); }).filter(function (n) { return n !== 'Summary' && !(isManager_(me) && n === adminTab_()); }) : [];
   return { ok: true, tab: t.name, tabs: tabs, head: head, editable: Object.keys(LEAD_EDIT), leads: out };
 }
 function repTabs_() {

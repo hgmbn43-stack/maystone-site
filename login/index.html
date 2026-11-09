@@ -310,6 +310,7 @@ body.ms-noscroll{overflow:hidden}
 .st-ok{margin:10px 0 0;font-weight:600;color:var(--good)}
 .st-acc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.st-acc small{display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}.st-acc b{color:var(--ink);overflow-wrap:anywhere}
 #logout{white-space:nowrap}.pwi{display:none;font-size:17px;line-height:1}@media(max-width:520px){.pwt{display:none}.pwi{display:inline}#pw-open{width:40px;padding:0!important}}
+body.mgr #d-partner,body.mgr #d-sale,body.mgr [data-partner]{display:none!important}body.mgr select[data-sale]{pointer-events:none;opacity:.7}body.mgr #u-commission{pointer-events:none;opacity:.6}
 .ms-setl{margin-top:auto}.thm{width:40px;padding:0!important;display:inline-grid;place-items:center}.thm .sun{display:none}
 html[data-theme=dark] .thm .moon{display:none}html[data-theme=dark] .thm .sun{display:inline}
 @media(max-width:820px){.ms-setl{display:none}}
@@ -1038,7 +1039,7 @@ html[data-theme=dark] .dx-rw.light .dx-rl b{color:var(--ink)}html[data-theme=dar
       '<div class="ms-f2"><label>Client email<input name="Client email" type="email" maxlength="120" value="' + esc(l['Client email'] || '') + '"></label><label>Next contact<input name="Next contact" type="date" value="' + esc(l['Next contact'] || '') + '"></label></div>' +
       '<div class="ms-f2"><label>Last offer<select name="Last offer">' + opt(OFFERS, l['Last offer']) + '</select></label><label>Interested in<select name="Interested in">' + opt(INTEREST, l['Interested in']) + '</select></label></div>' +
       '<div class="ms-f2"><label>TPS<select name="TPS">' + opt(['Not checked', 'Checked', 'On TPS'], l['TPS']) + '</select></label><label>Details<input name="Details" maxlength="1000" value="' + esc(l['Details'] || '') + '"></label></div>' +
-      '<div class="ms-checks"><label class="ms-tick"><input type="checkbox" name="OK to refer"' + (l['OK to refer'] === true ? ' checked' : '') + '> OK to refer</label><label class="ms-tick"><input type="checkbox" name="Do not call"' + (l['Do not call'] === true ? ' checked' : '') + '> Do not call</label>' + (m.admin ? '<label class="ms-tick appr"><input type="checkbox" name="Approved (Harvey)"' + (l['Approved (Harvey)'] === true ? ' checked' : '') + '> Approved (Harvey)</label>' : '') + '</div>' +
+      '<div class="ms-checks"><label class="ms-tick"><input type="checkbox" name="OK to refer"' + (l['OK to refer'] === true ? ' checked' : '') + '> OK to refer</label><label class="ms-tick"><input type="checkbox" name="Do not call"' + (l['Do not call'] === true ? ' checked' : '') + '> Do not call</label>' + (m.admin && !m.manager ? '<label class="ms-tick appr"><input type="checkbox" name="Approved (Harvey)"' + (l['Approved (Harvey)'] === true ? ' checked' : '') + '> Approved (Harvey)</label>' : '') + '</div>' +
       '<div class="ms-pipe">' + info('Preview link', prev ? '<a href="' + esc(prev) + '" target="_blank" rel="noopener">Open preview</a>' : '') + info('Approved', l['Approved (Harvey)'] === true ? 'Yes' : '') + info('Sent to client', esc(l['Sent to client'])) + info('Views', esc(l['Views'])) + info('Hot?', esc(l['Hot?'])) + info('Package', esc(l['Package'])) + info('Paid', esc(l['Paid'])) + info('Live site', esc(l['Live site'])) + '</div>' +
       '<p class="ms-err" hidden></p><div class="ms-mact"><button type="button" class="ms-btn ghost" data-cbk>Book call-back</button><span class="ms-sp"></span><button class="ms-btn ghost" type="submit" data-stay>Save</button><button class="ms-btn acc" type="submit">Save &amp; next →</button></div></form>';
     document.body.appendChild(ov); document.body.classList.add('ms-noscroll');
@@ -1185,7 +1186,7 @@ html[data-theme=dark] .dx-rw.light .dx-rl b{color:var(--ink)}html[data-theme=dar
     $('a-top').innerHTML = top.map(function (u, i) { return '<div class="item"><span><b>' + (i + 1) + '. ' + esc(u.name) + '</b><small>' + esc(u.role) + ' · ' + u.previews + ' previews · ' + u.sales + ' sales</small></span><b>' + money(u.earned) + '</b></div>'; }).join('') || '<p class="empty">No reps yet. Create the first login in the Team tab.</p>';
     $('a-partners-sum').innerHTML = o.partners.map(function (p) { return '<div class="item"><span><b>' + esc(p.name) + '</b><small>' + esc(p.what || '') + '</small></span><span class="st ' + esc(p.status) + '">' + p.reps + ' rep' + (p.reps === 1 ? '' : 's') + '</span></div>'; }).join('') || '<p class="empty">No partners yet.</p>';
     $('a-users').innerHTML = o.users.map(function (u) {
-      return '<tr><td><b>' + esc(u.name) + '</b><small>' + esc(u.email) + '</small></td><td>' + esc(u.role) + '</td><td>' + esc(u.partner || '–') + (u.callListTab ? '<small>tab: ' + esc(u.callListTab) + '</small>' : '') + '</td><td><span class="st ' + esc(u.status) + '">' + esc(u.status) + '</span></td><td class="num">' + u.previews + '</td><td class="num">' + u.sales + '</td><td class="num">' + money(u.earned) + '</td><td class="num">' + money(u.owed) + '</td><td>' + esc(u.lastLogin || 'Never') + '</td><td><div class="row" style="flex-wrap:nowrap"><button class="btn out sm" data-edit="' + esc(u.email) + '" type="button">Edit</button>' + (u.status === 'Active' ? '<button class="btn out sm" data-link="' + esc(u.email) + '" type="button">Send link</button>' : '') + '</div></td></tr>';
+      return '<tr><td><b>' + esc(u.name) + '</b><small>' + esc(u.email) + '</small></td><td>' + esc(u.role) + '</td><td>' + esc(u.partner || '–') + (u.callListTab ? '<small>tab: ' + esc(u.callListTab) + '</small>' : '') + '</td><td><span class="st ' + esc(u.status) + '">' + esc(u.status) + '</span></td><td class="num">' + u.previews + '</td><td class="num">' + u.sales + '</td><td class="num">' + money(u.earned) + '</td><td class="num">' + money(u.owed) + '</td><td>' + esc(u.lastLogin || 'Never') + '</td><td><div class="row" style="flex-wrap:nowrap">' + (mgrLock(u) ? '' : '<button class="btn out sm" data-edit="' + esc(u.email) + '" type="button">Edit</button>') + (u.status === 'Active' && !mgrLock(u) ? '<button class="btn out sm" data-link="' + esc(u.email) + '" type="button">Send link</button>' : '') + '</div></td></tr>';
     }).join('') || '<tr><td colspan="10" class="empty">No logins yet.</td></tr>';
     $('a-partners').innerHTML = o.partners.map(function (p) { return '<div class="item"><span><b>' + esc(p.name) + '</b><small>' + esc(p.what || '') + ' · ' + money(p.commission) + ' per sale to the rep · since ' + esc(p.started) + (p.contact ? ' · ' + esc(p.contact) : '') + '</small></span><span class="row"><span class="st ' + esc(p.status) + '">' + esc(p.status) + '</span><span class="chip lt">' + p.reps + ' rep' + (p.reps === 1 ? '' : 's') + '</span><button class="btn out sm" type="button" data-partner="' + esc(p.name) + '">Edit</button></span></div>'; }).join('') || '<p class="empty">No partners yet.</p>';
     var repName = {}; o.users.forEach(function (u) { repName[u.email] = u.name; });
@@ -1199,7 +1200,7 @@ html[data-theme=dark] .dx-rw.light .dx-rl b{color:var(--ink)}html[data-theme=dar
     $('a-training').innerHTML = o.training.map(function (t) { return '<a class="item" href="' + esc(t.link) + '" target="_blank" rel="noopener"><span><b>' + esc(t.title) + '</b><small>' + esc(t.role === 'All' ? 'Everyone' : t.role) + ' · ' + esc(t.type) + '</small></span><span aria-hidden="true">→</span></a>'; }).join('') || '<p class="empty">No training yet.</p>';
     // selects
     var partnerNames = o.partners.map(function (p) { return p.name; });
-    fillSelect($('u-role'), o.roles.filter(function (r) { return r !== 'Admin'; }), 'Rep');
+    fillSelect($('u-role'), o.roles.filter(function (r) { return r !== 'Admin' && !(state.me && state.me.manager && r === 'Manager'); }), 'Rep');
     fillSelect($('u-partner'), partnerNames, partnerNames[0] || '', 'Not set');
     fillSelect($('u-tab'), o.callListTabs, '', 'Make a new tab for them');
     fillSelect($('u-status'), o.userStatus, 'Active');
@@ -1208,6 +1209,7 @@ html[data-theme=dark] .dx-rw.light .dx-rl b{color:var(--ink)}html[data-theme=dar
     fillSelect($('s-status'), o.saleStatus, 'Pending');
     fillSelect($('t-role'), ['All'].concat(o.roles), 'Rep');
   }
+  function mgrLock(u) { return !!(state.me && state.me.manager && (u.role === 'Admin' || u.role === 'Manager')); }
   function adminSay(r) { say($('admin-msg'), r.ok ? (r.message || 'Saved.') : r.error, r.ok); if (r.ok && r.totals) renderAdmin(r); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
   $('tabs').addEventListener('click', function (e) {
@@ -1278,7 +1280,7 @@ html[data-theme=dark] .dx-rw.light .dx-rl b{color:var(--ink)}html[data-theme=dar
       state.previews = r.previews.sort(function (a, b) { return (b['Hot?'] ? 1 : 0) - (a['Hot?'] ? 1 : 0) || (a['Approved (Harvey)'] === true ? 1 : 0) - (b['Approved (Harvey)'] === true ? 1 : 0) || (Number(b['Views']) || 0) - (Number(a['Views']) || 0); });
       $('a-previews').innerHTML = state.previews.map(function (l, i) {
         return '<tr><td><b>' + esc(l['Business']) + '</b><small>' + esc(l['Lead ID']) + ' · ' + esc(l['Phone'] || '') + (l['Client email'] ? ' · ' + esc(l['Client email']) : '') + '</small></td><td>' + esc(l.tab) + '</td><td>' + (l['Preview link'] ? '<a href="' + esc(l['Preview link']) + '" target="_blank" rel="noopener">Open →</a>' : '<span class="note">Being made…</span>') + '</td>' +
-          '<td><label class="pv-ap"><input type="checkbox" data-pv="' + i + '"' + (l['Approved (Harvey)'] === true ? ' checked' : '') + '><span>' + (l['Approved (Harvey)'] === true ? 'Approved' : 'Approve') + '</span></label></td><td>' + esc(l['Sent to client'] || '–') + '</td><td class="num">' + esc(l['Views'] || 0) + '</td><td>' + (l['Hot?'] ? '<span class="st Active">' + esc(l['Hot?']) + '</span>' : '–') + '</td><td>' + esc(l['Paid'] || '–') + '</td></tr>';
+          (state.me && state.me.manager ? '<td>' + (l['Approved (Harvey)'] === true ? 'Approved' : 'Waiting for Harvey') + '</td>' : '<td><label class="pv-ap"><input type="checkbox" data-pv="' + i + '"' + (l['Approved (Harvey)'] === true ? ' checked' : '') + '><span>' + (l['Approved (Harvey)'] === true ? 'Approved' : 'Approve') + '</span></label></td>') + '<td>' + esc(l['Sent to client'] || '–') + '</td><td class="num">' + esc(l['Views'] || 0) + '</td><td>' + (l['Hot?'] ? '<span class="st Active">' + esc(l['Hot?']) + '</span>' : '–') + '</td><td>' + esc(l['Paid'] || '–') + '</td></tr>';
       }).join('') || '<tr><td colspan="8" class="empty">No previews yet. They appear here when a rep marks a lead "Yes".</td></tr>';
     });
   }
@@ -1333,6 +1335,7 @@ html[data-theme=dark] .dx-rw.light .dx-rl b{color:var(--ink)}html[data-theme=dar
       state.me = m;
       pwBanner(m);
       $('who-name').textContent = m.user.name || m.user.email; $('who-role').textContent = m.user.role;
+      document.body.classList.toggle('mgr', !!m.manager);
       if (m.admin) { show('v-admin'); api('adminOverview', {}).then(function (o) { if (o.ok) renderAdmin(o); else say($('admin-msg'), o.error, false); }); }
       else { repHTML(m); show('v-rep'); }
     });

@@ -44,9 +44,18 @@
   }
 
   /* ================= course overview ================= */
-  function nextMod() { return S.ov.modules.filter(function (m) { return !m.passed && !m.locked; })[0]; }
+  function nextMod(track) { return S.ov.modules.filter(function (m) { return (m.track || 'rep') === (track || 'rep') && !m.passed && !m.locked; })[0]; }
+  function trackMods(t) { return S.ov.modules.filter(function (m) { return (m.track || 'rep') === t; }); }
+  function pathHTML(list, nx) {
+    return '<div class="ac-path">' + list.map(function (m, i) {
+      var lead = m.track === 'lead', stt = m.passed ? 'passed' : m.locked ? 'locked' : (nx && nx.id === m.id) ? 'now' : 'open';
+      var badge = m.passed ? '<span class="ac-badge ok">✓ Passed · best ' + m.best + '/10</span>' : m.locked ? '<span class="ac-badge">🔒 Pass module ' + i + ' to unlock</span>' : m.attempts ? '<span class="ac-badge warn">Best ' + m.best + '/10 · ' + m.attempts + ' attempt' + (m.attempts === 1 ? '' : 's') + '</span>' : '<span class="ac-badge new">' + m.mins + ' min</span>';
+      var steps = '<span class="ac-st' + (m.anim ? ' on' : '') + '">▶ Watch</span><span class="ac-st' + (m.lesson ? ' on' : '') + '">✎ Learn</span><span class="ac-st' + (m.passed ? ' on' : '') + '">★ Test</span>';
+      return '<button class="ac-node ' + stt + (lead ? ' lead' : '') + '" ' + (m.locked ? 'disabled' : 'data-mod="' + m.id + '"') + '><span class="ac-num">' + (m.passed ? '✓' : (lead ? 'L' : '') + m.n) + '</span><span class="ac-nb"><small>' + (lead ? 'Leaders · module ' : 'Module ') + m.n + '</small><b>' + esc(m.title) + '</b><em>' + esc(m.tagline) + '</em><span class="ac-steps">' + steps + '</span></span><span class="ac-nr">' + badge + '</span></button>';
+    }).join('') + '</div>';
+  }
   function courseHTML() {
-    var o = S.ov, done = o.modules.filter(function (m) { return m.passed; }).length, tot = o.modules.length, pct = tot ? done / tot : 0;
+    var o = S.ov, repM = trackMods('rep'), leadM = trackMods('lead'), done = repM.filter(function (m) { return m.passed; }).length, tot = repM.length, pct = tot ? done / tot : 0;
     var nx = nextMod(), fact = FACTS[Math.floor(Date.now() / 864e5) % FACTS.length], vw = o.videos.filter(function (v) { return v.watched; }).length;
     var r = 52, c = 2 * Math.PI * r;
     return '<section class="ac-hero"><div class="ac-hero-l"><p class="ms-kick">Maystone Academy</p><h2>' + (done === tot ? 'You\'ve passed every module.' : done ? 'Keep going. You\'re ' + done + ' of ' + tot + ' in.' : 'Learn it. Prove it. Sell it.') + '</h2>' +
@@ -54,12 +63,8 @@
       (nx ? '<button class="ms-btn acc" data-mod="' + nx.id + '">' + (nx.attempts || nx.lesson ? 'Continue' : 'Start') + ': ' + esc(nx.title) + ' →</button>' : '<button class="ms-btn acc" data-go2="videos">Learn from the best →</button>') +
       '</div><div class="ac-hero-r"><svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true"><circle cx="66" cy="66" r="' + r + '" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="11"/><circle class="ac-arc" cx="66" cy="66" r="' + r + '" fill="none" stroke="#FF6A2E" stroke-width="11" stroke-linecap="round" stroke-dasharray="' + c + '" stroke-dashoffset="' + c * (1 - pct) + '" transform="rotate(-90 66 66)"/></svg><div class="ac-ringl"><b>' + done + '/' + tot + '</b><small>passed</small></div></div></section>' +
       '<div class="ac-fact"><span class="ac-fact-i">⚡</span><p><b>Did you know?</b> ' + esc(fact[0]) + ' <small>' + esc(fact[1]) + '</small></p></div>' +
-      '<div class="ac-path">' + o.modules.map(function (m, i) {
-        var stt = m.passed ? 'passed' : m.locked ? 'locked' : (nx && nx.id === m.id) ? 'now' : 'open';
-        var badge = m.passed ? '<span class="ac-badge ok">✓ Passed · best ' + m.best + '/10</span>' : m.locked ? '<span class="ac-badge">🔒 Pass module ' + i + ' to unlock</span>' : m.attempts ? '<span class="ac-badge warn">Best ' + m.best + '/10 · ' + m.attempts + ' attempt' + (m.attempts === 1 ? '' : 's') + '</span>' : '<span class="ac-badge new">' + m.mins + ' min</span>';
-        var steps = '<span class="ac-st' + (m.anim ? ' on' : '') + '">▶ Watch</span><span class="ac-st' + (m.lesson ? ' on' : '') + '">✎ Learn</span><span class="ac-st' + (m.passed ? ' on' : '') + '">★ Test</span>';
-        return '<button class="ac-node ' + stt + '" ' + (m.locked ? 'disabled' : 'data-mod="' + m.id + '"') + '><span class="ac-num">' + (m.passed ? '✓' : m.n) + '</span><span class="ac-nb"><small>Module ' + m.n + '</small><b>' + esc(m.title) + '</b><em>' + esc(m.tagline) + '</em><span class="ac-steps">' + steps + '</span></span><span class="ac-nr">' + badge + '</span></button>';
-      }).join('') + '</div>' +
+      pathHTML(repM, nx) +
+      (leadM.length ? '<div class="ac-lhead"><span>Leaders only</span><h3>The leaders track</h3><p>For Harvey and Fin: teaching new reps, coaching, motivation and keeping reps from quitting. Reps can\'t see this.</p></div>' + pathHTML(leadM, nextMod('lead')) : '') +
       '<div class="ac-two"><button class="ac-tile" data-go2="videos"><span class="ac-ti">▶</span><b>Learn from the best</b><p>Hand-picked videos from top cold-calling trainers.</p><em>' + vw + ' of ' + o.videos.length + ' watched</em></button>' +
       '<button class="ac-tile" data-go2="library"><span class="ac-ti">📄</span><b>Reference library</b><p>The full call script and decks, word for word.</p><em>Open any time</em></button></div>';
   }
@@ -71,7 +76,7 @@
     var paint = function (r) {
       if (!r.ok) { S.root.innerHTML = '<div class="ms-panel"><p class="ms-p">' + esc(r.error) + '</p><button class="ms-btn ghost" data-go2="course">← Back</button></div>'; bind(); return; }
       S.cache[id] = r; var m = r.module;
-      S.root.innerHTML = '<div class="ac-mhead ms-phead"><div><button class="ms-link back" data-go2="course">← All modules</button><p class="ms-kick dark">Module ' + meta.n + ' · about ' + m.mins + ' minutes</p><h2>' + esc(m.title) + '</h2><p class="ms-lead">' + esc(m.tagline) + '</p></div>' +
+      S.root.innerHTML = '<div class="ac-mhead ms-phead"><div><button class="ms-link back" data-go2="course">← All modules</button><p class="ms-kick dark">' + (meta.track === 'lead' ? 'Leaders · module ' : 'Module ') + meta.n + ' · about ' + m.mins + ' minutes</p><h2>' + esc(m.title) + '</h2><p class="ms-lead">' + esc(m.tagline) + '</p></div>' +
         '<div class="ac-flow"><a href="#ac-watch" class="ac-fl' + (meta.anim ? ' on' : '') + '"><b>1</b>Watch</a><a href="#ac-learn" class="ac-fl' + (meta.lesson ? ' on' : '') + '"><b>2</b>Learn</a><a href="#ac-test" class="ac-fl' + (meta.passed ? ' on' : '') + '"><b>3</b>Test</a></div></div>' +
         '<section id="ac-watch" class="ac-sec"><div class="ac-sech"><h3>1. Watch: ' + esc(m.anim.title) + '</h3><span>About a minute</span></div><div class="ac-player" id="ac-player"></div></section>' +
         '<section id="ac-learn" class="ac-sec ms-panel"><div class="ac-sech"><h3>2. Learn</h3><span>Grab a notebook – write down every orange box</span></div><article class="ac-lesson">' + lessonHTML(m.lesson) + '</article>' +
@@ -197,7 +202,7 @@
     });
   }
   function resultHTML() {
-    var r = S.result, meta = S.ov.modules.filter(function (m) { return m.id === r.id; })[0], nx = nextMod(), pct = r.score / r.total, R = 58, c = 2 * Math.PI * R;
+    var r = S.result, meta = S.ov.modules.filter(function (m) { return m.id === r.id; })[0], nx = nextMod(meta && meta.track), pct = r.score / r.total, R = 58, c = 2 * Math.PI * R;
     var head = '<section class="ac-res ' + (r.passed ? 'pass' : 'fail') + '"><svg width="150" height="150" viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="' + R + '" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="12"/><circle class="ac-arc" cx="75" cy="75" r="' + R + '" fill="none" stroke="' + (r.passed ? '#3DDC97' : '#FF6A2E') + '" stroke-width="12" stroke-linecap="round" stroke-dasharray="' + c + '" stroke-dashoffset="' + c * (1 - pct) + '" transform="rotate(-90 75 75)"/></svg><div class="ac-resl"><b>' + r.score + '/' + r.total + '</b></div>' +
       '<div><p class="ms-kick">' + esc(meta ? meta.title : '') + '</p><h2>' + (r.passed ? (r.score === r.total ? 'Perfect score. Proper.' : 'Passed. Nice work.') : 'Not yet – you need ' + r.passMark + '.') + '</h2><p class="ac-sub">' +
       (r.passed ? (nx ? 'Next up: ' + esc(nx.title) + '. It\'s unlocked now.' : 'That\'s every module done. Harvey can see your results.') : 'No stress. Go back over the sections below, check your notes, then try again – you\'ll get different questions.') + '</p>' +
@@ -266,8 +271,8 @@
   function mountHome(el) {
     if (!el) return;
     var paint = function () {
-      var o = S.ov, done = o.modules.filter(function (m) { return m.passed; }).length, nx = nextMod();
-      el.innerHTML = '<div class="ac-home"><div class="ac-hbar"><i style="width:' + Math.round(done / o.modules.length * 100) + '%"></i></div><p><b>' + done + ' of ' + o.modules.length + ' modules passed</b></p>' + (nx ? '<button class="ms-next" data-acnext>' + esc('Up next: ' + nx.title) + '</button>' : '<p class="ms-p">Every module passed. Nice work.</p>') + '</div>';
+      var mods = trackMods('rep'), done = mods.filter(function (m) { return m.passed; }).length, nx = nextMod();
+      el.innerHTML = '<div class="ac-home"><div class="ac-hbar"><i style="width:' + Math.round(done / mods.length * 100) + '%"></i></div><p><b>' + done + ' of ' + mods.length + ' modules passed</b></p>' + (nx ? '<button class="ms-next" data-acnext>' + esc('Up next: ' + nx.title) + '</button>' : '<p class="ms-p">Every module passed. Nice work.</p>') + '</div>';
       var b = el.querySelector('[data-acnext]'); if (b && S.opts.openAcademy) b.onclick = function () { S.view = 'module'; S.mod = nx.id; S.opts.openAcademy(); };
     };
     if (S.ov) return paint();
@@ -282,7 +287,9 @@
       if (!r.ok) { el.innerHTML = '<p class="note">' + esc(r.error || 'Could not load.') + '</p>'; return; }
       var reps = r.reps.slice().sort(function (a, b) { return b.passed - a.passed || b.lastTs - a.lastTs; }), tot = r.modules.length;
       var week = Date.now() - 7 * 864e5, activeWk = reps.filter(function (u) { return u.lastTs > week; }).length, all = reps.filter(function (u) { return u.passed === tot; }).length;
-      el.innerHTML = '<div class="tiles">' + [['Reps in the Academy', reps.filter(function (u) { return u.attempts || u.lastTs; }).length, 'of ' + reps.length + ' on the team'], ['Active this week', activeWk, 'did something in the last 7 days'], ['Finished every module', all, 'passed all ' + tot], ['Tests taken', reps.reduce(function (s, u) { return s + u.attempts; }, 0), 'pass mark ' + r.passMark + '/10']].map(function (t) { return '<div class="tile"><span>' + t[0] + '</span><b>' + t[1] + '</b><small>' + t[2] + '</small></div>'; }).join('') + '</div>' +
+      var riskHTML = '<div class="ac-risk"><div class="ac-riskh"><h3>Reps at risk</h3><span>' + (r.risk.length ? r.risk.length + ' to ring today' : 'Nobody right now') + '</span></div>' + (r.risk.length ? r.risk.map(function (x) { return '<div class="ac-riskr"><div><b>' + esc(x.name) + '</b><small>' + esc(x.email) + (x.phone ? ' · ' + esc(x.phone) : '') + (x.joined ? ' · joined ' + esc(x.joined) : '') + '</small></div><div class="ac-why">' + x.reasons.map(function (w) { return '<span>' + esc(w) + '</span>'; }).join('') + '</div></div>'; }).join('') + '<p class="note" style="margin:10px 0 0">Ring, don\'t text – and open with "How are you finding it?". See Leaders module 5.</p>' : '<p class="note" style="margin:0">Everyone active has logged in, logged calls and kept moving in the last 3 days.</p>') + '</div>';
+      var leadHTML = (r.leaders && r.leaders.length && r.leadModules.length) ? '<h3 style="margin:26px 0 10px">Leaders track</h3><div class="ac-atw"><table class="ac-at" style="min-width:640px"><thead><tr><th>Leader</th><th>Passed</th>' + r.leadModules.map(function (m) { return '<th title="' + esc(m.title) + '">L' + m.n + '<small>' + esc(m.title) + '</small></th>'; }).join('') + '<th>Last active</th></tr></thead><tbody>' + r.leaders.map(function (u) { return '<tr><td><b>' + esc(u.name) + '</b><small>' + esc(u.role) + '</small></td><td><div class="ac-pbar"><i style="width:' + Math.round(u.passed / r.leadModules.length * 100) + '%"></i></div><small>' + u.passed + '/' + r.leadModules.length + '</small></td>' + u.mods.map(function (m) { return '<td class="ac-c ' + (m.passed ? 'ok' : m.attempts ? 'try' : '') + '">' + (m.attempts ? (m.passed ? '✓ ' : '') + m.best + '/10<small>' + m.attempts + ' tr' + (m.attempts === 1 ? 'y' : 'ies') + '</small>' : '<span class="ac-dash">–</span>') + '</td>'; }).join('') + '<td><small>' + esc(u.lastActive || 'Never') + '</small></td></tr>'; }).join('') + '</tbody></table></div>' : '';
+      el.innerHTML = riskHTML + '<div class="tiles">' + [['Reps in the Academy', reps.filter(function (u) { return u.attempts || u.lastTs; }).length, 'of ' + reps.length + ' on the team'], ['Active this week', activeWk, 'did something in the last 7 days'], ['Finished every module', all, 'passed all ' + tot], ['Tests taken', reps.reduce(function (s, u) { return s + u.attempts; }, 0), 'pass mark ' + r.passMark + '/10']].map(function (t) { return '<div class="tile"><span>' + t[0] + '</span><b>' + t[1] + '</b><small>' + t[2] + '</small></div>'; }).join('') + '</div>' +
         '<p class="note" style="margin:16px 0 10px">Each cell shows the best score and number of attempts. ✓ = passed (' + r.passMark + '+). ▶ watched the video, ✎ read the lesson. Sorted by modules passed.</p>' +
         '<div class="ac-atw"><table class="ac-at"><thead><tr><th>Rep</th><th>Passed</th>' + r.modules.map(function (m) { return '<th title="' + esc(m.title) + '">M' + m.n + '<small>' + esc(m.title) + '</small></th>'; }).join('') + '<th>Videos</th><th>Last active</th></tr></thead><tbody>' +
         (reps.map(function (u) {
@@ -290,7 +297,7 @@
             u.mods.map(function (m) { return '<td class="ac-c ' + (m.passed ? 'ok' : m.attempts ? 'try' : '') + '">' + (m.attempts ? (m.passed ? '✓ ' : '') + m.best + '/10<small>' + m.attempts + ' tr' + (m.attempts === 1 ? 'y' : 'ies') + '</small>' : '<span class="ac-dash">–</span>') + '<small class="ac-ic">' + (m.anim ? '▶' : '') + (m.lesson ? '✎' : '') + '</small></td>'; }).join('') +
             '<td>' + u.videos + '/' + r.videos + '</td><td><small>' + esc(u.lastActive || 'Never') + '</small></td></tr>';
         }).join('') || '<tr><td colspan="' + (tot + 4) + '">No reps yet.</td></tr>') + '</tbody></table></div>' +
-        '<h3 style="margin:22px 0 10px">Latest activity</h3><div class="list">' + (r.recent.length ? r.recent.map(function (a) { return '<div class="item"><span><b>' + esc(a.name) + '</b><small>' + esc(a.type === 'Test' ? 'Took the ' + a.module + ' test: ' + a.score + '/10' + (a.passed ? ' – passed' : '') : a.type === 'Lesson' ? 'Read the ' + a.module + ' lesson' : a.type === 'Animation' ? 'Watched the ' + a.module + ' video' : 'Watched "' + a.module + '"') + '</small></span><small>' + esc(a.when) + '</small></div>'; }).join('') : '<p class="note">Nothing yet.</p>') + '</div>';
+        leadHTML + '<h3 style="margin:22px 0 10px">Latest activity</h3><div class="list">' + (r.recent.length ? r.recent.map(function (a) { return '<div class="item"><span><b>' + esc(a.name) + '</b><small>' + esc(a.type === 'Test' ? 'Took the ' + a.module + ' test: ' + a.score + '/10' + (a.passed ? ' – passed' : '') : a.type === 'Lesson' ? 'Read the ' + a.module + ' lesson' : a.type === 'Animation' ? 'Watched the ' + a.module + ' video' : 'Watched "' + a.module + '"') + '</small></span><small>' + esc(a.when) + '</small></div>'; }).join('') : '<p class="note">Nothing yet.</p>') + '</div>';
     });
   }
 

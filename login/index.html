@@ -488,6 +488,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
 .pwb form{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.pwb input{width:220px}
 .pwb .x{border:0;background:none;color:var(--muted);font:500 14px var(--body);cursor:pointer;min-height:44px;padding:0 8px}
 </style>
+<link rel="stylesheet" href="academy.css">
 </head>
 <body>
 <script>(function(){var t='dark';try{t=localStorage.getItem('maystone.theme')||'dark'}catch(e){}if(t==='auto')t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)})();</script>
@@ -540,6 +541,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
       <button role="tab" aria-selected="false" data-tab="partners">Partners</button>
       <button role="tab" aria-selected="false" data-tab="sales">Sales</button>
       <button role="tab" aria-selected="false" data-tab="training">Training</button>
+      <button role="tab" aria-selected="false" data-tab="academy">Academy</button>
       <button role="tab" aria-selected="false" data-tab="events">Group calls</button>
       <button role="tab" aria-selected="false" data-tab="previews">Previews</button>
       <button role="tab" aria-selected="false" data-tab="myview">What reps see</button>
@@ -663,6 +665,8 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
       <div class="list" id="a-events"></div>
     </div>
 
+    <div data-pane="academy" hidden><div id="a-academy"></div></div>
+
     <div data-pane="myview" hidden>
       <p class="note">This is your own rep dashboard, as a rep sees theirs.</p>
       <div id="a-myview"></div>
@@ -671,6 +675,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
 </main>
 <footer class="wrap">© 2026 Maystone Sales Group · <a href="../#privacy">Privacy</a></footer>
 
+<script src="academy.js"></script>
 <script>
 (function () {
   var API = 'https://script.google.com/macros/s/AKfycbyTMyA_Ut2nhNpUGAPh0Yt-DcIBOSwLOyFFeKCAOWDEAsJX8HpJdHxuADivs71IWXY/exec';
@@ -693,6 +698,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
       .then(function (res) { if (res && res.auth === false) { logout(true); } return res; })
       .catch(function () { return { ok: false, error: 'Couldn\'t reach the login system. Check your connection and try again.' }; });
   }
+  window.MSBridge = { api: api };
   function busy(btn, on, label) { if (!btn) return; if (on) { btn.dataset.label = btn.textContent; btn.textContent = label || 'Working…'; btn.disabled = true; } else { btn.textContent = btn.dataset.label || btn.textContent; btn.disabled = false; } }
 
   /* ---------- login ---------- */
@@ -847,11 +853,11 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
         '</div>' +
         '<div class="dx-two">' +
           '<div class="dx-panel"><div class="ms-phd"><h3>Team feed</h3><span class="dx-livepill"><span class="dx-live"></span>Live</span></div>' + (D.feed.length ? D.feed.slice(0, 6).map(function (f) { return '<div class="dx-feed' + (f.big ? ' big' : '') + '"><span class="dx-av">' + esc((f.me ? 'Y' : f.who).charAt(0)) + '</span><p><b>' + esc(f.me ? 'You' : f.who) + '</b> ' + esc(f.what) + '</p><small>' + ago(f.ago) + '</small></div>'; }).join('') : '<div class="ms-empty sm">Nothing yet today. Previews, sales and new reps show up here as they happen.</div>') + '</div>' +
-          '<div class="dx-panel"><div class="ms-phd"><h3>Maystone Academy</h3><button class="ms-link" data-go="tasks">All modules →</button></div><div class="ms-prog dx-prog">' + dring(pct, 104, '<b>' + Math.round(pct * 100) + '%</b>', true) + '<div><b>' + done + ' of ' + open.length + ' modules complete</b><p>' + (next.length ? 'Up next:' : 'Nice work. New modules unlock as you level up.') + '</p>' + next.slice(0, 2).map(function (t) { return '<button class="ms-next" data-view="' + esc(t.title) + '"><span>' + (ICON[t.type] || ICON.Link) + '</span>' + esc(t.title) + '</button>'; }).join('') + '</div></div>' +
+          '<div class="dx-panel"><div class="ms-phd"><h3>Maystone Academy</h3><button class="ms-link" data-go="tasks">All modules →</button></div>' + (window.MSAcademy ? '<div id="acad-home"></div>' : '<div class="ms-prog dx-prog">' + dring(pct, 104, '<b>' + Math.round(pct * 100) + '%</b>', true) + '<div><b>' + done + ' of ' + open.length + ' modules complete</b><p>' + (next.length ? 'Up next:' : 'Nice work. New modules unlock as you level up.') + '</p>' + next.slice(0, 2).map(function (t) { return '<button class="ms-next" data-view="' + esc(t.title) + '"><span>' + (ICON[t.type] || ICON.Link) + '</span>' + esc(t.title) + '</button>'; }).join('') + '</div></div>') +
             '<div class="dx-member"><span class="ms-cmark"><i></i><i></i><i></i></span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + ' · Member no. ' + memberNo + ' · since ' + esc(m.joined || '–') + '</small></div></div></div>' +
         '</div>';
       })(),
-      tasks:
+      tasks: window.MSAcademy ? '<div id="acad-root" class="ac-root"></div>' :
         '<div class="ms-phead"><div><p class="ms-kick dark">Maystone Academy</p><h2>Your training, step by step.</h2><p class="ms-lead">Work through the modules in order. Each one opens right here. When you have finished it, mark it complete. New modules unlock as you move up the ladder.</p></div><div class="ms-bigbar"><div class="ms-bartop"><b>' + done + ' / ' + open.length + '</b><span>' + Math.round(pct * 100) + '% complete</span></div><div class="ms-bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div></div></div>' + tasksHTML,
       settings: (function () {
         var th = 'dark'; try { th = localStorage.getItem('maystone.theme') || 'dark'; } catch (e) {}
@@ -883,6 +889,11 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><button class="ms-nav ms-setl' + (repTab === 'settings' ? ' on' : '') + '" data-go="settings"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg><span><b>Settings</b></span></button><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab === 'tasks' && viewing ? 'viewer' : repTab] + '</div></div>';
     el.querySelectorAll('[data-go]').forEach(function (b) { b.addEventListener('click', function () { if (b.dataset.complete) complete(b.dataset.complete); repView = null; repTab = b.dataset.go; renderRep(m, el, preview); try { el.querySelector('.ms-main').scrollIntoView({ block: 'start' }); window.scrollTo(0, 0); } catch (e) {} }); });
     if (repTab === 'tasks' && viewing) loadLesson(m, viewing, el, preview);
+    if (window.MSAcademy) {
+      MSAcademy.setOpts({ m: m, openDoc: function (t) { repTab = 'tasks'; repView = t; renderRep(m, el, preview); window.scrollTo(0, 0); }, openAcademy: function () { repTab = 'tasks'; repView = null; renderRep(m, el, preview); window.scrollTo(0, 0); } });
+      if (repTab === 'tasks' && !viewing && el.querySelector('#acad-root')) MSAcademy.mount(el.querySelector('#acad-root'), { m: m });
+      if (repTab === 'home' && el.querySelector('#acad-home')) MSAcademy.mountHome(el.querySelector('#acad-home'));
+    }
     if (repTab === 'calls') loadCalendar(el, preview, m);
     if (repTab === 'leads') loadLeads(el, m);
     if (repTab === 'settings') {
@@ -1227,6 +1238,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     Array.prototype.forEach.call(document.querySelectorAll('#tabs button'), function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
     Array.prototype.forEach.call(document.querySelectorAll('[data-pane]'), function (p) { p.hidden = p.getAttribute('data-pane') !== b.dataset.tab; });
     if (b.dataset.tab === 'myview' && state.me) repHTML(state.me, $('a-myview'));
+    if (b.dataset.tab === 'academy' && window.MSAcademy) MSAcademy.mountAdmin($('a-academy'));
   });
 
   function resetUserForm() {

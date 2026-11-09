@@ -73,6 +73,7 @@ function doPost(e) {
     if (a === 'saveCallback') { lock.waitLock(20000); return json_(saveCallback_(me, req.cb || {})); }
     if (a === 'deleteCallback') { lock.waitLock(20000); return json_(deleteCallback_(me, req.id)); }
     if (a === 'markDone') { lock.waitLock(20000); return json_(markDone_(me, req.title, !!req.done)); }
+    if (a.indexOf('academy') === 0) return json_(academy_(me, a, req, lock));   // Academy.gs
     if (!isStaff_(me)) return json_({ ok: false, error: 'Only the admin can do that.' });
     if (!isAdmin_(me) && ADMIN_ONLY.indexOf(a) !== -1) return json_({ ok: false, error: 'Only Harvey can change partners and sales.' });
     lock.waitLock(20000);

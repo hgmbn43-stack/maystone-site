@@ -650,7 +650,7 @@ function setup() {
   ['Links', 'Sessions'].forEach(function (n) { try { ss.getSheetByName(n).hideSheet(); } catch (e) {} });
   if (!findUser_(ADMIN_EMAIL)) appendObj_('Users', { 'Email': ADMIN_EMAIL, 'Name': 'Harvey Matthews', 'Role': 'Admin', 'Partner': 'HGM Leads', 'Status': 'Active',
                                                       'Call list tab': 'Harvey', 'Commission per sale': 0, 'Joined': new Date(), 'Notes': 'Admin login' });
-  if (table_('Partners').length === 0) appendObj_('Partners', { 'Name': 'HGM Leads', 'What reps sell': 'Websites for local trades (free preview first; £500 one-off or £298 today + £49 a month)',
+  if (table_('Partners').length === 0) appendObj_('Partners', { 'Name': 'HGM Leads', 'What reps sell': 'Websites for local trades (free preview first; £500 one-off or £49 a month, no set-up fee, 12-month minimum)',
                                                                 'Commission per sale': 260, 'Status': 'Active', 'Started': new Date(), 'Contact': 'hello@maystone.uk', 'Notes': 'Founding partner: our sister web studio' });
   if (table_('Training').length === 0) {
     var d = function (id) { return 'https://drive.google.com/file/d/' + id + '/view'; }, g = function (id) { return 'https://docs.google.com/document/d/' + id + '/edit'; };

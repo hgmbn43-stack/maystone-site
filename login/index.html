@@ -297,6 +297,7 @@ body.ms-noscroll{overflow:hidden}
 .ms-qa{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 2px}.ms-qa .ms-btn{flex:1 1 140px;min-height:48px}
 .ms-bookbox{background:rgba(224,83,31,.1);border:1.5px solid var(--accent);border-radius:12px;padding:10px 14px}.ms-bookbox b{display:block}.ms-bookbox p{margin:4px 0 0;font-size:14px}
 .ms-toast{position:fixed;left:50%;bottom:96px;width:min(380px,calc(100% - 32px));transform:translate(-50%,20px);opacity:0;transition:.35s;z-index:9999;background:#142D4C;color:#fff;padding:14px 20px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);font:600 15px var(--body);max-width:calc(100% - 32px);text-align:center}
+.ms-medal{font-size:20px;line-height:1}
 .ms-toast.on{opacity:1;transform:translate(-50%,0)}.ms-toast.big{background:var(--accent);padding:20px 26px}.ms-toast b{display:block;font-size:22px}.ms-toast span{display:block;font-weight:500;margin-top:4px}
 .ms-warn{margin:0;background:#FDECEC;color:#B42318;border-radius:12px;padding:10px 14px;font-weight:600;font-size:14px}
 .ms-mact .ms-sp{flex:1}.ms-dbox .ms-mact{position:sticky;bottom:-24px;background:#fff;padding:12px 0 4px;margin-bottom:-4px;flex-wrap:wrap}
@@ -693,6 +694,16 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
   function show(id) { ['v-login', 'v-loading', 'v-rep', 'v-admin'].forEach(function (v) { $(v).hidden = v !== id; }); document.body.classList.toggle('in', id === 'v-rep'); if (id === 'v-login' || id === 'v-loading') $('pw-banner').hidden = true; $('back').hidden = id !== 'v-login'; $('who').hidden = id === 'v-login' || id === 'v-loading'; }
   function say(el, text, ok) { el.hidden = !text; el.textContent = text || ''; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
 
+  function msConfetti() {
+    try { if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
+    var c = document.createElement('canvas'), x = c.getContext('2d'), W = c.width = innerWidth, H = c.height = innerHeight, cols = ['#E0531F', '#FFB18F', '#142D4C', '#F5C04A', '#4FB286', '#ffffff'];
+    c.style.cssText = 'position:fixed;inset:0;z-index:10000;pointer-events:none'; document.body.appendChild(c);
+    var ps = []; for (var i = 0; i < 160; i++) ps.push({ x: W / 2 + (Math.random() - .5) * 80, y: H * .62, vx: (Math.random() - .5) * 16, vy: -Math.random() * 17 - 7, s: Math.random() * 7 + 5, r: Math.random() * 6, vr: (Math.random() - .5) * .35, c: cols[i % cols.length] });
+    var t0 = performance.now();
+    (function f(t) { var k = (t - t0) / 1900; x.clearRect(0, 0, W, H);
+      ps.forEach(function (p) { p.vy += .42; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; x.save(); x.globalAlpha = Math.max(0, 1 - k * k); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); x.restore(); });
+      if (k < 1) requestAnimationFrame(f); else c.remove(); })(t0);
+  }
   function msToast(text, big) {
     var t = document.createElement('div'); t.className = 'ms-toast' + (big ? ' big' : ''); t.innerHTML = text; document.body.appendChild(t);
     setTimeout(function () { t.classList.add('on'); }, 20); setTimeout(function () { t.classList.remove('on'); setTimeout(function () { t.remove(); }, 400); }, big ? 6000 : 3500);
@@ -796,7 +807,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
   }
   function renderRep(m, el, preview) {
     if (!preview) { state.repM = m;
-      try { var sk = 'maystone.sold.' + m.user.email, was = localStorage.getItem(sk); if (was !== null && m.mine.sales > Number(was)) msToast('<b>You just earned £100</b><span>A preview you booked has turned into a sale. Nice one!</span>', true); localStorage.setItem(sk, m.mine.sales); } catch (e) {} }
+      try { var sk = 'maystone.sold.' + m.user.email, was = localStorage.getItem(sk); if (was !== null && m.mine.sales > Number(was)) msConfetti(), msToast('<b>You just earned £100</b><span>A preview you booked has turned into a sale. Nice one!</span>', true); localStorage.setItem(sk, m.mine.sales); } catch (e) {} }
     var first = String(m.user.name || '').split(' ')[0] || 'there';
     var open = m.training.filter(function (t) { return !t.locked; });
     var done = open.filter(function (t) { return t.done; }).length;
@@ -823,7 +834,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     }).join('') || '<div class="ms-empty">No modules yet. Harvey will add your training soon.</div>';
 
     var podium = m.leaderboard.slice(0, 3), rest = m.leaderboard.slice(3);
-    var boardHTML = m.leaderboard.length ? '<div class="ms-podium">' + [1, 0, 2].map(function (i) { var b = podium[i]; if (!b) return '<div></div>'; return '<div class="ms-pod p' + (i + 1) + (b.me ? ' me' : '') + '"><div class="ms-pav">' + esc((b.name || '?').charAt(0)) + '</div><b>' + esc(b.name) + '</b><small>' + esc(b.role) + '</small><div class="ms-pstep"><span>' + (i + 1) + '</span><em>' + b.previews + ' previews</em></div></div>'; }).join('') + '</div>' +
+    var boardHTML = m.leaderboard.length ? '<div class="ms-podium">' + [1, 0, 2].map(function (i) { var b = podium[i]; if (!b) return '<div></div>'; return '<div class="ms-pod p' + (i + 1) + (b.me ? ' me' : '') + '"><div class="ms-pav">' + esc((b.name || '?').charAt(0)) + '</div><b>' + esc(b.name) + '</b><small>' + esc(b.role) + '</small><div class="ms-pstep"><span class="ms-medal">' + ['🥇', '🥈', '🥉'][i] + '</span><em>' + b.previews + ' previews</em></div></div>'; }).join('') + '</div>' +
       (rest.length ? '<div class="ms-list">' + rest.map(function (b) { return '<div class="ms-lrow' + (b.me ? ' me' : '') + '"><span class="ms-lr">' + b.rank + '</span><span class="ms-ln"><b>' + esc(b.name) + (b.me ? ' (you)' : '') + '</b><small>' + esc(b.role) + '</small></span><span class="ms-lv"><b>' + b.previews + '</b><small>previews</small></span><span class="ms-lv"><b>' + b.sales + '</b><small>sold</small></span></div>'; }).join('') + '</div>' : '')
       : '<div class="ms-empty">The board fills up as reps book previews and make sales. Your first sale puts you on it.</div>';
 
@@ -848,7 +859,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
             '<h1>Let\'s get it, <em>' + esc(first) + '</em>.</h1><p class="dx-sub">' + mood + '</p>' +
             '<div class="dx-cta"><button class="ms-btn acc" data-go="leads">Start calling →</button>' + (D.callbacksDue ? '<button class="ms-btn dx-ghost" data-go="calls">' + D.callbacksDue + ' call-back' + (D.callbacksDue === 1 ? '' : 's') + ' due</button>' : '<button class="ms-btn dx-ghost" data-go="board">Leaderboard</button>') + '</div></div>' +
           '<div class="dx-today"><div class="dx-ring">' + dring(gp, 160, '<b data-count="' + pt + '">0</b><small>of ' + pgoal + ' previews</small>') + '</div>' +
-            '<div class="dx-tstats"><div><span class="dx-flame' + (D.streak ? ' on' : '') + '">🔥</span><b data-count="' + D.streak + '">0</b><small>day streak</small></div><div><b data-count="' + D.callsToday + '">0</b><small>calls today</small></div><div><b data-count="' + D.previewsWeek + '">0</b><small>previews this week</small></div></div>' +
+            '<div class="dx-tstats"><div><span class="dx-flame' + ((D.bookStreak || 0) ? ' on' : '') + '">🔥</span><b data-count="' + (D.bookStreak || 0) + '">0</b><small>day booking streak</small></div><div><b data-count="' + D.callsToday + '">0</b><small>calls today</small></div><div><b data-count="' + D.previewsWeek + '">0</b><small>previews this week</small></div></div>' +
             '<button class="dx-goal" data-goal>Today\'s target: ' + pgoal + ' previews · change</button></div>' +
         '</section>' +
         (D.teamCallsToday || D.feed.length ? '<div class="dx-ticker" aria-label="Team activity"><div class="dx-track">' + (function () { var items = ['<span><b>' + D.teamCallsToday + '</b> calls logged by the team today</span>'].concat(D.feed.slice(0, 8).map(function (f) { return '<span' + (f.big ? ' class="big"' : '') + '><b>' + esc(f.me ? 'You' : f.who) + '</b> ' + esc(f.what) + ' · ' + ago(f.ago) + '</span>'; })); var h = items.join('<i>◆</i>'); return h + '<i>◆</i>' + h + '<i>◆</i>'; })() + '</div></div>' : '') +
@@ -859,7 +870,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
           '<div class="dx-panel"><div class="ms-phd"><h3>Your week</h3><span class="ms-pill">calls logged</span></div><div class="dx-bars">' + D.week.map(function (w, i) { return '<div class="dx-bar' + (i === 6 ? ' now' : '') + (w.n >= goal ? ' hit' : '') + '"><div class="dx-col"><i style="height:' + Math.max(2, Math.round(w.n / wkMax * 100)) + '%"><em>' + (w.n || '') + '</em></i></div><small>' + w.d + '</small></div>'; }).join('') + '<span class="dx-goalline" style="--g:' + (goal / wkMax) + '"><small>target ' + goal + '</small></span></div></div>' +
           '<div class="dx-panel dark"><div class="ms-phd"><h3>The race</h3><button class="ms-link" data-go="board">Full board →</button></div>' +
             (m.rank === 1 ? '<div class="dx-chase top"><b>You\'re #1.</b><p>Everyone is chasing you. Stay there.</p></div>' : D.chase ? '<div class="dx-chase"><small>Next target</small><b>' + esc(D.chase.name) + '</b><p>' + (D.chase.previews > 0 ? D.chase.previews + ' preview' + (D.chase.previews === 1 ? '' : 's') + ' ahead of you this week.' : 'Neck and neck. One more preview and you pass them.') + '</p></div>' : '<div class="dx-chase"><b>Get on the board.</b><p>Book your first preview and you\'re in the race.</p></div>') +
-            '<div class="dx-podium">' + [1, 0, 2].map(function (i) { var b = m.leaderboard[i]; return b ? '<div class="p' + (i + 1) + (b.me ? ' me' : '') + '"><span>' + esc(b.name.charAt(0)) + '</span><b>' + esc(b.name) + '</b><small>' + b.previews + ' previews</small><i>' + (i + 1) + '</i></div>' : '<div class="p' + (i + 1) + ' empty"><i>' + (i + 1) + '</i></div>'; }).join('') + '</div></div>' +
+            '<div class="dx-podium">' + [1, 0, 2].map(function (i) { var b = m.leaderboard[i]; return b ? '<div class="p' + (i + 1) + (b.me ? ' me' : '') + '"><span>' + esc(b.name.charAt(0)) + '</span><b>' + esc(b.name) + '</b><small>' + b.previews + ' previews</small><i>' + ['🥇', '🥈', '🥉'][i] + '</i></div>' : '<div class="p' + (i + 1) + ' empty"><i>' + (i + 1) + '</i></div>'; }).join('') + '</div></div>' +
         '</div>' +
         '<div class="dx-two">' +
           '<div class="dx-panel"><div class="ms-phd"><h3>Team feed</h3><span class="dx-livepill"><span class="dx-live"></span>Live</span></div>' + (D.feed.length ? D.feed.slice(0, 6).map(function (f) { return '<div class="dx-feed' + (f.big ? ' big' : '') + '"><span class="dx-av">' + esc((f.me ? 'Y' : f.who).charAt(0)) + '</span><p><b>' + esc(f.me ? 'You' : f.who) + '</b> ' + esc(f.what) + '</p><small>' + ago(f.ago) + '</small></div>'; }).join('') : '<div class="ms-empty sm">Nothing yet today. Previews, sales and new reps show up here as they happen.</div>') + '</div>' +
@@ -1099,7 +1110,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
       api('saveLead', { tab: LD.tab, row: l._row, id: l['Lead ID'], fields: fields }).then(function (r) {
         btns.forEach(function (b) { b.disabled = false; }); lab.textContent = was;
         if (!r.ok) { err.textContent = r.error || 'Could not save. Try again.'; err.hidden = false; err.scrollIntoView({ block: 'center' }); stay = false; return; }
-        if (/^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''))) msToast('Preview booked. Nice one! Harvey or Fin will call them back.');
+        if (/^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''))) { msConfetti(); msToast('<b>Preview booked 🎉</b><span>Nice one! Harvey or Fin will call them back.</span>', true); }
         var i = LD.data.leads.indexOf(l); LD.data.leads[i] = r.lead;
         var list = ldFiltered(), here = list.map(function (x) { return String(x['Lead ID']); }).indexOf(id);
         var wantCb = /call\s*back/i.test(fields['Outcome']) && !/call\s*back/i.test(String(l['Outcome'] || ''));

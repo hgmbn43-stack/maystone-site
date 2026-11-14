@@ -430,24 +430,26 @@ function dash_(u, board) {
   var names = {}; table_('Users').forEach(function (x) { names[cleanEmail_(x.Email)] = String(x.Name || '').trim().split(/\s+/)[0] || 'A rep'; });
   var sh = sheet_('Log'), rows = [];
   if (sh && sh.getLastRow() > 1) { var n = Math.min(4000, sh.getLastRow() - 1); rows = sh.getRange(sh.getLastRow() - n + 1, 1, n, 4).getValues(); }
-  var calls = {}, prevWeek = 0, prevToday = 0, weekAgo = Date.now() - 7 * 86400000, feed = [], teamToday = 0;
+  var calls = {}, prevDays = {}, prevWeek = 0, prevToday = 0, weekAgo = Date.now() - 7 * 86400000, feed = [], teamToday = 0;
   rows.forEach(function (r) {
     var who = cleanEmail_(r[1]), act = String(r[2]), t = new Date(r[0]).getTime(); if (!t) return;
     if (act === 'call logged') { if (who === u.Email) { var k = day(t); calls[k] = (calls[k] || 0) + 1; } if (day(t) === today) teamToday++; }
-    if (act === 'preview booked') { if (who === u.Email && t >= weekAgo) prevWeek++; if (who === u.Email && day(t) === today) prevToday++; feed.push({ t: t, who: names[who] || 'A rep', me: who === u.Email, what: 'booked a preview' }); }
+    if (act === 'preview booked') { if (who === u.Email) prevDays[day(t)] = 1; if (who === u.Email && t >= weekAgo) prevWeek++; if (who === u.Email && day(t) === today) prevToday++; feed.push({ t: t, who: names[who] || 'A rep', me: who === u.Email, what: 'booked a preview' }); }
     if (act === 'added login') feed.push({ t: t, who: names[cleanEmail_(String(r[3]).split(' ')[0])] || 'A new rep', me: false, what: 'joined the team' });
   });
   table_('Sales').forEach(function (s) { var t = new Date(s.Date).getTime(); if (t && s.Status !== 'Refunded' && t > Date.now() - 30 * 86400000) { var e = cleanEmail_(s['Rep email']); feed.push({ t: t, who: names[e] || 'A rep', me: e === u.Email, what: 'closed a sale', big: true }); } });
   feed.sort(function (a, b) { return b.t - a.t; });
   var streak = 0, d = new Date(); if (!calls[today]) d.setDate(d.getDate() - 1);
   while (calls[day(d)]) { streak++; d.setDate(d.getDate() - 1); }
+  var bookStreak = 0, bd = new Date(); if (!prevDays[today]) bd.setDate(bd.getDate() - 1);
+  while (prevDays[day(bd)]) { bookStreak++; bd.setDate(bd.getDate() - 1); }
   var best = 0; Object.keys(calls).forEach(function (k) { best = Math.max(best, calls[k]); });
   var due = 0, endToday = new Date(); endToday.setHours(23, 59, 59, 999);
   if (sheet_('Callbacks')) table_('Callbacks').forEach(function (c) { if (cleanEmail_(c.Email) === u.Email && c.Status === 'Open' && Number(c.When) <= endToday.getTime()) due++; });
   var me = -1; board.forEach(function (b, i) { if (b.email === u.Email) me = i; });
   var above = me > 0 ? board[me - 1] : null, mine = me >= 0 ? board[me] : null;
   var week = []; for (var i = 6; i >= 0; i--) { var w = new Date(); w.setDate(w.getDate() - i); week.push({ d: Utilities.formatDate(w, tz, 'EEE'), n: calls[day(w)] || 0 }); }
-  return { callsToday: calls[today] || 0, previewsToday: prevToday, streak: streak, best: best, previewsWeek: prevWeek, callbacksDue: due, teamCallsToday: teamToday, week: week,
+  return { callsToday: calls[today] || 0, previewsToday: prevToday, streak: streak, bookStreak: bookStreak, best: best, previewsWeek: prevWeek, callbacksDue: due, teamCallsToday: teamToday, week: week,
            chase: above && mine ? { name: above.name, sales: above.sales - mine.sales, previews: above.previews - mine.previews } : null,
            feed: feed.slice(0, 12).map(function (f) { return { ago: Math.round((Date.now() - f.t) / 60000), who: f.who, me: f.me, what: f.what, big: !!f.big }; }) };
 }

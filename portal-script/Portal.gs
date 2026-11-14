@@ -403,15 +403,24 @@ function mePayload_(u) {
   };
 }
 
+/** Previews booked since Monday 00:00 (London), per email, from the Log. */
+function weekPreviews_() {
+  var tz = 'Europe/London', now = new Date(), dow = Number(Utilities.formatDate(now, tz, 'u')), mon = new Date(now.getTime() - (dow - 1) * 86400000);
+  var start = new Date(Utilities.formatDate(mon, tz, "yyyy-MM-dd'T'00:00:00XXX")).getTime(), out = {};
+  var sh = sheet_('Log'); if (!sh || sh.getLastRow() < 2) return out;
+  var n = Math.min(6000, sh.getLastRow() - 1), rows = sh.getRange(sh.getLastRow() - n + 1, 1, n, 3).getValues();
+  rows.forEach(function (r) { if (String(r[2]) === 'preview booked' && new Date(r[0]).getTime() >= start) { var e = cleanEmail_(r[1]); out[e] = (out[e] || 0) + 1; } });
+  return out;
+}
 function leaderboard_(act, sales) {
-  var users = table_('Users').filter(function (x) { return x.Status === 'Active' && x.Role !== 'Admin'; });
+  var users = table_('Users').filter(function (x) { return x.Status === 'Active'; }), wk = weekPreviews_();
   var salesBy = {};
   sales.forEach(function (s) { if (s.Status !== 'Refunded') { var e = cleanEmail_(s['Rep email']); salesBy[e] = (salesBy[e] || 0) + 1; } });
   return users.map(function (x) {
     var e = cleanEmail_(x.Email), parts = String(x.Name || e).trim().split(/\s+/);
     return { email: e, name: parts[0] + (parts.length > 1 ? ' ' + parts[parts.length - 1].charAt(0) + '.' : ''), role: x.Role,
-             previews: Number((act[e] || {})['Previews booked'] || 0), sales: salesBy[e] || 0 };
-  }).sort(function (p, q) { return q.sales - p.sales || q.previews - p.previews; });
+             previews: wk[e] || 0, allPreviews: Number((act[e] || {})['Previews booked'] || 0), sales: salesBy[e] || 0 };
+  }).sort(function (p, q) { return q.previews - p.previews || q.sales - p.sales; });
 }
 
 /* ---------------- home dashboard: today, streak, team feed (from the Log, so it counts calls logged on the site) ---------------- */
@@ -421,11 +430,11 @@ function dash_(u, board) {
   var names = {}; table_('Users').forEach(function (x) { names[cleanEmail_(x.Email)] = String(x.Name || '').trim().split(/\s+/)[0] || 'A rep'; });
   var sh = sheet_('Log'), rows = [];
   if (sh && sh.getLastRow() > 1) { var n = Math.min(4000, sh.getLastRow() - 1); rows = sh.getRange(sh.getLastRow() - n + 1, 1, n, 4).getValues(); }
-  var calls = {}, prevWeek = 0, weekAgo = Date.now() - 7 * 86400000, feed = [], teamToday = 0;
+  var calls = {}, prevWeek = 0, prevToday = 0, weekAgo = Date.now() - 7 * 86400000, feed = [], teamToday = 0;
   rows.forEach(function (r) {
     var who = cleanEmail_(r[1]), act = String(r[2]), t = new Date(r[0]).getTime(); if (!t) return;
     if (act === 'call logged') { if (who === u.Email) { var k = day(t); calls[k] = (calls[k] || 0) + 1; } if (day(t) === today) teamToday++; }
-    if (act === 'preview booked') { if (who === u.Email && t >= weekAgo) prevWeek++; feed.push({ t: t, who: names[who] || 'A rep', me: who === u.Email, what: 'booked a preview' }); }
+    if (act === 'preview booked') { if (who === u.Email && t >= weekAgo) prevWeek++; if (who === u.Email && day(t) === today) prevToday++; feed.push({ t: t, who: names[who] || 'A rep', me: who === u.Email, what: 'booked a preview' }); }
     if (act === 'added login') feed.push({ t: t, who: names[cleanEmail_(String(r[3]).split(' ')[0])] || 'A new rep', me: false, what: 'joined the team' });
   });
   table_('Sales').forEach(function (s) { var t = new Date(s.Date).getTime(); if (t && s.Status !== 'Refunded' && t > Date.now() - 30 * 86400000) { var e = cleanEmail_(s['Rep email']); feed.push({ t: t, who: names[e] || 'A rep', me: e === u.Email, what: 'closed a sale', big: true }); } });
@@ -438,7 +447,7 @@ function dash_(u, board) {
   var me = -1; board.forEach(function (b, i) { if (b.email === u.Email) me = i; });
   var above = me > 0 ? board[me - 1] : null, mine = me >= 0 ? board[me] : null;
   var week = []; for (var i = 6; i >= 0; i--) { var w = new Date(); w.setDate(w.getDate() - i); week.push({ d: Utilities.formatDate(w, tz, 'EEE'), n: calls[day(w)] || 0 }); }
-  return { callsToday: calls[today] || 0, streak: streak, best: best, previewsWeek: prevWeek, callbacksDue: due, teamCallsToday: teamToday, week: week,
+  return { callsToday: calls[today] || 0, previewsToday: prevToday, streak: streak, best: best, previewsWeek: prevWeek, callbacksDue: due, teamCallsToday: teamToday, week: week,
            chase: above && mine ? { name: above.name, sales: above.sales - mine.sales, previews: above.previews - mine.previews } : null,
            feed: feed.slice(0, 12).map(function (f) { return { ago: Math.round((Date.now() - f.t) / 60000), who: f.who, me: f.me, what: f.what, big: !!f.big }; }) };
 }
@@ -697,7 +706,7 @@ function selfTest() {
 // The Google Sheet stays the database, so syncActivity, previews and everything else that reads it keep working.
 // Reps can only change the columns below; everything else is read-only on the site.
 
-var LEAD_EDIT = { 'Called (tick)': 60, 'Outcome': 120, 'Client email': 120, 'Call notes': 3000, 'TPS': 40, 'Next contact': 'date', 'Do not call': 'bool', 'Interested in': 80, 'OK to refer': 'bool', 'Last offer': 60, 'Details': 1000 };
+var LEAD_EDIT = { 'Called (tick)': 60, 'Outcome': 120, 'Client email': 120, 'Call notes': 3000, 'TPS': 40, 'Next contact': 'date', 'Do not call': 'bool', 'Interested in': 80, 'OK to refer': 'bool', 'Last offer': 60, 'Details': 1000, 'Callback time': 10 };
 function adminTab_() { var a = findUser_(ADMIN_EMAIL); return a ? String(a['Call list tab'] || '').trim() : ''; }
 function leadTab_(me, tab) {
   var name = isStaff_(me) && tab ? String(tab) : String(me['Call list tab'] || '').trim();
@@ -757,9 +766,20 @@ function saveLead_(me, tab, row, id, f) {
     for (var i = 1; i < ids.length; i++) if (String(ids[i][0]).trim() === id) { row = i + 1; break; }
     if (!row) return { ok: false, error: 'That lead has moved or been removed. Refresh and try again.' };
   }
+  var booking = /^\s*yes/i.test(String(f['Outcome'] || '')) && !/^\s*yes/i.test(String(sh.getRange(row, head.indexOf('Outcome') + 1).getValue()));
+  if (booking && !isStaff_(me)) {
+    var em = String(f['Client email'] || '').trim(), ph = String(sh.getRange(row, head.indexOf('Phone') + 1).getValue());
+    if (!cleanEmail_(em) && !isMobile_(em)) return { ok: false, error: 'Add their email (or a mobile number) before booking.' };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(f['Next contact'] || '')) || !/^\d{1,2}:\d{2}$/.test(String(f['Callback time'] || ''))) return { ok: false, error: 'Add the callback day and time you agreed with them.' };
+  }
+  if (booking || f['Callback time'] != null) { ['Booked by', 'Callback time'].forEach(function (h) { if (head.indexOf(h) === -1) { lc++; sh.getRange(1, lc).setValue(h); head.push(h); } }); }
+  if (booking) f['Booked by'] = String(me.Name || me.Email);
+  var noAnswer = f._try === true && /^no answer/i.test(String(f['Called (tick)'] || ''));
+  if (noAnswer && head.indexOf('Tries') === -1) { lc++; sh.getRange(1, lc).setValue('Tries'); head.push('Tries'); }
   var cur = sh.getRange(row, 1, 1, lc).getValues()[0], changed = [];
+  if (noAnswer) { var tc = head.indexOf('Tries'), tries = (Number(cur[tc]) || 0) + 1; cur[tc] = tries; sh.getRange(row, tc + 1).setValue(tries); changed.push('Tries'); }
   Object.keys(f).forEach(function (h) {
-    var rule = LEAD_EDIT[h] || (h === 'Approved (Harvey)' && isAdmin_(me) ? 'bool' : null), c = head.indexOf(h); if (!rule || c === -1) return;
+    var rule = LEAD_EDIT[h] || (h === 'Approved (Harvey)' && isAdmin_(me) ? 'bool' : null) || (h === 'Booked by' && booking ? 80 : null), c = head.indexOf(h); if (!rule || c === -1) return;
     var val = f[h];
     if (rule === 'bool') val = val === true || val === 'true';
     else if (rule === 'date') { var m = String(val || '').match(/^(\d{4})-(\d{2})-(\d{2})$/); val = m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : ''; }
@@ -773,6 +793,14 @@ function saveLead_(me, tab, row, id, f) {
     if (changed.indexOf('Called (tick)') !== -1 && String(cv).trim()) log_(me.Email, 'call logged', id + ' · ' + cv);
     if (changed.indexOf('Outcome') !== -1 && /^\s*yes/i.test(String(ov))) log_(me.Email, 'preview booked', id);
   }
+  if (noAnswer) { try { receptionistList_(t.name, head, cur); } catch (e) { log_('system', 'receptionist list failed', id + ': ' + e.message); } }
+  if (booking) { try {
+    var nc = String(f['Next contact']), tm = String(f['Callback time'] || '10:00').split(':'), dm = nc.split('-');
+    var when = new Date(Number(dm[0]), Number(dm[1]) - 1, Number(dm[2]), Number(tm[0]), Number(tm[1] || 0));
+    if (!isNaN(when.getTime())) appendObj_('Callbacks', { 'ID': 'CB' + Utilities.formatDate(new Date(), 'Europe/London', 'yyMMddHHmmss') + Math.floor(Math.random() * 90 + 10), 'Email': ADMIN_EMAIL, 'When': when.getTime(),
+      'Name': String(cur[head.indexOf('Business')] || ''), 'Business': String(cur[head.indexOf('Trade')] || ''), 'Phone': String(cur[head.indexOf('Phone')] || ''),
+      'Note': 'Preview booked by ' + (me.Name || me.Email) + ' · ' + id + ' (' + t.name + ' tab)', 'Status': 'Open', 'Created': new Date() });
+  } catch (e) { log_('system', 'callback for booking failed', id + ': ' + e.message); } }
   var o = { _row: row }; head.forEach(function (h, c) { if (h) o[h] = leadVal_(cur[c]); });
   return { ok: true, lead: o, changed: changed };
 }
@@ -866,6 +894,16 @@ function setUserField_(email, field, value) {
 }
 function activityMap_() { var m = {}; table_('Activity').forEach(function (a) { m[cleanEmail_(a['Rep email'])] = a; }); return m; }
 function publicUser_(u) { return { email: cleanEmail_(u.Email), name: u.Name, role: u.Role, partner: u.Partner, status: u.Status }; }
+function isMobile_(v) { var s = String(v || '').replace(/[\s\-().]/g, ''); return /^(?:\+?44|0)7\d{9}$/.test(s); }
+/** After a missed call the lead also goes on the "AI receptionist list" tab (once). It stays on the rep's list too. */
+function receptionistList_(tab, head, r) {
+  var ss = SpreadsheetApp.openById(CALL_LISTS_ID), name = 'AI receptionist list', sh = ss.getSheetByName(name);
+  if (!sh) { sh = ss.insertSheet(name); sh.appendRow(['Lead ID', 'Business', 'Trade', 'Town', 'Phone', 'From tab', 'Added']); sh.setFrozenRows(1); }
+  var id = String(r[0]).trim(), ids = sh.getLastRow() > 1 ? sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues().map(function (x) { return String(x[0]).trim(); }) : [];
+  if (ids.indexOf(id) !== -1) return;
+  var g = function (h) { var c = head.indexOf(h); return c === -1 ? '' : r[c]; };
+  sh.appendRow([id, g('Business'), g('Trade'), g('Town'), g('Phone'), tab, new Date()]);
+}
 function cleanEmail_(e) { e = String(e || '').trim().toLowerCase(); return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && e.length <= 120 ? e : ''; }
 function str_(v, max) { return String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, max || 200); }
 function fmt_(d, time) { if (!d) return ''; var x = new Date(d); if (isNaN(x.getTime())) return String(d); return Utilities.formatDate(x, 'Europe/London', time ? 'd MMM yyyy, HH:mm' : 'd MMM yyyy'); }

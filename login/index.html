@@ -294,6 +294,10 @@ body.ms-noscroll{overflow:hidden}
 .pv-ap{display:inline-flex;align-items:center;gap:6px;font-weight:600;cursor:pointer;white-space:nowrap}.pv-ap input{width:18px;height:18px;accent-color:#E0531F}
 .ms-tick.appr{color:#1A7F43!important}
 .ms-checks{display:flex;gap:18px;flex-wrap:wrap}.ms-tick{display:flex!important;align-items:center;gap:8px;font-size:15px!important;color:var(--ink)!important}.ms-tick input{width:20px!important;height:20px;accent-color:var(--accent)}
+.ms-qa{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 2px}.ms-qa .ms-btn{flex:1 1 140px;min-height:48px}
+.ms-bookbox{background:rgba(224,83,31,.1);border:1.5px solid var(--accent);border-radius:12px;padding:10px 14px}.ms-bookbox b{display:block}.ms-bookbox p{margin:4px 0 0;font-size:14px}
+.ms-toast{position:fixed;left:50%;bottom:96px;width:min(380px,calc(100% - 32px));transform:translate(-50%,20px);opacity:0;transition:.35s;z-index:9999;background:#142D4C;color:#fff;padding:14px 20px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);font:600 15px var(--body);max-width:calc(100% - 32px);text-align:center}
+.ms-toast.on{opacity:1;transform:translate(-50%,0)}.ms-toast.big{background:var(--accent);padding:20px 26px}.ms-toast b{display:block;font-size:22px}.ms-toast span{display:block;font-weight:500;margin-top:4px}
 .ms-warn{margin:0;background:#FDECEC;color:#B42318;border-radius:12px;padding:10px 14px;font-weight:600;font-size:14px}
 .ms-mact .ms-sp{flex:1}.ms-dbox .ms-mact{position:sticky;bottom:-24px;background:#fff;padding:12px 0 4px;margin-bottom:-4px;flex-wrap:wrap}
 @media(max-width:820px){.ms-lhead{display:none}.ms-lrow2{grid-template-columns:36px minmax(0,1fr) auto;grid-template-areas:"p b s" "p ph n";row-gap:4px}.ms-lrow2>.ms-pri{grid-area:p;align-self:start}.ms-lrow2>.ms-lbiz{grid-area:b}.ms-lrow2>.ms-lph{grid-area:ph;font-size:13px;color:var(--soft)}.ms-lrow2>span:nth-child(4){grid-area:s;text-align:right}.ms-lrow2>.ms-lnext{grid-area:n;text-align:right}.ms-lsub{display:none}
@@ -566,7 +570,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
             <label for="u-role">Role<select id="u-role"></select></label>
             <label for="u-partner">Sells for<select id="u-partner"></select></label>
             <label for="u-tab">Call list tab<select id="u-tab"></select></label>
-            <label for="u-commission">Commission per sale (£)<input id="u-commission" type="number" min="0" step="1" value="260"></label>
+            <label for="u-commission">Commission per sale (£)<input id="u-commission" type="number" min="0" step="1" value="100"></label>
             <label for="u-status">Status<select id="u-status"></select></label>
             <label for="u-phone">Phone (optional)<input id="u-phone" autocomplete="off"></label>
             <label class="wide" for="u-notes">Notes (optional)<textarea id="u-notes"></textarea></label>
@@ -689,6 +693,10 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
   function show(id) { ['v-login', 'v-loading', 'v-rep', 'v-admin'].forEach(function (v) { $(v).hidden = v !== id; }); document.body.classList.toggle('in', id === 'v-rep'); if (id === 'v-login' || id === 'v-loading') $('pw-banner').hidden = true; $('back').hidden = id !== 'v-login'; $('who').hidden = id === 'v-login' || id === 'v-loading'; }
   function say(el, text, ok) { el.hidden = !text; el.textContent = text || ''; el.className = 'msg ' + (ok ? 'ok' : 'err'); }
 
+  function msToast(text, big) {
+    var t = document.createElement('div'); t.className = 'ms-toast' + (big ? ' big' : ''); t.innerHTML = text; document.body.appendChild(t);
+    setTimeout(function () { t.classList.add('on'); }, 20); setTimeout(function () { t.classList.remove('on'); setTimeout(function () { t.remove(); }, 400); }, big ? 6000 : 3500);
+  }
   function api(action, data) {
     if (API.indexOf('__') === 0) return Promise.resolve({ ok: false, error: 'The login system is being switched on. Try again soon.' });
     var body = Object.assign({ action: action }, data || {});
@@ -735,7 +743,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
   /* ---------- rep app (Maystone HQ) ---------- */
   var LADDER = ['Rep', 'Top Rep', 'Coach', 'Team Lead'];
   var NEXT = {
-    'Rep': ['Top Rep', 'Stay in the top 10% of the leaderboard. Top Reps get first pick of new roles from new partners.'],
+    'Rep': ['Top Rep', 'Book the most previews week after week. Proven setters move up to closing their own callbacks (£150 a sale).'],
     'Top Rep': ['Coach', 'Keep selling and tell Harvey you want to coach. Coaches train new reps and earn a bonus on their sales.'],
     'Coach': ['Team Lead', 'Get your reps to their first sales. Team Leads run a team of coaches across a role or region.'],
     'Team Lead': ['', 'You are at the top of the ladder. Build your team and help shape new roles.']
@@ -787,7 +795,8 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     return '<div class="dx-rw' + (light ? ' light' : '') + '" style="width:' + size + 'px;height:' + size + 'px"><svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true"><defs><linearGradient id="dxg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB18F"/><stop offset="1" stop-color="#E0531F"/></linearGradient></defs><circle cx="' + h + '" cy="' + h + '" r="' + r + '" fill="none" stroke="' + (light ? '#EEF2F6' : 'rgba(255,255,255,.12)') + '" stroke-width="10"/><circle class="dx-arc" cx="' + h + '" cy="' + h + '" r="' + r + '" fill="none" stroke="url(#dxg)" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + c + '" style="--c:' + c + ';--o:' + (c * (1 - pct)) + '" stroke-dashoffset="' + (c * (1 - pct)) + '" transform="rotate(-90 ' + h + ' ' + h + ')"/></svg><div class="dx-rl">' + html + '</div></div>';
   }
   function renderRep(m, el, preview) {
-    if (!preview) state.repM = m;
+    if (!preview) { state.repM = m;
+      try { var sk = 'maystone.sold.' + m.user.email, was = localStorage.getItem(sk); if (was !== null && m.mine.sales > Number(was)) msToast('<b>You just earned £100</b><span>A preview you booked has turned into a sale. Nice one!</span>', true); localStorage.setItem(sk, m.mine.sales); } catch (e) {} }
     var first = String(m.user.name || '').split(' ')[0] || 'there';
     var open = m.training.filter(function (t) { return !t.locked; });
     var done = open.filter(function (t) { return t.done; }).length;
@@ -814,8 +823,8 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     }).join('') || '<div class="ms-empty">No modules yet. Harvey will add your training soon.</div>';
 
     var podium = m.leaderboard.slice(0, 3), rest = m.leaderboard.slice(3);
-    var boardHTML = m.leaderboard.length ? '<div class="ms-podium">' + [1, 0, 2].map(function (i) { var b = podium[i]; if (!b) return '<div></div>'; return '<div class="ms-pod p' + (i + 1) + (b.me ? ' me' : '') + '"><div class="ms-pav">' + esc((b.name || '?').charAt(0)) + '</div><b>' + esc(b.name) + '</b><small>' + esc(b.role) + '</small><div class="ms-pstep"><span>' + (i + 1) + '</span><em>' + b.sales + ' sales</em></div></div>'; }).join('') + '</div>' +
-      (rest.length ? '<div class="ms-list">' + rest.map(function (b) { return '<div class="ms-lrow' + (b.me ? ' me' : '') + '"><span class="ms-lr">' + b.rank + '</span><span class="ms-ln"><b>' + esc(b.name) + (b.me ? ' (you)' : '') + '</b><small>' + esc(b.role) + '</small></span><span class="ms-lv"><b>' + b.sales + '</b><small>sales</small></span><span class="ms-lv"><b>' + b.previews + '</b><small>previews</small></span></div>'; }).join('') + '</div>' : '')
+    var boardHTML = m.leaderboard.length ? '<div class="ms-podium">' + [1, 0, 2].map(function (i) { var b = podium[i]; if (!b) return '<div></div>'; return '<div class="ms-pod p' + (i + 1) + (b.me ? ' me' : '') + '"><div class="ms-pav">' + esc((b.name || '?').charAt(0)) + '</div><b>' + esc(b.name) + '</b><small>' + esc(b.role) + '</small><div class="ms-pstep"><span>' + (i + 1) + '</span><em>' + b.previews + ' previews</em></div></div>'; }).join('') + '</div>' +
+      (rest.length ? '<div class="ms-list">' + rest.map(function (b) { return '<div class="ms-lrow' + (b.me ? ' me' : '') + '"><span class="ms-lr">' + b.rank + '</span><span class="ms-ln"><b>' + esc(b.name) + (b.me ? ' (you)' : '') + '</b><small>' + esc(b.role) + '</small></span><span class="ms-lv"><b>' + b.previews + '</b><small>previews</small></span><span class="ms-lv"><b>' + b.sales + '</b><small>sold</small></span></div>'; }).join('') + '</div>' : '')
       : '<div class="ms-empty">The board fills up as reps book previews and make sales. Your first sale puts you on it.</div>';
 
     var ladderHTML = '<div class="ms-ladder">' + LADDER.map(function (r, i) { return '<div class="ms-rung' + (i < lvlIdx ? ' past' : i === lvlIdx ? ' now' : '') + '"><span>Level ' + (i + 1) + '</span><b>' + r + '</b>' + (i === lvlIdx ? '<em>You are here</em>' : '') + '</div>'; }).join('') + '</div>';
@@ -829,27 +838,28 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
       home: (function () {
         var D = m.dash || { callsToday: 0, streak: 0, best: 0, previewsWeek: 0, callbacksDue: 0, teamCallsToday: 0, week: [], feed: [] };
         var goal = 30; try { goal = Math.max(1, parseInt(localStorage.getItem('maystone.goal'), 10) || 30); } catch (e) {}
-        var gp = Math.min(1, D.callsToday / goal), wkMax = Math.max(1, Math.max.apply(null, D.week.map(function (w) { return w.n; }).concat([goal])));
+        var pgoal = 10; try { pgoal = Math.max(1, parseInt(localStorage.getItem('maystone.pgoal'), 10) || 10); } catch (e) {}
+        var pt = D.previewsToday || 0, gp = Math.min(1, pt / pgoal), wkMax = Math.max(1, Math.max.apply(null, D.week.map(function (w) { return w.n; }).concat([goal])));
         var ago = function (mn) { return mn < 1 ? 'just now' : mn < 60 ? mn + 'm ago' : mn < 1440 ? Math.round(mn / 60) + 'h ago' : Math.round(mn / 1440) + 'd ago'; };
-        var mood = D.callsToday >= goal ? 'Target smashed. Keep the streak alive.' : D.callsToday ? (goal - D.callsToday) + ' more calls to hit today\'s target.' : 'First call of the day sets the tone. Let\'s go.';
+        var mood = pt >= pgoal ? 'Target smashed. Keep the streak alive.' : pt ? (pgoal - pt) + ' more preview' + (pgoal - pt === 1 ? '' : 's') + ' to hit today\'s target.' : D.callsToday ? 'Keep dialling. The first yes is the hardest.' : 'First call of the day sets the tone. Let\'s go.';
         return '<section class="dx-hero">' +
           '<div class="dx-glow"></div><div class="dx-grid"></div><div class="dx-blocks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>' +
           '<div class="dx-hl"><p class="dx-kick"><span class="dx-live"></span>' + greet + ' · ' + new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + '</p>' +
             '<h1>Let\'s get it, <em>' + esc(first) + '</em>.</h1><p class="dx-sub">' + mood + '</p>' +
             '<div class="dx-cta"><button class="ms-btn acc" data-go="leads">Start calling →</button>' + (D.callbacksDue ? '<button class="ms-btn dx-ghost" data-go="calls">' + D.callbacksDue + ' call-back' + (D.callbacksDue === 1 ? '' : 's') + ' due</button>' : '<button class="ms-btn dx-ghost" data-go="board">Leaderboard</button>') + '</div></div>' +
-          '<div class="dx-today"><div class="dx-ring">' + dring(gp, 160, '<b data-count="' + D.callsToday + '">0</b><small>of ' + goal + ' calls</small>') + '</div>' +
-            '<div class="dx-tstats"><div><span class="dx-flame' + (D.streak ? ' on' : '') + '">🔥</span><b data-count="' + D.streak + '">0</b><small>day streak</small></div><div><b data-count="' + D.previewsWeek + '">0</b><small>previews this week</small></div><div><b data-count="' + D.best + '">0</b><small>best day</small></div></div>' +
-            '<button class="dx-goal" data-goal>Today\'s target: ' + goal + ' calls · change</button></div>' +
+          '<div class="dx-today"><div class="dx-ring">' + dring(gp, 160, '<b data-count="' + pt + '">0</b><small>of ' + pgoal + ' previews</small>') + '</div>' +
+            '<div class="dx-tstats"><div><span class="dx-flame' + (D.streak ? ' on' : '') + '">🔥</span><b data-count="' + D.streak + '">0</b><small>day streak</small></div><div><b data-count="' + D.callsToday + '">0</b><small>calls today</small></div><div><b data-count="' + D.previewsWeek + '">0</b><small>previews this week</small></div></div>' +
+            '<button class="dx-goal" data-goal>Today\'s target: ' + pgoal + ' previews · change</button></div>' +
         '</section>' +
         (D.teamCallsToday || D.feed.length ? '<div class="dx-ticker" aria-label="Team activity"><div class="dx-track">' + (function () { var items = ['<span><b>' + D.teamCallsToday + '</b> calls logged by the team today</span>'].concat(D.feed.slice(0, 8).map(function (f) { return '<span' + (f.big ? ' class="big"' : '') + '><b>' + esc(f.me ? 'You' : f.who) + '</b> ' + esc(f.what) + ' · ' + ago(f.ago) + '</span>'; })); var h = items.join('<i>◆</i>'); return h + '<i>◆</i>' + h + '<i>◆</i>'; })() + '</div></div>' : '') +
         nextEventHTML(m) +
-        '<div class="dx-stats">' + [['Sales', m.mine.sales, 'all time', ''], ['Previews booked', m.mine.previews, 'from your call list', ''], ['Earned', earned, money(m.mine.paidOut) + ' paid out so far', '£'], ['Leaderboard', m.rank || 0, m.rank ? 'of ' + (m.boardSize || m.leaderboard.length) + ' reps' : 'make a sale to get on it', '#']].map(function (s, i) {
+        '<div class="dx-stats">' + [['Previews booked', m.mine.previews, 'all time', ''], ['Sold', m.mine.sales, 'of your bookings', ''], ['Earned', earned, money(m.mine.paidOut) + ' paid out so far', '£'], ['This week', m.rank || 0, m.rank ? 'of ' + (m.boardSize || m.leaderboard.length) + ' on the board' : 'book a preview to get on it', '#']].map(function (s, i) {
           return '<div class="dx-stat" style="--d:' + (i * 70) + 'ms"><small>' + s[0] + '</small><b>' + (s[3] === '£' ? '£<span data-count="' + s[1] + '">0</span>' : s[3] === '#' ? (s[1] ? '#<span data-count="' + s[1] + '">0</span>' : '–') : '<span data-count="' + s[1] + '">0</span>') + '</b><span>' + s[2] + '</span></div>'; }).join('') + '</div>' +
         '<div class="dx-two">' +
           '<div class="dx-panel"><div class="ms-phd"><h3>Your week</h3><span class="ms-pill">calls logged</span></div><div class="dx-bars">' + D.week.map(function (w, i) { return '<div class="dx-bar' + (i === 6 ? ' now' : '') + (w.n >= goal ? ' hit' : '') + '"><div class="dx-col"><i style="height:' + Math.max(2, Math.round(w.n / wkMax * 100)) + '%"><em>' + (w.n || '') + '</em></i></div><small>' + w.d + '</small></div>'; }).join('') + '<span class="dx-goalline" style="--g:' + (goal / wkMax) + '"><small>target ' + goal + '</small></span></div></div>' +
           '<div class="dx-panel dark"><div class="ms-phd"><h3>The race</h3><button class="ms-link" data-go="board">Full board →</button></div>' +
-            (m.rank === 1 ? '<div class="dx-chase top"><b>You\'re #1.</b><p>Everyone is chasing you. Stay there.</p></div>' : D.chase ? '<div class="dx-chase"><small>Next target</small><b>' + esc(D.chase.name) + '</b><p>' + (D.chase.sales > 0 ? D.chase.sales + ' sale' + (D.chase.sales === 1 ? '' : 's') + ' ahead of you.' : D.chase.previews > 0 ? 'Level on sales, ' + D.chase.previews + ' preview' + (D.chase.previews === 1 ? '' : 's') + ' ahead.' : 'Neck and neck. One more preview and you pass them.') + '</p></div>' : '<div class="dx-chase"><b>Get on the board.</b><p>Book your first preview and you\'re in the race.</p></div>') +
-            '<div class="dx-podium">' + [1, 0, 2].map(function (i) { var b = m.leaderboard[i]; return b ? '<div class="p' + (i + 1) + (b.me ? ' me' : '') + '"><span>' + esc(b.name.charAt(0)) + '</span><b>' + esc(b.name) + '</b><small>' + b.sales + ' sales</small><i>' + (i + 1) + '</i></div>' : '<div class="p' + (i + 1) + ' empty"><i>' + (i + 1) + '</i></div>'; }).join('') + '</div></div>' +
+            (m.rank === 1 ? '<div class="dx-chase top"><b>You\'re #1.</b><p>Everyone is chasing you. Stay there.</p></div>' : D.chase ? '<div class="dx-chase"><small>Next target</small><b>' + esc(D.chase.name) + '</b><p>' + (D.chase.previews > 0 ? D.chase.previews + ' preview' + (D.chase.previews === 1 ? '' : 's') + ' ahead of you this week.' : 'Neck and neck. One more preview and you pass them.') + '</p></div>' : '<div class="dx-chase"><b>Get on the board.</b><p>Book your first preview and you\'re in the race.</p></div>') +
+            '<div class="dx-podium">' + [1, 0, 2].map(function (i) { var b = m.leaderboard[i]; return b ? '<div class="p' + (i + 1) + (b.me ? ' me' : '') + '"><span>' + esc(b.name.charAt(0)) + '</span><b>' + esc(b.name) + '</b><small>' + b.previews + ' previews</small><i>' + (i + 1) + '</i></div>' : '<div class="p' + (i + 1) + ' empty"><i>' + (i + 1) + '</i></div>'; }).join('') + '</div></div>' +
         '</div>' +
         '<div class="dx-two">' +
           '<div class="dx-panel"><div class="ms-phd"><h3>Team feed</h3><span class="dx-livepill"><span class="dx-live"></span>Live</span></div>' + (D.feed.length ? D.feed.slice(0, 6).map(function (f) { return '<div class="dx-feed' + (f.big ? ' big' : '') + '"><span class="dx-av">' + esc((f.me ? 'Y' : f.who).charAt(0)) + '</span><p><b>' + esc(f.me ? 'You' : f.who) + '</b> ' + esc(f.what) + '</p><small>' + ago(f.ago) + '</small></div>'; }).join('') : '<div class="ms-empty sm">Nothing yet today. Previews, sales and new reps show up here as they happen.</div>') + '</div>' +
@@ -861,11 +871,11 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
         '<div class="ms-phead"><div><p class="ms-kick dark">Maystone Academy</p><h2>Your training, step by step.</h2><p class="ms-lead">Work through the modules in order. Each one opens right here. When you have finished it, mark it complete. New modules unlock as you move up the ladder.</p></div><div class="ms-bigbar"><div class="ms-bartop"><b>' + done + ' / ' + open.length + '</b><span>' + Math.round(pct * 100) + '% complete</span></div><div class="ms-bar"><i style="width:' + Math.round(pct * 100) + '%"></i></div></div></div>' + tasksHTML,
       settings: (function () {
         var th = 'dark'; try { th = localStorage.getItem('maystone.theme') || 'dark'; } catch (e) {}
-        var goal = 30; try { goal = parseInt(localStorage.getItem('maystone.goal'), 10) || 30; } catch (e) {}
+        var goal = 10; try { goal = parseInt(localStorage.getItem('maystone.pgoal'), 10) || 10; } catch (e) {}
         return '<div class="ms-phead"><div><p class="ms-kick dark">Settings</p><h2>Make it yours.</h2><p class="ms-lead">Change how the portal looks and works for you. These settings are saved on this device.</p></div></div>' +
           '<div class="dx-two st-grid">' +
           '<div class="ms-panel"><h3>Appearance</h3><p class="ms-p">Dark is easier on the eyes for long calling sessions.</p><div class="st-seg" data-themepick>' + [['dark', '☾', 'Dark'], ['light', '☀', 'Light'], ['auto', '◐', 'Match my device']].map(function (o) { return '<button data-theme-set="' + o[0] + '" class="' + (th === o[0] ? 'on' : '') + '"><span>' + o[1] + '</span>' + o[2] + '</button>'; }).join('') + '</div></div>' +
-          '<div class="ms-panel"><h3>Daily call target</h3><p class="ms-p">The ring on your Home page fills up as you log calls.</p><form class="st-row" data-goalform><input type="number" min="1" max="999" name="g" value="' + goal + '" aria-label="Calls per day"><span>calls a day</span><button class="ms-btn acc" type="submit">Save</button></form><p class="st-ok" hidden>Saved.</p></div>' +
+          '<div class="ms-panel"><h3>Daily preview target</h3><p class="ms-p">The ring on your Home page fills up as you book previews.</p><form class="st-row" data-goalform><input type="number" min="1" max="999" name="g" value="' + goal + '" aria-label="Previews per day"><span>previews a day</span><button class="ms-btn acc" type="submit">Save</button></form><p class="st-ok" hidden>Saved.</p></div>' +
           '<div class="ms-panel"><h3>Password</h3><p class="ms-p">' + (m.hasPassword ? 'You have a password. Set a new one here.' : 'Set a password so you can log in without waiting for an email link.') + '</p><form class="st-row" data-pwform><input type="password" name="p" minlength="8" autocomplete="new-password" placeholder="New password (8+ characters)"><button class="ms-btn acc" type="submit">' + (m.hasPassword ? 'Change' : 'Set') + ' password</button></form><p class="st-ok" hidden></p></div>' +
           '<div class="ms-panel"><h3>Your account</h3><div class="st-acc">' + [['Name', m.user.name], ['Email', m.user.email], ['Level', m.user.role], ['Selling for', m.user.partner || 'Maystone'], ['Member since', m.joined || '–']].map(function (r) { return '<div><small>' + r[0] + '</small><b>' + esc(r[1] || '–') + '</b></div>'; }).join('') + '</div><p class="ms-p">Need something changed? Email <a href="mailto:harvey@maystone.uk">harvey@maystone.uk</a>.</p><button class="ms-btn ghost" data-logout>Log out</button></div>' +
           '</div>';
@@ -875,7 +885,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
       calls:
         '<div class="ms-phead"><div><p class="ms-kick dark">Calendar</p><h2>Group calls and your call-backs.</h2><p class="ms-lead">Team group calls and trainings show here for everyone. When a lead says "call me back", book it straight away. Only you can see your call-backs.</p></div><button class="ms-btn acc" data-cbnew>+ Book a call-back</button></div><div id="ms-cal"><div class="ms-load"><i></i><i></i><i></i><span>Loading your calendar…</span></div></div>',
       board:
-        '<div class="ms-phead"><div><p class="ms-kick dark">Leaderboard</p><h2>Who is leading right now.</h2><p class="ms-lead">Ranked on sales, then previews booked. Updated every hour from the call lists. Top reps each month get first pick of new roles.</p></div></div>' + boardHTML,
+        '<div class="ms-phead"><div><p class="ms-kick dark">Leaderboard</p><h2>Who is leading right now.</h2><p class="ms-lead">Ranked on previews booked this week. It resets every Monday, so anyone can be top by Friday. Harvey and Fin are on it too. The week\'s top booker gets a shout-out in the group.</p></div></div>' + boardHTML,
       pay:
         '<div class="ms-phead"><div><p class="ms-kick dark">Earnings</p><h2>Your money, explained.</h2><p class="ms-lead">Every sale earns your commission. Here is where each one is.</p></div></div>' +
         '<div class="ms-stats three"><div class="ms-stat"><small>Pending</small><b>' + money(m.mine.pending) + '</b><span>Sale made. Waiting out the customer\'s 14-day refund window.</span></div><div class="ms-stat"><small>Cleared</small><b>' + money(m.mine.cleared) + '</b><span>Past the 14 days. Ready to be paid to you.</span></div><div class="ms-stat good"><small>Paid out</small><b>' + money(m.mine.paidOut) + '</b><span>Sent to your bank account.</span></div></div>' +
@@ -883,7 +893,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
       help:
         '<div class="ms-phead"><div><p class="ms-kick dark">Help</p><h2>Stuck? Here is who to ask.</h2></div></div>' +
         '<div class="ms-two"><div class="ms-panel"><h3>Coaching and calls</h3><p class="ms-p">Fin coaches and manages reps. Ask about scripts, objections, a call that went wrong, or how to improve your numbers.</p></div><div class="ms-panel"><h3>Your account and pay</h3><p class="ms-p">Harvey runs Maystone. Ask about your login, payments, your rep agreement or moving up a level.</p><a class="ms-btn ghost" href="mailto:harvey@maystone.uk">harvey@maystone.uk</a></div></div>' +
-        '<div class="ms-panel"><h3>Quick answers</h3><details class="ms-q"><summary>How do I get on the leaderboard?</summary><p>Book previews and make sales from your call list. The board updates every hour.</p></details><details class="ms-q"><summary>When do I get paid?</summary><p>Once a sale clears the customer\'s 14-day refund window, on the payday in your rep agreement.</p></details><details class="ms-q"><summary>How do I move up a level?</summary><p>Stay near the top of the board. Top Reps get first pick of new roles; Coaches train new reps and earn a bonus on their sales.</p></details><details class="ms-q"><summary>My login link expired.</summary><p>Go to maystone.uk/login and ask for a new one. Each link works once and lasts 30 minutes.</p></details></div>'
+        '<div class="ms-panel"><h3>Quick answers</h3><details class="ms-q"><summary>How do I get on the leaderboard?</summary><p>Book previews from your call list. The board counts previews booked this week and resets every Monday.</p></details><details class="ms-q"><summary>When do I get paid?</summary><p>£100 for every preview you booked that turns into a sale. One-off sales: once it clears the 14-day refund window. Monthly sales: £50 after the client\'s 1st payment and £50 after their 4th. Paid on the payday in your agreement.</p></details><details class="ms-q"><summary>How do I move up a level?</summary><p>Stay near the top of the board. Top Reps get first pick of new roles; Coaches train new reps and earn a bonus on their sales.</p></details><details class="ms-q"><summary>My login link expired.</summary><p>Go to maystone.uk/login and ask for a new one. Each link works once and lasts 30 minutes.</p></details></div>'
     };
     var nav = NAV.map(function (x) { return '<button class="ms-nav' + (repTab === x[0] ? ' on' : '') + '" data-go="' + x[0] + '"' + (repTab === x[0] ? ' aria-current="page"' : '') + '><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg><span data-s="' + (x[3] || x[1]) + '"><b>' + x[1] + '</b></span>' + (x[0] === 'tasks' && next.length ? '<em>' + next.length + '</em>' : '') + '</button>'; }).join('');
     el.innerHTML = '<div class="ms-app' + (preview ? ' preview' : '') + '"><aside class="ms-side"><div class="ms-sidehd"><span class="ms-av">' + esc(first.charAt(0)) + '</span><div><b>' + esc(m.user.name || first) + '</b><small>' + esc(m.user.role) + '</small></div></div><nav class="ms-navs">' + nav + '</nav><button class="ms-nav ms-setl' + (repTab === 'settings' ? ' on' : '') + '" data-go="settings"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg><span><b>Settings</b></span></button><div class="ms-sidefoot">Maystone Sales Group<br>Members only</div></aside><div class="ms-main" id="ms-main">' + views[repTab === 'tasks' && viewing ? 'viewer' : repTab] + '</div></div>';
@@ -898,13 +908,13 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     if (repTab === 'leads') loadLeads(el, m);
     if (repTab === 'settings') {
       el.querySelectorAll('[data-theme-set]').forEach(function (b) { b.onclick = function () { window.msTheme(b.dataset.themeSet); renderRep(m, el, preview); }; });
-      var gf = el.querySelector('[data-goalform]'); if (gf) gf.onsubmit = function (e) { e.preventDefault(); var g = parseInt(gf.g.value, 10); if (!(g > 0 && g < 1000)) return; try { localStorage.setItem('maystone.goal', g); } catch (x) {} var ok = gf.nextElementSibling; ok.hidden = false; setTimeout(function () { ok.hidden = true; }, 2500); };
+      var gf = el.querySelector('[data-goalform]'); if (gf) gf.onsubmit = function (e) { e.preventDefault(); var g = parseInt(gf.g.value, 10); if (!(g > 0 && g < 1000)) return; try { localStorage.setItem('maystone.pgoal', g); } catch (x) {} var ok = gf.nextElementSibling; ok.hidden = false; setTimeout(function () { ok.hidden = true; }, 2500); };
       var pf = el.querySelector('[data-pwform]'); if (pf) pf.onsubmit = function (e) { e.preventDefault(); var ok = pf.nextElementSibling, b = pf.querySelector('button'); if (pf.p.value.length < 8) { ok.textContent = 'Use at least 8 characters.'; ok.hidden = false; return; } b.disabled = true; api('setPassword', { password: pf.p.value }).then(function (r) { b.disabled = false; ok.textContent = r.ok ? 'Password saved. Log in with your email and this password next time.' : (r.error || 'Could not save.'); ok.hidden = false; if (r.ok) { m.hasPassword = true; pf.reset(); } }); };
       var lo = el.querySelector('[data-logout]'); if (lo) lo.onclick = function () { $('logout').click(); };
     }
     if (repTab === 'home') {
       el.querySelectorAll('[data-count]').forEach(function (n) { var to = +n.dataset.count || 0, t0 = performance.now(), dur = 900; if (!to) { n.textContent = '0'; return; } (function tick(t) { var k = Math.min(1, (t - t0) / dur); n.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))).toLocaleString('en-GB'); if (k < 1) requestAnimationFrame(tick); })(t0); });
-      var gb = el.querySelector('[data-goal]'); if (gb) gb.onclick = function () { var g = prompt('Your daily call target:', ''); g = parseInt(g, 10); if (g > 0 && g < 1000) { try { localStorage.setItem('maystone.goal', g); } catch (e) {} renderRep(m, el, preview); } };
+      var gb = el.querySelector('[data-goal]'); if (gb) gb.onclick = function () { var g = prompt('Your daily preview target:', ''); g = parseInt(g, 10); if (g > 0 && g < 1000) { try { localStorage.setItem('maystone.pgoal', g); } catch (e) {} renderRep(m, el, preview); } };
     }
     function complete(title) {
       var t = m.training.filter(function (x) { return x.title === title; })[0]; if (!t || t.done) return;
@@ -993,7 +1003,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
   var OUTCOMES = ['Yes – send preview', 'Call back', 'Not interested', 'Already has a website', 'Not trading'];
   var INTEREST = ['Marketing support', 'Google profile', 'Missed-call text-back', 'Photos/video', 'Branding/print', 'Bookkeeping/MTD', 'Other'];
   var OFFERS = ['Website', 'Marketing bundle', 'Google profile', 'Missed-call text-back', 'Other'];
-  var LFILTERS = [['todo', 'To call'], ['callback', 'Call back'], ['called', 'Called'], ['yes', 'Interested'], ['no', 'Not interested'], ['dnc', 'Do not call'], ['prev', 'Previews'], ['all', 'All']];
+  var LFILTERS = [['todo', 'To call'], ['called', 'Retry'], ['yes', 'Booked'], ['callback', 'Call back'], ['no', 'Not interested'], ['dnc', 'Do not call'], ['prev', 'Previews'], ['all', 'All']];
   function ldStatus(l) {
     var o = String(l['Outcome'] || ''), c = String(l['Called (tick)'] || '');
     if (l['Do not call'] === true) return 'dnc';
@@ -1003,7 +1013,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     if (c.trim()) return 'called';
     return 'todo';
   }
-  var LSTAT = { todo: 'To call', callback: 'Call back', called: 'Called', yes: 'Interested', no: 'Not interested', dnc: 'Do not call' };
+  var LSTAT = { todo: 'To call', callback: 'Call back', called: 'Retry', yes: 'Booked', no: 'Not interested', dnc: 'Do not call' };
   function loadLeads(el, m) {
     if (LD.data) return drawLeads(el, m);
     api('leads', { tab: LD.tab }).then(function (r) {
@@ -1025,7 +1035,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
   function drawLeads(el, m) {
     var box = el.querySelector('#ms-leads'); if (!box) return;
     var all = LD.data.leads, cnt = {}; all.forEach(function (l) { var s = ldStatus(l); cnt[s] = (cnt[s] || 0) + 1; });
-    var st = el.querySelector('#ms-lstats'); if (st) st.innerHTML = [['To call', cnt.todo || 0], ['Call back', cnt.callback || 0], ['Interested', cnt.yes || 0], ['On list', all.length]].map(function (s) { return '<div><b>' + s[1] + '</b><small>' + s[0] + '</small></div>'; }).join('');
+    var st = el.querySelector('#ms-lstats'); if (st) st.innerHTML = [['To call', cnt.todo || 0], ['Retry', cnt.called || 0], ['Booked', cnt.yes || 0], ['On list', all.length]].map(function (s) { return '<div><b>' + s[1] + '</b><small>' + s[0] + '</small></div>'; }).join('');
     var list = ldFiltered(), shown = list.slice(0, LD.limit || 60);
     box.innerHTML = '<div class="ms-panel ms-lpanel"><div class="ms-ltools"><label class="ms-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="ld-q" placeholder="Search business, town, phone, notes…" value="' + esc(LD.q) + '"></label>' +
       '<select id="ld-pri" aria-label="Priority"><option value="">All priorities</option>' + ['A', 'B', 'C'].map(function (p) { return '<option' + (LD.pri === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select>' +
@@ -1052,16 +1062,18 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     var s = ldStatus(l), maps = String(l['Google Maps'] || ''), prev = String(l['Preview link'] || '');
     ov.innerHTML = '<form class="ms-mbox ms-dbox" novalidate><div class="ms-phd"><div><small class="ms-lid">' + esc(l['Lead ID']) + ' · Priority ' + esc(l['Priority'] || '–') + '</small><h3>' + esc(l['Business']) + '</h3><p class="ms-dsub">' + esc([l['Trade'], l['Town']].filter(String).join(' · ')) + '</p></div><button type="button" class="ms-x" aria-label="Close">×</button></div>' +
       '<div class="ms-dact">' + (l['Phone'] ? '<a class="ms-btn acc" href="tel:' + esc(telOf(l['Phone'])) + '">Call ' + esc(l['Phone']) + '</a>' : '') + (maps ? '<a class="ms-btn ghost" href="' + esc(maps) + '" target="_blank" rel="noopener">Google Maps</a>' : '') + '<em class="ms-st ' + s + '">' + LSTAT[s] + '</em></div>' +
+      '<div class="ms-qa"><button type="button" class="ms-btn acc" data-qa="book">✓ Booked a preview</button><button type="button" class="ms-btn ghost" data-qa="na">No answer</button><button type="button" class="ms-btn ghost" data-qa="ni">Not interested</button><button type="button" class="ms-btn ghost" data-qa="cb">Call back later</button></div>' +
+      '<div class="ms-bookbox" hidden><b>Booking the preview</b><p>Get their email (or a mobile) and agree a time for Harvey or Fin to call back. Then tap Save.</p></div>' +
       (l['Do not call'] === true ? '<p class="ms-warn">Marked Do not call. Don\'t ring this number.</p>' : '') +
       '<div class="ms-dinfo">' + info('What\'s wrong online', esc(l['What\'s wrong online'])) + info('What to mention', esc(l['What to mention'])) + info('Google', l['Google rating'] ? esc(l['Google rating']) + '★ from ' + esc(l['Google reviews']) + ' reviews' : '') + info('TPS', esc(l['TPS'])) + '</div>' +
       '<h4>Call</h4>' + chips('Called (tick)', CALLED, l['Called (tick)']) + '<label>What happened on the call<input name="Called (tick)" maxlength="60" value="' + esc(l['Called (tick)'] || '') + '"></label>' +
       '<h4>Outcome</h4>' + chips('Outcome', OUTCOMES, l['Outcome']) + '<label>Outcome<input name="Outcome" maxlength="120" value="' + esc(l['Outcome'] || '') + '"></label>' +
       '<label>Call notes<textarea name="Call notes" rows="4" maxlength="3000" placeholder="Who you spoke to, what they said, what to open with next time">' + esc(l['Call notes'] || '') + '</textarea></label>' +
-      '<div class="ms-f2"><label>Client email<input name="Client email" type="email" maxlength="120" value="' + esc(l['Client email'] || '') + '"></label><label>Next contact<input name="Next contact" type="date" value="' + esc(l['Next contact'] || '') + '"></label></div>' +
-      '<div class="ms-f2"><label>Last offer<select name="Last offer">' + opt(OFFERS, l['Last offer']) + '</select></label><label>Interested in<select name="Interested in">' + opt(INTEREST, l['Interested in']) + '</select></label></div>' +
-      '<div class="ms-f2"><label>TPS<select name="TPS">' + opt(['Not checked', 'Checked', 'On TPS'], l['TPS']) + '</select></label><label>Details<input name="Details" maxlength="1000" value="' + esc(l['Details'] || '') + '"></label></div>' +
+      '<div class="ms-f2"><label>Client email<input name="Client email" type="email" maxlength="120" value="' + esc(l['Client email'] || '') + '"></label><label>Next contact<input name="Next contact" type="date" value="' + esc(l['Next contact'] || '') + '"></label><label>Callback time<input name="Callback time" type="time" value="' + esc(l['Callback time'] || '') + '"></label></div>' +
+      '<div class="ms-adv"' + (m.admin ? '' : ' hidden') + '><div class="ms-f2"><label>Last offer<select name="Last offer">' + opt(OFFERS, l['Last offer']) + '</select></label><label>Interested in<select name="Interested in">' + opt(INTEREST, l['Interested in']) + '</select></label></div>' +
+      '<div class="ms-f2"><label>TPS<select name="TPS">' + opt(['Not checked', 'Checked', 'On TPS'], l['TPS']) + '</select></label><label>Details<input name="Details" maxlength="1000" value="' + esc(l['Details'] || '') + '"></label></div></div>' +
       '<div class="ms-checks"><label class="ms-tick"><input type="checkbox" name="OK to refer"' + (l['OK to refer'] === true ? ' checked' : '') + '> OK to refer</label><label class="ms-tick"><input type="checkbox" name="Do not call"' + (l['Do not call'] === true ? ' checked' : '') + '> Do not call</label>' + (m.admin && !m.manager ? '<label class="ms-tick appr"><input type="checkbox" name="Approved (Harvey)"' + (l['Approved (Harvey)'] === true ? ' checked' : '') + '> Approved (Harvey)</label>' : '') + '</div>' +
-      '<div class="ms-pipe">' + info('Preview link', prev ? '<a href="' + esc(prev) + '" target="_blank" rel="noopener">Open preview</a>' : '') + info('Approved', l['Approved (Harvey)'] === true ? 'Yes' : '') + info('Sent to client', esc(l['Sent to client'])) + info('Views', esc(l['Views'])) + info('Hot?', esc(l['Hot?'])) + info('Package', esc(l['Package'])) + info('Paid', esc(l['Paid'])) + info('Live site', esc(l['Live site'])) + '</div>' +
+      '<div class="ms-pipe">' + info('Booked by', esc(l['Booked by'])) + info('Preview link', prev ? '<a href="' + esc(prev + (prev.indexOf('?') === -1 ? '?me' : '&me')) + '" target="_blank" rel="noopener">Open preview</a>' : '') + info('Approved', l['Approved (Harvey)'] === true ? 'Yes' : '') + info('Sent to client', esc(l['Sent to client'])) + info('Views', esc(l['Views'])) + info('Hot?', esc(l['Hot?'])) + info('Package', esc(l['Package'])) + info('Paid', esc(l['Paid'])) + info('Live site', esc(l['Live site'])) + '</div>' +
       '<p class="ms-err" hidden></p><div class="ms-mact"><button type="button" class="ms-btn ghost" data-cbk>Book call-back</button><span class="ms-sp"></span><button class="ms-btn ghost" type="submit" data-stay>Save</button><button class="ms-btn acc" type="submit">Save &amp; next →</button></div></form>';
     document.body.appendChild(ov); document.body.classList.add('ms-noscroll');
     var f = ov.querySelector('form'), err = ov.querySelector('.ms-err'), close = function () { ov.remove(); document.body.classList.remove('ms-noscroll'); };
@@ -1069,15 +1081,25 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     ov.querySelectorAll('[data-set]').forEach(function (b) { b.onclick = function () { f.elements[b.dataset.set].value = b.dataset.v; ov.querySelectorAll('[data-set="' + b.dataset.set + '"]').forEach(function (x) { x.classList.toggle('on', x === b); }); }; });
     var cbk = function () { var nc = f.elements['Next contact'].value, d = nc ? new Date(nc + 'T10:00') : null; cbForm(el, false, null, d, { name: l['Business'], business: l['Trade'] || '', phone: l['Phone'] || '', note: f.elements['Call notes'].value }); };
     ov.querySelector('[data-cbk]').onclick = cbk;
-    var stay = false; ov.querySelector('[data-stay]').onclick = function () { stay = true; };
+    var stay = false, tryFlag = false; ov.querySelector('[data-stay]').onclick = function () { stay = true; };
+    var setv = function (k, v) { f.elements[k].value = v; ov.querySelectorAll('[data-set="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.dataset.v.toLowerCase() === String(v).toLowerCase()); }); };
+    ov.querySelectorAll('[data-qa]').forEach(function (b) { b.onclick = function () {
+      var q = b.dataset.qa, go = function () { if (f.requestSubmit) f.requestSubmit(ov.querySelectorAll('[type=submit]')[1]); else ov.querySelectorAll('[type=submit]')[1].click(); };
+      if (q === 'book') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Yes – send preview'); ov.querySelector('.ms-bookbox').hidden = false; var e1 = f.elements['Client email']; e1.scrollIntoView({ block: 'center', behavior: 'smooth' }); e1.focus(); return; }
+      if (q === 'na') { setv('Called (tick)', 'No answer'); tryFlag = true; return go(); }
+      if (q === 'ni') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Not interested'); return go(); }
+      if (q === 'cb') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Call back'); f.elements['Next contact'].focus(); }
+    }; });
     f.onsubmit = function (e) {
       e.preventDefault(); err.hidden = true;
-      var fields = {}; ['Called (tick)', 'Outcome', 'Call notes', 'Client email', 'Next contact', 'Last offer', 'Interested in', 'TPS', 'Details'].forEach(function (k) { fields[k] = f.elements[k].value; });
+      var fields = {}; ['Called (tick)', 'Outcome', 'Call notes', 'Client email', 'Next contact', 'Callback time', 'Last offer', 'Interested in', 'TPS', 'Details'].forEach(function (k) { fields[k] = f.elements[k].value; });
+      if (tryFlag) { fields._try = true; tryFlag = false; }
       fields['OK to refer'] = f.elements['OK to refer'].checked; fields['Do not call'] = f.elements['Do not call'].checked; if (f.elements['Approved (Harvey)']) fields['Approved (Harvey)'] = f.elements['Approved (Harvey)'].checked;
       var btns = ov.querySelectorAll('[type=submit]'); btns.forEach(function (b) { b.disabled = true; }); var lab = stay ? btns[0] : btns[1], was = lab.textContent; lab.textContent = 'Saving…';
       api('saveLead', { tab: LD.tab, row: l._row, id: l['Lead ID'], fields: fields }).then(function (r) {
         btns.forEach(function (b) { b.disabled = false; }); lab.textContent = was;
-        if (!r.ok) { err.textContent = r.error || 'Could not save. Try again.'; err.hidden = false; stay = false; return; }
+        if (!r.ok) { err.textContent = r.error || 'Could not save. Try again.'; err.hidden = false; err.scrollIntoView({ block: 'center' }); stay = false; return; }
+        if (/^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''))) msToast('Preview booked. Nice one! Harvey or Fin will call them back.');
         var i = LD.data.leads.indexOf(l); LD.data.leads[i] = r.lead;
         var list = ldFiltered(), here = list.map(function (x) { return String(x['Lead ID']); }).indexOf(id);
         var wantCb = /call\s*back/i.test(fields['Outcome']) && !/call\s*back/i.test(String(l['Outcome'] || ''));
@@ -1242,7 +1264,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
   });
 
   function resetUserForm() {
-    state.editing = null; $('f-user').reset(); $('u-title').textContent = 'Create a login'; $('u-save').textContent = 'Create login'; $('u-email').disabled = false; $('u-invite').checked = true; $('u-commission').value = 260;
+    state.editing = null; $('f-user').reset(); $('u-title').textContent = 'Create a login'; $('u-save').textContent = 'Create login'; $('u-email').disabled = false; $('u-invite').checked = true; $('u-commission').value = 100;
     if (state.admin) renderAdmin(state.admin);
   }
   $('u-cancel').addEventListener('click', function () { resetUserForm(); $('d-user').open = false; });

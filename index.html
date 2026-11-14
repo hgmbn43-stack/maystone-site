@@ -605,15 +605,15 @@ body.lock{overflow:hidden}
   <div class="wrap earn">
     <div>
       <span class="kicker">What could you earn?</span>
-      <h2>You set the hours. Your sales set the pay.</h2>
-      <p class="lede">Drag the slider to see an example for a website rep. Real earnings depend on the role and your results.</p>
+      <h2>You set the hours. Your bookings set the pay.</h2>
+      <p class="lede">As a setter you earn £100 for every preview you book that turns into a sale. Drag the slider to see an example. Real earnings depend on your results.</p>
     </div>
     <div class="calc">
-      <label for="hrs">Hours per week <b id="hrsv">10</b></label>
-      <input type="range" id="hrs" min="2" max="40" step="1" value="10">
-      <div class="out" id="earn">£563 – £1,126<small> a month</small></div>
-      <div class="meta"><div>Sales a month<b id="sales">2 – 4</b></div><div>Calling hours a month<b id="hm">43</b></div></div>
-      <p class="fine">Example only, not a guarantee. Based on an example commission and 1 sale every 10–20 calling hours. Your exact commission is confirmed in writing when you join.</p>
+      <label for="hrs">Previews you book a week <b id="hrsv">10</b></label>
+      <input type="range" id="hrs" min="1" max="40" step="1" value="10">
+      <div class="out" id="earn">≈ £400<small> a month</small></div>
+      <div class="meta"><div>Sales a month<b id="sales">4</b></div><div>Bookings a month<b id="hm">43</b></div></div>
+      <p class="fine">Example only, not a guarantee. Assumes about 1 in 10 bookings turns into a sale. That's our estimate while we're new, and we'll swap in real numbers once we have them. Your pay is confirmed in writing when you join.</p>
     </div>
   </div>
 </section>
@@ -735,7 +735,7 @@ body.lock{overflow:hidden}
 <section id="j-roles" class="pdark"><div class="phgrid"></div><div class="wrap">
   <div class="bar"><div><span class="kicker">Roles open now</span><h2>Pick a role. Start this week.</h2></div><span class="badge">Pay confirmed in writing before you start</span></div>
   <div class="roles">
-      <div class="role main rv"><div><div class="who">HGM Leads · <span class="open">● Open now</span></div><h3>Website rep – local trades</h3><p>Call tradespeople who don't have a proper website, book them a free preview, then ring back and close. Leads and training provided.</p></div><div class="pay"><b>Commission per sale</b><a class="btn btn-accent btn-sm" href="#apply">Apply →</a></div></div>
+      <div class="role main rv"><div><div class="who">HGM Leads · <span class="open">● Open now</span></div><h3>Setter – website previews</h3><p>Call tradespeople who don't have a proper website and book them a free preview. That's the whole job: our closers do the callback and the sale. Leads, script and training provided.</p></div><div class="pay"><b>£100 per booking that sells</b><a class="btn btn-accent btn-sm" href="#apply">Apply →</a></div></div>
       <div class="role rv"><div><div class="who">Maystone · After your first sales</div><h3>Coach</h3><p>Proved you can sell? Train two or three new reps and get them to their first sale.</p></div><div class="pay"><b>Bonus on your reps' sales</b><a class="btn btn-line btn-sm" href="#apply" data-note="I'd like to ask about the Coach role.">Ask about it →</a></div></div>
       <div class="role rv"><div><div class="who">New partners · Coming as we grow</div><h3>More products to sell</h3><p>New partners bring new roles, including bigger-ticket ones. Top reps get first pick.</p></div><div class="pay"><b>Rates set per role</b><a class="btn btn-line btn-sm" href="#reps">Partner with us →</a></div></div>
     </div>
@@ -873,7 +873,7 @@ $$('.seg button').forEach(b=>b.onclick=()=>{$$('.seg button').forEach(x=>x.setAt
 if(!RM)setInterval(()=>{if(document.hidden)return;const r=reps[Math.floor(Math.random()*reps.length)];r.s+=1+Math.round(Math.random());if(reps.some(x=>x.s>40))reps.forEach(x=>x.s=Math.ceil(x.s/2));draw();const p=document.createElement('span');p.className='pop';p.textContent='+1 sale';p.style.top=(parseFloat(r.el.style.transform.slice(11))+18)+'px';rowsEl.appendChild(p);setTimeout(()=>p.remove(),1300)},1800);
 
 /* earnings */
-const hrs=$('#hrs');function calc(){const h=+hrs.value;$('#hrsv').textContent=h;const lo=h*4.33*.05,hi=h*4.33*.1;$('#earn').innerHTML=`${gbp(lo*260)} – ${gbp(hi*260)}<small> a month</small>`;$('#sales').textContent=`${Math.round(lo*10)/10} – ${Math.round(hi*10)/10}`.replace(/\.0/g,'');hrs.setAttribute('aria-valuetext',h+' hours a week');$('#hm').textContent=Math.round(h*4.33)}
+const hrs=$('#hrs');function calc(){const h=+hrs.value;$('#hrsv').textContent=h;const b=h*4.33,sl=b/10;$('#earn').innerHTML=`≈ ${gbp(Math.round(sl)*100)}<small> a month</small>`;$('#sales').textContent=String(Math.round(sl*10)/10).replace(/\.0$/,'');hrs.setAttribute('aria-valuetext',h+' previews a week');$('#hm').textContent=Math.round(b)}
 hrs.oninput=calc;calc();
 
 /* reveal */

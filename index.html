@@ -920,7 +920,7 @@ function open(view){portal.classList.add('on');document.body.classList.add('lock
 function close(){portal.classList.remove('on');document.body.classList.remove('lock')}
 $('#back').onclick=()=>{close();history.replaceState(null,'','#'+returnTo);const t=document.getElementById(returnTo);(t||document.body).scrollIntoView({block:'start'})};
 $('#logout').onclick=()=>{me=null;viewAs=null;location.hash='login'};
-function route(){const h=location.hash.slice(1);if(['apply','reps','who-we-work-with','how-it-works','for-businesses','questions'].includes(h)){if(!portal.classList.contains('on'))returnTo=h==='apply'?'join':'top';open(h)}else if(portal.classList.contains('on'))close()}
+function route(){let h=location.hash.slice(1);if(!h){const q=new URLSearchParams(location.search).get('go');if(q){h=q;history.replaceState(null,'',location.pathname+'#'+q)}}if(['apply','reps','who-we-work-with','how-it-works','for-businesses','questions'].includes(h)){if(!portal.classList.contains('on'))returnTo=h==='apply'?'join':'top';open(h)}else if(portal.classList.contains('on'))close()}
 addEventListener('hashchange',route);
 document.addEventListener('click',e=>{const a=e.target.closest('a[data-note]');if(a)prefill.note=a.dataset.note});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&portal.classList.contains('on'))$('#back').click()});

@@ -38,7 +38,7 @@ var SHEETS = {
 };
 var ROLES = ['Rep', 'Top Rep', 'Coach', 'Team Lead', 'Manager', 'Admin'];
 var MANAGER_CAN_SET = ['Rep', 'Top Rep', 'Coach', 'Team Lead'];
-var ADMIN_ONLY = ['adminSavePartner', 'adminAddSale', 'adminSetSaleStatus'];
+var ADMIN_ONLY = ['adminSavePartner', 'adminAddSale', 'adminSetSaleStatus', 'adminSetPassword'];
 var LEVEL = { 'All': 0, 'Rep': 1, 'Top Rep': 2, 'Coach': 3, 'Team Lead': 4, 'Manager': 6, 'Admin': 9 };
 var USER_STATUS = ['Active', 'Paused', 'Left'];
 var SALE_STATUS = ['Pending', 'Cleared', 'Paid out', 'Refunded'];
@@ -80,6 +80,7 @@ function doPost(e) {
     if (a === 'adminOverview') return json_(adminOverview_());
     if (a === 'adminSaveUser') return json_(adminSaveUser_(me, req.user || {}, !!req.invite));
     if (a === 'adminSendLink') return json_(adminSendLink_(me, req.email));
+    if (a === 'adminSetPassword') return json_(adminSetPassword_(me, req.email, req.password));
     if (a === 'adminSavePartner') return json_(adminSavePartner_(me, req.partner || {}));
     if (a === 'adminAddSale') return json_(adminAddSale_(me, req.sale || {}));
     if (a === 'adminSetSaleStatus') return json_(adminSetSaleStatus_(me, req.id, req.status));
@@ -524,6 +525,16 @@ function adminSaveUser_(me, d, invite) {
   return out;
 }
 
+/** Harvey only: set a rep's password for them (e.g. when email links won't work for them). */
+function adminSetPassword_(me, email, password) {
+  if (!isAdmin_(me)) return { ok: false, error: 'Only Harvey can do that.' };
+  var u = findUser_(email);
+  if (!u) return { ok: false, error: 'No login with that email.' };
+  var r = setPassword_({ Email: cleanEmail_(u.Email) }, password);
+  if (!r.ok) return r;
+  log_(me.Email, 'set password for', u.Email);
+  return { ok: true, message: 'Password set for ' + u.Email + '. They can now log in with their email and that password.' };
+}
 function adminSendLink_(me, email) {
   var u = findUser_(email);
   if (!u) return { ok: false, error: 'No login with that email.' };

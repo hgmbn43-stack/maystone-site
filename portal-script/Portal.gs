@@ -413,6 +413,19 @@ function weekPreviews_() {
   rows.forEach(function (r) { if (String(r[2]) === 'preview booked' && new Date(r[0]).getTime() >= start) { var e = cleanEmail_(r[1]); out[e] = (out[e] || 0) + 1; } });
   return out;
 }
+/** Calls logged in the portal per rep: today and since Monday (one per lead update that set Called, Outcome or a no-answer try). */
+function callStats_() {
+  var tz = 'Europe/London', now = new Date(), dow = Number(Utilities.formatDate(now, tz, 'u')), mon = new Date(now.getTime() - (dow - 1) * 86400000);
+  var wk = new Date(Utilities.formatDate(mon, tz, "yyyy-MM-dd'T'00:00:00XXX")).getTime(), td = new Date(Utilities.formatDate(now, tz, "yyyy-MM-dd'T'00:00:00XXX")).getTime(), out = {};
+  var sh = sheet_('Log'); if (!sh || sh.getLastRow() < 2) return out;
+  var n = Math.min(8000, sh.getLastRow() - 1), rows = sh.getRange(sh.getLastRow() - n + 1, 1, n, 4).getValues();
+  rows.forEach(function (r) {
+    if (String(r[2]) !== 'updated lead' || !/Called \(tick\)|Outcome|Tries/.test(String(r[3]))) return;
+    var t = new Date(r[0]).getTime(); if (t < wk) return;
+    var e = cleanEmail_(r[1]); out[e] = out[e] || { today: 0, week: 0 }; out[e].week++; if (t >= td) out[e].today++;
+  });
+  return out;
+}
 function leaderboard_(act, sales) {
   var users = table_('Users').filter(function (x) { return x.Status === 'Active'; }), wk = weekPreviews_();
   var salesBy = {};
@@ -458,7 +471,7 @@ function dash_(u, board) {
 /* ---------------- admin ---------------- */
 
 function adminOverview_() {
-  var users = table_('Users'), partners = table_('Partners'), sales = table_('Sales'), act = activityMap_();
+  var users = table_('Users'), partners = table_('Partners'), sales = table_('Sales'), act = activityMap_(); var calls = callStats_();
   var by = {}, tot = { reps: 0, active: 0, partners: 0, sales: 0, saleValue: 0, owed: 0, paidOut: 0, pending: 0 };
   users.forEach(function (x) { by[cleanEmail_(x.Email)] = { sales: 0, earned: 0, owed: 0 }; if (x.Role !== 'Admin') { tot.reps++; if (x.Status === 'Active') tot.active++; } });
   partners.forEach(function (p) { if (p.Status === 'Active') tot.partners++; });
@@ -477,7 +490,7 @@ function adminOverview_() {
       var e = cleanEmail_(x.Email), s = by[e] || { sales: 0, earned: 0, owed: 0 };
       return { email: e, name: x.Name, role: x.Role, partner: x.Partner, status: x.Status, callListTab: x['Call list tab'],
                commission: Number(x['Commission per sale'] || 0), phone: x.Phone, joined: fmt_(x.Joined), lastLogin: fmt_(x['Last login'], true), notes: x.Notes,
-               previews: Number((act[e] || {})['Previews booked'] || 0), sales: s.sales, earned: s.earned, owed: s.owed };
+               previews: Number((act[e] || {})['Previews booked'] || 0), callsToday: (calls[e] || {}).today || 0, callsWeek: (calls[e] || {}).week || 0, sales: s.sales, earned: s.earned, owed: s.owed };
     }),
     partners: partners.map(function (p) {
       var reps = users.filter(function (x) { return x.Partner === p.Name && x.Status === 'Active'; }).length;

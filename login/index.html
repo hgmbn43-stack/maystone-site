@@ -1010,8 +1010,8 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
   }
   /* ---------- leads (the rep's call list, worked from the site) ---------- */
   var LD = { data: null, tab: '', q: '', f: 'todo', pri: '', open: null };
-  var CALLED = ['No answer', 'Voicemail', 'Answered', 'Busy', 'Number not recognised'];
-  var OUTCOMES = ['Yes – send preview', 'Call back', 'Not interested', 'Already has a website', 'Not trading'];
+  var CALLED = ['No answer', 'Voicemail', 'Answered', 'Busy', 'Not in service / not recognised'];
+  var OUTCOMES = ['Yes – send preview', 'Call back', 'Not interested', 'Already has a website', 'Not trading', 'Dead number'];
   var INTEREST = ['Marketing support', 'Google profile', 'Missed-call text-back', 'Photos/video', 'Branding/print', 'Bookkeeping/MTD', 'Other'];
   var OFFERS = ['Website', 'Marketing bundle', 'Google profile', 'Missed-call text-back', 'Other'];
   var LFILTERS = [['todo', 'To call'], ['called', 'Retry'], ['yes', 'Booked'], ['callback', 'Call back'], ['no', 'Not interested'], ['dnc', 'Do not call'], ['prev', 'Previews'], ['all', 'All']];
@@ -1073,7 +1073,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     var s = ldStatus(l), maps = String(l['Google Maps'] || ''), prev = String(l['Preview link'] || '');
     ov.innerHTML = '<form class="ms-mbox ms-dbox" novalidate><div class="ms-phd"><div><small class="ms-lid">' + esc(l['Lead ID']) + ' · Priority ' + esc(l['Priority'] || '–') + '</small><h3>' + esc(l['Business']) + '</h3><p class="ms-dsub">' + esc([l['Trade'], l['Town']].filter(String).join(' · ')) + '</p></div><button type="button" class="ms-x" aria-label="Close">×</button></div>' +
       '<div class="ms-dact">' + (l['Phone'] ? '<a class="ms-btn acc" href="tel:' + esc(telOf(l['Phone'])) + '">Call ' + esc(l['Phone']) + '</a>' : '') + (maps ? '<a class="ms-btn ghost" href="' + esc(maps) + '" target="_blank" rel="noopener">Google Maps</a>' : '') + '<em class="ms-st ' + s + '">' + LSTAT[s] + '</em></div>' +
-      '<div class="ms-qa"><button type="button" class="ms-btn acc" data-qa="book">✓ Booked a preview</button><button type="button" class="ms-btn ghost" data-qa="na">No answer</button><button type="button" class="ms-btn ghost" data-qa="ni">Not interested</button><button type="button" class="ms-btn ghost" data-qa="cb">Call back later</button></div>' +
+      '<div class="ms-qa"><button type="button" class="ms-btn acc" data-qa="book">✓ Booked a preview</button><button type="button" class="ms-btn ghost" data-qa="na">No answer</button><button type="button" class="ms-btn ghost" data-qa="ni">Not interested</button><button type="button" class="ms-btn ghost" data-qa="cb">Call back later</button><button type="button" class="ms-btn ghost" data-qa="dead">Number not in service</button></div>' +
       '<div class="ms-bookbox" hidden><b>Booking the preview</b><p>Get their email (or a mobile) and agree a time for Harvey or Fin to call back. Then tap Save.</p></div>' +
       (l['Do not call'] === true ? '<p class="ms-warn">Marked Do not call. Don\'t ring this number.</p>' : '') +
       '<div class="ms-dinfo">' + info('What\'s wrong online', esc(l['What\'s wrong online'])) + info('What to mention', esc(l['What to mention'])) + info('Google', l['Google rating'] ? esc(l['Google rating']) + '★ from ' + esc(l['Google reviews']) + ' reviews' : '') + '</div>' +
@@ -1099,6 +1099,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
       if (q === 'book') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Yes – send preview'); ov.querySelector('.ms-bookbox').hidden = false; var e1 = f.elements['Client email']; e1.scrollIntoView({ block: 'center', behavior: 'smooth' }); e1.focus(); return; }
       if (q === 'na') { setv('Called (tick)', 'No answer'); tryFlag = true; return go(); }
       if (q === 'ni') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Not interested'); return go(); }
+      if (q === 'dead') { setv('Called (tick)', 'Not in service / not recognised'); setv('Outcome', 'Dead number'); return go(); }
       if (q === 'cb') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Call back'); f.elements['Next contact'].focus(); }
     }; });
     f.onsubmit = function (e) {

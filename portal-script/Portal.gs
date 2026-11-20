@@ -445,10 +445,11 @@ function dash_(u, board) {
   var names = {}; table_('Users').forEach(function (x) { names[cleanEmail_(x.Email)] = String(x.Name || '').trim().split(/\s+/)[0] || 'A rep'; });
   var sh = sheet_('Log'), rows = [];
   if (sh && sh.getLastRow() > 1) { var n = Math.min(4000, sh.getLastRow() - 1); rows = sh.getRange(sh.getLastRow() - n + 1, 1, n, 4).getValues(); }
-  var calls = {}, prevDays = {}, prevWeek = 0, prevToday = 0, weekAgo = Date.now() - 7 * 86400000, feed = [], teamToday = 0;
+  var mix = {}, calls = {}, prevDays = {}, prevWeek = 0, prevToday = 0, weekAgo = Date.now() - 7 * 86400000, feed = [], teamToday = 0;
   rows.forEach(function (r) {
     var who = cleanEmail_(r[1]), act = String(r[2]), t = new Date(r[0]).getTime(); if (!t) return;
     if (act === 'call logged') { if (who === u.Email) { var k = day(t); calls[k] = (calls[k] || 0) + 1; } if (day(t) === today) teamToday++; }
+    if (who === u.Email) { var sk = statKind_(act, r[3]); if (sk) { var dk = day(t); mix[dk] = mix[dk] || { na: 0, ans: 0, dead: 0, no: 0, cb: 0, yes: 0 }; mix[dk][sk]++; } }
     if (act === 'preview booked') { if (who === u.Email) prevDays[day(t)] = 1; if (who === u.Email && t >= weekAgo) prevWeek++; if (who === u.Email && day(t) === today) prevToday++; feed.push({ t: t, who: names[who] || 'A rep', me: who === u.Email, what: 'booked a preview' }); }
     if (act === 'added login') feed.push({ t: t, who: names[cleanEmail_(String(r[3]).split(' ')[0])] || 'A new rep', me: false, what: 'joined the team' });
   });
@@ -463,8 +464,11 @@ function dash_(u, board) {
   if (sheet_('Callbacks')) table_('Callbacks').forEach(function (c) { if (cleanEmail_(c.Email) === u.Email && c.Status === 'Open' && Number(c.When) <= endToday.getTime()) due++; });
   var me = -1; board.forEach(function (b, i) { if (b.email === u.Email) me = i; });
   var above = me > 0 ? board[me - 1] : null, mine = me >= 0 ? board[me] : null;
-  var week = []; for (var i = 6; i >= 0; i--) { var w = new Date(); w.setDate(w.getDate() - i); week.push({ d: Utilities.formatDate(w, tz, 'EEE'), n: calls[day(w)] || 0 }); }
-  return { callsToday: calls[today] || 0, previewsToday: prevToday, streak: streak, bookStreak: bookStreak, best: best, previewsWeek: prevWeek, callbacksDue: due, teamCallsToday: teamToday, week: week,
+  var week = []; for (var i = 6; i >= 0; i--) { var w = new Date(); w.setDate(w.getDate() - i); var mx = mix[day(w)] || {}; week.push({ d: Utilities.formatDate(w, tz, 'EEE'), n: calls[day(w)] || 0, na: mx.na || 0, ans: mx.ans || 0, no: mx.no || 0, cb: mx.cb || 0, yes: mx.yes || 0 }); }
+  var sent = 0, opened = 0;
+  try { var lt = leadTab_(u); if (!lt.error) { var lh = headOf_(lt.sh), llr = lastIdRowOf_(lt.sh), sc = lh.indexOf('Sent to client'), vc = lh.indexOf('Views');
+    if (llr >= 2 && sc !== -1) lt.sh.getRange(2, 1, llr - 1, lh.length).getValues().forEach(function (r) { if (filled_(r[sc])) { sent++; if (vc !== -1 && Number(r[vc]) > 0) opened++; } }); } } catch (e) {}
+  return { sent: sent, opened: opened, callsToday: calls[today] || 0, previewsToday: prevToday, streak: streak, bookStreak: bookStreak, best: best, previewsWeek: prevWeek, callbacksDue: due, teamCallsToday: teamToday, week: week,
            chase: above && mine ? { name: above.name, sales: above.sales - mine.sales, previews: above.previews - mine.previews } : null,
            feed: feed.slice(0, 12).map(function (f) { return { ago: Math.round((Date.now() - f.t) / 60000), who: f.who, me: f.me, what: f.what, big: !!f.big }; }) };
 }
@@ -819,6 +823,7 @@ function saveLead_(me, tab, row, id, f) {
     var cv = cur[head.indexOf('Called (tick)')], ov = cur[head.indexOf('Outcome')];
     if (changed.indexOf('Called (tick)') !== -1 && String(cv).trim()) log_(me.Email, 'call logged', id + ' · ' + cv);
     if (changed.indexOf('Outcome') !== -1 && /^\s*yes/i.test(String(ov))) log_(me.Email, 'preview booked', id);
+    if (changed.indexOf('Outcome') !== -1 && String(ov).trim() && !/^\s*yes/i.test(String(ov))) log_(me.Email, 'outcome', id + ' · ' + String(ov).trim());
   }
   if (noAnswer) { try { receptionistList_(t.name, head, cur); } catch (e) { log_('system', 'receptionist list failed', id + ': ' + e.message); } }
   if (booking) { try {

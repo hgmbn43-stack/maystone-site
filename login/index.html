@@ -263,6 +263,7 @@ body.in footer{display:none}
 .ms-docwrap.ms-full{position:fixed;inset:0;z-index:1000;background:#F6F8FB;overflow:auto;padding:12px}
 .ms-docwrap.ms-full .ms-doc{max-width:900px;margin:0 auto;font-size:18px}
 body.ms-noscroll{overflow:hidden}
+.ms-getleads{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}.ms-getleads b{display:block;font-size:16px;color:var(--ink)}.ms-getleads small{display:block;font-size:13px;color:var(--soft);max-width:520px;margin-top:2px}.ms-gl-act{display:flex;gap:8px;align-items:center}.ms-gl-act input{width:78px;min-height:46px;border:1.5px solid var(--line-2);border-radius:12px;padding:0 12px;font:600 16px var(--body);color:var(--ink);text-align:center}
 .ms-lstats{display:flex;gap:10px;flex-wrap:wrap}.ms-lstats div{background:#F4F6F9;border-radius:14px;padding:10px 16px;min-width:84px}.ms-lstats b{display:block;font-size:22px;color:var(--ink)}.ms-lstats small{font-size:12px;font-weight:600;color:var(--soft)}
 .ms-lpanel{padding:18px;min-width:0;overflow:hidden}
 #ms-leads,#ms-cal,.ms-main>*{min-width:0}
@@ -1030,7 +1031,7 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     api('leads', { tab: LD.tab }).then(function (r) {
       var box = el.querySelector('#ms-leads'); if (!box) return;
       if (!r.ok) { box.innerHTML = '<div class="ms-empty">' + esc(r.error || 'Could not load your leads.') + '</div>'; return; }
-      LD.data = r; LD.tab = r.tab; drawLeads(el, m);
+      LD.data = r; LD.tab = r.tab; if (!LD.own) LD.own = r.tab; drawLeads(el, m);
     });
   }
   function ldFiltered() {
@@ -1048,7 +1049,9 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     var all = LD.data.leads, cnt = {}; all.forEach(function (l) { var s = ldStatus(l); cnt[s] = (cnt[s] || 0) + 1; });
     var st = el.querySelector('#ms-lstats'); if (st) st.innerHTML = [['To call', cnt.todo || 0], ['Retry', cnt.called || 0], ['Booked', cnt.yes || 0], ['On list', all.length]].map(function (s) { return '<div><b>' + s[1] + '</b><small>' + s[0] + '</small></div>'; }).join('');
     var list = ldFiltered(), shown = list.slice(0, LD.limit || 60);
-    box.innerHTML = '<div class="ms-panel ms-lpanel"><div class="ms-ltools"><label class="ms-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="ld-q" placeholder="Search business, town, phone, notes…" value="' + esc(LD.q) + '"></label>' +
+    var ldN = 30; try { ldN = Number(localStorage.getItem('ms-ldn')) || 30; } catch (e) {}
+    var mine = LD.tab === LD.own;
+    box.innerHTML = (mine ? '<div class="ms-panel ms-getleads"><div><b>Want fresh leads?</b><small>Pick how many you\'ll call. Leads you haven\'t called go back to the pool for the team. Anything you\'ve called stays with you.</small></div><div class="ms-gl-act"><input type="number" id="ld-n" min="1" max="50" value="' + ldN + '" aria-label="How many leads"><button class="ms-btn acc" id="ld-get">Get my leads</button></div></div>' : '') + '<div class="ms-panel ms-lpanel"><div class="ms-ltools"><label class="ms-search"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="search" id="ld-q" placeholder="Search business, town, phone, notes…" value="' + esc(LD.q) + '"></label>' +
       '<select id="ld-pri" aria-label="Priority"><option value="">All priorities</option>' + ['A', 'B', 'C'].map(function (p) { return '<option' + (LD.pri === p ? ' selected' : '') + '>' + p + '</option>'; }).join('') + '</select>' +
       (LD.data.tabs && LD.data.tabs.length ? '<select id="ld-tab" aria-label="Call list">' + LD.data.tabs.map(function (t) { return '<option' + (t === LD.tab ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('') + '</select>' : '') + '</div>' +
       '<div class="ms-lfil">' + LFILTERS.map(function (f) { var n = f[0] === 'all' ? all.length : f[0] === 'prev' ? all.filter(function (l) { return l['Preview link']; }).length : (cnt[f[0]] || 0); return '<button class="' + (LD.f === f[0] ? 'on' : '') + '" data-lf="' + f[0] + '">' + f[1] + ' <span>' + n + '</span></button>'; }).join('') + '</div>' +
@@ -1062,6 +1065,18 @@ html[data-theme=dark] .tabs button{color:#C9D5E3}html[data-theme=dark] .dx-rw.li
     box.querySelectorAll('[data-lf]').forEach(function (b) { b.onclick = function () { LD.f = b.dataset.lf; LD.limit = 60; drawLeads(el, m); }; });
     var mo = box.querySelector('#ld-more'); if (mo) mo.onclick = function () { LD.limit = (LD.limit || 60) + 60; drawLeads(el, m); };
     box.querySelectorAll('[data-lead]').forEach(function (b) { b.onclick = function () { leadDrawer(el, m, b.dataset.lead); }; });
+    var gb = box.querySelector('#ld-get');
+    if (gb) gb.onclick = function () {
+      var n = Math.max(1, Math.min(50, Math.floor(Number(box.querySelector('#ld-n').value) || 30)));
+      try { localStorage.setItem('ms-ldn', String(n)); } catch (e) {}
+      busy(gb, true, 'Getting leads…');
+      api('getLeads', { count: n }).then(function (r) {
+        busy(gb, false);
+        if (!r.ok) { msToast(esc(r.error || 'Could not get leads. Try again.')); return; }
+        msToast(esc(r.message || 'Done.'));
+        LD.data = null; LD.f = 'todo'; LD.limit = 60; box.innerHTML = '<div class="ms-load"><i></i><i></i><i></i><span>Loading your leads…</span></div>'; loadLeads(el, m);
+      });
+    };
   }
   function leadDrawer(el, m, id) {
     var l = LD.data.leads.filter(function (x) { return String(x['Lead ID']) === id; })[0]; if (!l) return;

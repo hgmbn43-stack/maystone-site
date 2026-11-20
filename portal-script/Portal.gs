@@ -67,6 +67,7 @@ function doPost(e) {
     if (a === 'module') return json_(module_(me, req.title));
     if (a === 'slide') return json_(slide_(me, req.title, req.n));
     if (a === 'leads') return json_(leads_(me, req.tab));
+    if (a === 'getLeads') { lock.waitLock(30000); return json_(getLeads_(me, req.count)); }
     if (a === 'adminPreviews') { if (!isStaff_(me)) return json_({ ok: false, error: 'Admins only.' }); return json_(adminPreviews_()); }
     if (a === 'saveLead') { lock.waitLock(20000); return json_(saveLead_(me, req.tab, req.row, req.id, req.fields || {})); }
     if (a === 'callbacks') return json_(callbacks_(me));

@@ -49,6 +49,12 @@ function isUntouched_(row, head) {
   var t = head.indexOf('Tries'); if (t !== -1 && Number(row[t]) > 0) return false;
   return true;
 }
+/** A leaver's lead with no outcome yet (only ticks/tries/notes): goes back to the pool with a History note. */
+function isOpenLead_(row, head) {
+  var d = head.indexOf('Do not call'); if (d !== -1 && row[d] === true) return false;
+  for (var i = 0; i < NA_BLOCK_COLS.length; i++) { var k = head.indexOf(NA_BLOCK_COLS[i]); if (k !== -1 && filled_(row[k])) return false; }
+  return true;
+}
 /** Tried POOL_NA_TRIES times with no answer and nothing else logged. */
 function isNoAnswerDone_(row, head) {
   var c = head.indexOf('Called (tick)'), t = head.indexOf('Tries'), d = head.indexOf('Do not call');
@@ -115,7 +121,7 @@ function returnFrom_(sh, pool, mode, tab) {
       }
       o = {}; h.forEach(function (k, c) { if (k) o[k] = r[c]; });
       res.untouched++;
-    } else if (isNoAnswerDone_(r, h)) {
+    } else if (isNoAnswerDone_(r, h) || (mode === 'leaver' && isOpenLead_(r, h))) {
       o = {}; h.forEach(function (k, c) { if (k) o[k] = r[c]; });
       var notes = String(o['Call notes'] || '').replace(/\s+/g, ' ').trim().slice(0, 200);
       var line = dmy_(now) + ': ' + (Number(o['Tries']) || 0) + ' no answers (' + tab + ')' + (notes ? ' – ' + notes : '');
@@ -185,7 +191,7 @@ function sweepTabs_(skip, mode, label) {
       if (!tab || seen[tab] || tab === POOL_TAB || skip.indexOf(tab) !== -1) return; seen[tab] = 1;
       var sh = ss.getSheetByName(tab); if (!sh) return;
       if (!pool) pool = ensurePool_(ss, sh);
-      try { var r = returnFrom_(sh, pool, mode, tab); tot += r.untouched + r.noAnswer; if (r.untouched + r.noAnswer) out.push(tab + ' ' + r.untouched + '+' + r.noAnswer); }
+      try { var r = returnFrom_(sh, pool, u.Status === 'Active' ? mode : 'leaver', tab); tot += r.untouched + r.noAnswer; if (r.untouched + r.noAnswer) out.push(tab + ' ' + r.untouched + '+' + r.noAnswer); }
       catch (e) { log_('system', label + ' failed', tab + ': ' + e.message); }
     });
     SpreadsheetApp.flush();
@@ -271,4 +277,18 @@ function eveningReport() {
     catch (e) { GmailApp.sendEmail(to, subject, 'Open in an email app that shows HTML.', { htmlBody: html, name: FROM_NAME }); }
   });
   log_('system', 'evening report', subject);
+}
+
+
+/** Run from the editor: every lead on a leaver's tab (portal Status not Active) that is untouched or has no outcome yet goes back to the pool now. Leads with a callback/yes stay for Harvey or Fin. */
+function returnLeaversNow() {
+  var ss = SpreadsheetApp.openById(CALL_LISTS_ID), pool = null, out = [];
+  table_('Users').forEach(function (u) {
+    if (u.Status === 'Active') return;
+    var tab = String(u['Call list tab'] || '').trim(); if (!tab || tab === POOL_TAB) return;
+    var sh = ss.getSheetByName(tab); if (!sh) return;
+    if (!pool) pool = ensurePool_(ss, sh);
+    var r = returnFrom_(sh, pool, 'leaver', tab); out.push(tab + ' ' + r.untouched + '+' + r.noAnswer);
+  });
+  SpreadsheetApp.flush(); Logger.log(out.join(', ') || 'nothing to return'); return out.join(', ');
 }

@@ -500,6 +500,51 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
 .pwb b{font:700 17px var(--head)}.pwb p{margin:4px 0 0;font-size:14px;color:var(--soft)}
 .pwb form{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.pwb input{width:220px}
 .pwb .x{border:0;background:none;color:var(--muted);font:500 14px var(--body);cursor:pointer;min-height:44px;padding:0 8px}
+/* ---------- Closer page (second calls) ---------- */
+.cz-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cz-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.cz-sum button{border:1px solid var(--line);background:var(--bg);border-radius:16px;padding:12px 6px;text-align:center;cursor:pointer;font:inherit;color:var(--ink);min-height:64px}
+.cz-sum button b{display:block;font:700 24px/1.1 var(--head)}.cz-sum button small{font-size:12px;color:var(--soft);font-weight:600}
+.cz-sum button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}.cz-sum button.on small{color:inherit;opacity:.8}
+.cz-sum button.red b{color:var(--bad)}.cz-sum button.hot b{color:var(--accent)}.cz-sum button.on b{color:inherit}
+.cz-h{display:flex;align-items:baseline;gap:8px;margin:20px 2px 8px;font:700 15px var(--head);color:var(--ink)}.cz-h small{font:500 13px var(--body);color:var(--muted)}
+.cz-h.red{color:var(--bad)}
+.cz-list{display:grid;gap:10px}
+.cz-card{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px;display:grid;gap:10px}
+.cz-card.overdue{border-left:5px solid var(--bad)}.cz-card.hot{border-left:5px solid var(--accent)}
+.cz-row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.cz-name{font:700 17px/1.25 var(--head);color:var(--ink);overflow-wrap:anywhere}.cz-sub{font-size:13px;color:var(--soft);margin-top:2px}
+.cz-when{flex:none;text-align:right;font:700 15px var(--head);color:var(--ink);white-space:nowrap}.cz-when small{display:block;font:600 12px var(--body);color:var(--muted)}
+.cz-card.overdue .cz-when{color:var(--bad)}
+.cz-tags{display:flex;flex-wrap:wrap;gap:6px}
+.cz-tag{font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--chip);color:var(--soft);white-space:nowrap}
+.cz-tag.hot{background:var(--accent);color:#fff}.cz-tag.cold{background:transparent;border:1px solid var(--line-2);font-weight:600}.cz-tag.mine{background:var(--ink);color:var(--bg)}
+.cz-acts{display:grid;grid-template-columns:1.7fr 1fr;gap:8px}
+.cz-acts .btn{min-height:50px;font-size:15px;white-space:nowrap;padding:10px 12px}
+.cz-card,.cz-card>*,.cz-more>*,.cz-cb,.cz-cb label{min-width:0}.cz-cb input{min-width:0;box-sizing:border-box}
+.cz-lab{font-size:11px;font-weight:700;color:var(--label);text-transform:uppercase;letter-spacing:.06em;margin-bottom:-6px}
+.cz-more{display:grid;gap:12px;border-top:1px solid var(--line);padding-top:12px}
+.cz-note{font-size:14px;color:var(--ink);background:var(--stone);border-radius:12px;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.cz-note small{display:block;font-weight:700;color:var(--label);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+.cz-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cz-links .btn,.cz-txt .btn{min-height:44px;padding:8px 10px;font-size:14px}
+.cz-txt{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cz-res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cz-res .btn{min-height:52px;padding:8px 6px;font-size:14px;white-space:normal;line-height:1.15}
+.cz-res .btn.good{background:var(--good);color:#fff}.cz-res .btn.wide{grid-column:span 3}
+.cz-cb{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--stone);border-radius:14px;padding:12px}
+.cz-cb label{display:grid;gap:4px;font-size:12px;font-weight:700;color:var(--label)}.cz-cb input{min-height:46px;font-size:16px;border:1px solid var(--line-2);border-radius:10px;padding:0 10px;background:var(--bg);color:var(--ink);width:100%}
+.cz-cb .cz-days{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}.cz-cb .btn.acc{grid-column:1/-1;min-height:48px}
+.cz-days button{border:1px solid var(--line-2);background:var(--bg);color:var(--ink);border-radius:999px;padding:8px 12px;font:600 13px var(--body);cursor:pointer;min-height:38px}
+.cz-err{color:var(--bad);font-size:14px;font-weight:600;margin:0}
+.cz-fold{border:1px solid var(--line);border-radius:16px;background:var(--bg);margin-top:14px}.cz-fold>summary{cursor:pointer;padding:14px 16px;font:700 15px var(--head);color:var(--ink);list-style:none;display:flex;justify-content:space-between}
+.cz-fold>summary::-webkit-details-marker{display:none}.cz-fold>summary::after{content:"+";color:var(--muted)}.cz-fold[open]>summary::after{content:"–"}.cz-fold>.cz-list{padding:0 10px 10px}
+.cz-mail{font-size:13px;color:var(--soft);border-left:3px solid var(--line-2);padding-left:10px}.cz-mail b{color:var(--ink)}
+.cz-empty{padding:28px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line-2);border-radius:18px}
+.cz-book{display:grid;gap:8px;margin-top:8px}.cz-book div{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cz-book button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+@media(min-width:900px){.cz-list{grid-template-columns:1fr 1fr;align-items:start}}
+@media(max-width:700px){body.cz-on #v-admin .sec-head{display:none}body.cz-on #tabs{flex-wrap:nowrap;overflow-x:auto;margin:6px -16px 12px;padding:0 16px 4px;scrollbar-width:none}body.cz-on #tabs::-webkit-scrollbar{display:none}body.cz-on #tabs button{flex:none}}
+@media(max-width:380px){.cz-links{grid-template-columns:1fr}.cz-res{grid-template-columns:1fr 1fr}.cz-res .btn.wide{grid-column:span 2}}
 </style>
 <link rel="stylesheet" href="academy.css">
 </head>
@@ -549,6 +594,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     </div>
     <div id="admin-msg" class="msg" hidden role="status"></div>
     <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" aria-selected="false" data-tab="closer">Closer</button>
       <button role="tab" aria-selected="true" data-tab="overview">Overview</button>
       <button role="tab" aria-selected="false" data-tab="team">Team</button>
       <button role="tab" aria-selected="false" data-tab="partners">Partners</button>
@@ -559,6 +605,8 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       <button role="tab" aria-selected="false" data-tab="previews">Previews</button>
       <button role="tab" aria-selected="false" data-tab="myview">What reps see</button>
     </div>
+
+    <div data-pane="closer" hidden><div id="a-closer"></div></div>
 
     <div data-pane="overview">
       <div class="tiles" id="a-tiles"></div>
@@ -1104,7 +1152,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     ov.innerHTML = '<form class="ms-mbox ms-dbox" novalidate><div class="ms-phd"><div><small class="ms-lid">' + esc(l['Lead ID']) + ' · Priority ' + esc(l['Priority'] || '–') + '</small><h3>' + esc(l['Business']) + '</h3><p class="ms-dsub">' + esc([l['Trade'], l['Town']].filter(String).join(' · ')) + '</p></div><button type="button" class="ms-x" aria-label="Close">×</button></div>' +
       '<div class="ms-dact">' + (l['Phone'] ? '<a class="ms-btn acc" href="tel:' + esc(telOf(l['Phone'])) + '">Call ' + esc(l['Phone']) + '</a>' : '') + (maps ? '<a class="ms-btn ghost" href="' + esc(maps) + '" target="_blank" rel="noopener">Google Maps</a>' : '') + '<em class="ms-st ' + s + '">' + LSTAT[s] + '</em></div>' +
       '<div class="ms-qa"><button type="button" class="ms-btn acc" data-qa="book">✓ Booked a preview</button><button type="button" class="ms-btn ghost" data-qa="na">No answer</button><button type="button" class="ms-btn ghost" data-qa="ni">Not interested</button><button type="button" class="ms-btn ghost" data-qa="cb">Call back later</button><button type="button" class="ms-btn ghost" data-qa="dead">Number not in service</button></div>' +
-      '<div class="ms-bookbox" hidden><b>Booking the preview</b><p>Get their email (or a mobile) and agree a time for Harvey or Fin to call back. Then tap Save.</p></div>' +
+      '<div class="ms-bookbox" hidden><b>Booking the preview</b><p>Get their email (or a mobile). Did they ask for a call back at a set time?</p><div class="cz-book"><div><button type="button" class="ms-btn ghost" data-agreed="Yes">Yes, they gave a time</button><button type="button" class="ms-btn ghost" data-agreed="No">No time agreed</button></div><small>Only put a day and time if they asked for one. If they didn\'t, leave it: Harvey or Fin will ring them.</small></div></div>' +
       (l['Do not call'] === true ? '<p class="ms-warn">Marked Do not call. Don\'t ring this number.</p>' : '') +
       '<div class="ms-dinfo">' + info('What\'s wrong online', esc(l['What\'s wrong online'])) + info('What to mention', esc(l['What to mention'])) + info('Google', l['Google rating'] ? esc(l['Google rating']) + '★ from ' + esc(l['Google reviews']) + ' reviews' : '') + '</div>' +
       '<h4>Call</h4>' + chips('Called (tick)', CALLED, l['Called (tick)']) + '<label>What happened on the call<input name="Called (tick)" maxlength="60" value="' + esc(l['Called (tick)'] || '') + '"></label>' +
@@ -1122,7 +1170,8 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     ov.querySelectorAll('[data-set]').forEach(function (b) { b.onclick = function () { f.elements[b.dataset.set].value = b.dataset.v; ov.querySelectorAll('[data-set="' + b.dataset.set + '"]').forEach(function (x) { x.classList.toggle('on', x === b); }); }; });
     var cbk = function () { var nc = f.elements['Next contact'].value, d = nc ? new Date(nc + 'T10:00') : null; cbForm(el, false, null, d, { name: l['Business'], business: l['Trade'] || '', phone: l['Phone'] || '', note: f.elements['Call notes'].value }); };
     ov.querySelector('[data-cbk]').onclick = cbk;
-    var stay = false, tryFlag = false; ov.querySelector('[data-stay]').onclick = function () { stay = true; };
+    var stay = false, tryFlag = false, agreed = null; ov.querySelector('[data-stay]').onclick = function () { stay = true; };
+    ov.querySelectorAll('[data-agreed]').forEach(function (b) { b.onclick = function () { agreed = b.dataset.agreed; ov.querySelectorAll('[data-agreed]').forEach(function (x) { x.classList.toggle('on', x === b); }); if (agreed === 'No') { f.elements['Next contact'].value = ''; f.elements['Callback time'].value = ''; } else { f.elements['Next contact'].scrollIntoView({ block: 'center', behavior: 'smooth' }); f.elements['Next contact'].focus(); } }; });
     var setv = function (k, v) { f.elements[k].value = v; ov.querySelectorAll('[data-set="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.dataset.v.toLowerCase() === String(v).toLowerCase()); }); };
     ov.querySelectorAll('[data-qa]').forEach(function (b) { b.onclick = function () {
       var q = b.dataset.qa, go = function () { if (f.requestSubmit) f.requestSubmit(ov.querySelectorAll('[type=submit]')[1]); else ov.querySelectorAll('[type=submit]')[1].click(); };
@@ -1136,6 +1185,12 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       e.preventDefault(); err.hidden = true;
       var fields = {}; ['Called (tick)', 'Outcome', 'Call notes', 'Client email', 'Next contact', 'Callback time', 'Last offer', 'Interested in', 'Details'].forEach(function (k) { fields[k] = f.elements[k].value; });
       if (tryFlag) { fields._try = true; tryFlag = false; }
+      if (!m.admin && /^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''))) {
+        var bad = agreed === null ? 'Tap whether they asked for a call back at a set time.' : (agreed === 'Yes' && (!fields['Next contact'] || !fields['Callback time'])) ? 'Add the day and time they asked for, or tap "No time agreed".' : '';
+        if (bad) { ov.querySelector('.ms-bookbox').hidden = false; err.textContent = bad; err.hidden = false; err.scrollIntoView({ block: 'center' }); stay = false; return; }
+        if (agreed === 'No') { fields['Next contact'] = ''; fields['Callback time'] = ''; }
+        fields['CB agreed'] = agreed;
+      }
       fields['OK to refer'] = f.elements['OK to refer'].checked; fields['Do not call'] = f.elements['Do not call'].checked; if (f.elements['Approved (Harvey)']) fields['Approved (Harvey)'] = f.elements['Approved (Harvey)'].checked;
       var btns = ov.querySelectorAll('[type=submit]'); btns.forEach(function (b) { b.disabled = true; }); var lab = stay ? btns[0] : btns[1], was = lab.textContent; lab.textContent = 'Saving…';
       api('saveLead', { tab: LD.tab, row: l._row, id: l['Lead ID'], fields: fields }).then(function (r) {
@@ -1152,6 +1207,110 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       });
     };
   }
+  /* ---------- Closer page (second calls): Admin and Managers ---------- */
+  var CZ = { data: null, view: 'now', open: null, cbFor: null, mail: {}, busy: false };
+  var CZ_TEXT = 'alright mate, {me} from maystone. tried giving you a ring about the website preview we put together for {business}. it\'s here if you\'ve not had a look yet: {link} . give us a shout when you\'re free and i\'ll run you through it';
+  function czKey(o) { return o.tab + '|' + o.id; }
+  function czCopy(text, label) {
+    var done = function () { msToast('<b>Copied</b><span>' + esc(label) + '</span>'); };
+    try { navigator.clipboard.writeText(text).then(done, function () { czCopyOld(text); done(); }); } catch (e) { czCopyOld(text); done(); }
+  }
+  function czCopyOld(text) { var t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); }
+  function czMsg(o) { return CZ_TEXT.replace('{me}', String(CZ.data.me || 'harvey').toLowerCase()).replace('{business}', o.business).replace('{link}', o.links.client || ''); }
+  function loadCloser(quiet) {
+    var el = $('a-closer'); if (!el) return;
+    if (!quiet || !CZ.data) el.innerHTML = '<div class="empty">Loading your calls…</div>';
+    api('closerList', {}).then(function (r) {
+      if (!r.ok) { el.innerHTML = '<div class="cz-empty">' + esc(r.error || 'Could not load your calls.') + '</div>'; return; }
+      CZ.data = r; drawCloser();
+    });
+  }
+  function czCard(o) {
+    var k = czKey(o), open = CZ.open === k, mobile = /^(\+?44|0)7/.test(telOf(o.phone));
+    var when = o.section === 'overdue' ? (o.time || 'Overdue') : (o.time || (o.at ? '' : 'Any time'));
+    var whenSmall = o.at ? (o.section === 'today' && o.time ? 'today' : o.when.replace(' ' + o.time, '')) : (o.section === 'tried' ? 'tried today' : '');
+    var tags = (o.hot ? '<span class="cz-tag hot">HOT · viewed ' + esc(o.viewedAgo) + '</span>' : (o.views ? '<span class="cz-tag">Viewed ' + o.views + '×' + (o.viewedAgo ? ' · ' + esc(o.viewedAgo) : '') + '</span>' : '<span class="cz-tag cold">Not opened yet</span>')) +
+      (o.hot && o.views > 1 ? '<span class="cz-tag">' + o.views + ' views</span>' : '') +
+      (o.tries ? '<span class="cz-tag">Tried ' + o.tries + '× · ' + esc(String(o.lastResult).toLowerCase()) + ' ' + esc(o.triedAgo) + '</span>' : (o.lastResult ? '<span class="cz-tag">' + esc(o.lastResult) + ' · ' + esc(o.triedAgo) + '</span>' : '')) +
+      '<span class="cz-tag cold">Booked by ' + esc(String(o.bookedBy).split(' ')[0]) + '</span>' + (o.closer ? '<span class="cz-tag mine">' + esc(o.closer) + '\'s</span>' : '');
+    var h = '<div class="cz-card ' + (o.section === 'overdue' ? 'overdue' : o.hot ? 'hot' : '') + '" data-k="' + esc(k) + '">' +
+      '<div class="cz-row"><div><div class="cz-name">' + esc(o.business) + '</div><div class="cz-sub">' + esc([o.trade, o.town].filter(String).join(' · ')) + '</div></div><div class="cz-when">' + esc(when) + (whenSmall ? '<small>' + esc(whenSmall) + '</small>' : '') + '</div></div>' +
+      '<div class="cz-tags">' + tags + '</div>' +
+      '<div class="cz-acts"><a class="btn acc" data-call href="tel:' + esc(telOf(o.phone)) + '">Call ' + esc(o.phone) + '</a><button type="button" class="btn out" data-open>' + (open ? 'Close' : 'Log it') + '</button></div>';
+    if (open) {
+      var mails = CZ.mail[o.email];
+      h += '<div class="cz-more">' +
+        (o.notes ? '<div class="cz-note"><small>Notes from the first call</small>' + esc(o.notes) + '</div>' : '') +
+        (o.email ? '<div class="cz-note"><small>Their emails to us · ' + esc(o.email) + '</small>' + (mails ? (mails.length ? mails.map(function (m) { return '<div class="cz-mail"><b>' + esc(m.when) + '</b> · ' + esc(m.subject) + '<br>' + esc(m.text) + '</div>'; }).join('') : 'Nothing from them yet.') : 'Checking…') + '</div>' : '') +
+        '<div class="cz-lab">Tap to copy a link</div><div class="cz-links">' + (o.links.client ? '<button type="button" class="btn out" data-copy="client">Preview</button>' : '<span></span>') + '<button type="button" class="btn out" data-copy="monthly">Monthly</button><button type="button" class="btn out" data-copy="oneoff">One-off</button></div>' +
+        '<div class="cz-txt">' + (o.links.preview ? '<a class="btn out" href="' + esc(o.links.preview) + '" target="_blank" rel="noopener">Open preview</a>' : '<span></span>') + (mobile ? '<a class="btn out" data-sms href="sms:' + esc(telOf(o.phone)) + '?&body=' + encodeURIComponent(czMsg(o)) + '">Text them</a>' : '<button type="button" class="btn out" data-copy="text">Copy text</button>') + '</div>' +
+        (CZ.cbFor === k ? czCbForm() :
+          '<div class="cz-res"><button type="button" class="btn out" data-act="na">No answer</button><button type="button" class="btn out" data-act="vm">Voicemail</button><button type="button" class="btn out" data-act="text">Texted</button>' +
+          '<button type="button" class="btn out wide" data-cb>Spoke · call back at…</button>' +
+          '<button type="button" class="btn good wide" data-act="sold">Said yes · pay link sent</button><button type="button" class="btn out wide" data-act="ni">Not interested</button>' +
+          (o.section === 'quiet' || o.section === 'awaiting' ? '<button type="button" class="btn out wide" data-act="reopen">Put back on the call list</button>' : '') + '</div>') +
+        '<p class="cz-err" hidden></p></div>';
+    }
+    return h + '</div>';
+  }
+  function czCbForm() {
+    var now = new Date(CZ.data.now), days = [];
+    for (var i = 0; i < 6; i++) { var d = new Date(now.getTime() + i * 86400000); days.push([d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()), i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : DAYS[(d.getDay() + 6) % 7] + ' ' + d.getDate()]); }
+    return '<form class="cz-cb" data-cbform><div class="cz-days">' + days.map(function (d) { return '<button type="button" data-day="' + d[0] + '">' + d[1] + '</button>'; }).join('') + '</div>' +
+      '<label>Day<input type="date" name="d" required min="' + days[0][0] + '"></label><label>Time<input type="time" name="t" required step="300"></label>' +
+      '<button class="btn acc" type="submit">Save call-back</button><button type="button" class="btn out" data-cbx style="grid-column:1/-1;min-height:40px">Cancel</button></form>';
+  }
+  function drawCloser() {
+    var el = $('a-closer'), r = CZ.data; if (!el || !r) return;
+    var by = function (s) { return r.rows.filter(function (o) { return o.section === s; }); };
+    var c = r.counts, callable = ['overdue', 'today', 'tried', 'cold', 'tomorrow', 'later'];
+    var hot = r.rows.filter(function (o) { return o.hot && callable.indexOf(o.section) !== -1; });
+    var list = function (rows, empty) { return rows.length ? '<div class="cz-list">' + rows.map(czCard).join('') + '</div>' : (empty ? '<div class="cz-empty">' + empty + '</div>' : ''); };
+    var sec = function (title, rows, note, cls) { return rows.length ? '<div class="cz-h ' + (cls || '') + '">' + title + ' <small>' + rows.length + (note ? ' · ' + note : '') + '</small></div>' + list(rows) : ''; };
+    var fold = function (title, rows, note) { var isOpen = rows.some(function (o) { return czKey(o) === CZ.open; }); return rows.length ? '<details class="cz-fold"' + (isOpen ? ' open' : '') + '><summary>' + title + ' (' + rows.length + ')</summary>' + (note ? '<p class="note" style="margin:0 16px 10px">' + note + '</p>' : '') + list(rows) + '</details>' : ''; };
+    var today = by('today'), timed = today.filter(function (o) { return o.time; }), any = today.filter(function (o) { return !o.time; }), body = '';
+    if (CZ.view === 'now') body = sec('Overdue', by('overdue'), 'they asked for a time and it passed', 'red') + sec('Agreed times today', timed, 'ring at the time') + sec('Call any time today', any, 'no time agreed · hot ones first') +
+      (!c.overdue && !today.length ? '<div class="cz-empty">Nothing left to call today. Nice one.</div>' : '') + fold('Tried today', by('tried'), 'No answer today. These come back tomorrow.') + fold('Never opened, sent over a week ago', by('cold'), 'Lowest priority. Ring these once the list above is done.') + fold('Waiting on payment', by('awaiting'), 'Said yes and got the pay link. They move to Done by themselves when Stripe shows the payment.');
+    if (CZ.view === 'hot') body = list(hot, 'Nobody has opened their preview in the last 2 days.');
+    if (CZ.view === 'tomorrow') body = list(by('tomorrow'), 'Nothing booked for tomorrow yet.');
+    if (CZ.view === 'later') body = sec('Later this week and beyond', by('later')) + sec('Waiting on payment', by('awaiting')) + sec('Gone quiet', by('quiet'), '3 tries, no answer') + sec('Preview not sent yet', by('notsent'), 'nothing to call about until it goes') || '<div class="cz-empty">Nothing here.</div>';
+    var sum = [['now', c.overdue + c.today, 'Call now', c.overdue ? 'red' : ''], ['hot', hot.length, 'Hot', 'hot'], ['tomorrow', c.tomorrow, 'Tomorrow', ''], ['later', c.later + c.quiet + c.notsent + c.awaiting, 'Later', '']];
+    el.innerHTML = '<div class="cz-top"><p class="note" style="margin:0">' + (c.overdue ? '<b style="color:var(--bad)">' + c.overdue + ' overdue</b> · ' : '') + c.today + ' to call today · ' + c.tried + ' tried · ' + c.cold + ' cold</p><button class="btn out sm" type="button" data-czr>Refresh</button></div>' +
+      '<div class="cz-sum">' + sum.map(function (s) { return '<button type="button" data-czv="' + s[0] + '" class="' + s[3] + (CZ.view === s[0] ? ' on' : '') + '"><b>' + s[1] + '</b><small>' + s[2] + '</small></button>'; }).join('') + '</div>' + body;
+  }
+  function czFind(k) { return CZ.data.rows.filter(function (o) { return czKey(o) === k; })[0]; }
+  function czAct(o, act, opts, card) {
+    if (CZ.busy) return; CZ.busy = true;
+    var err = card.querySelector('.cz-err'); if (err) err.hidden = true;
+    card.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+    api('closerLog', { tab: o.tab, id: o.id, act: act, opts: opts || {} }).then(function (r) {
+      CZ.busy = false;
+      if (!r.ok) { card.querySelectorAll('button').forEach(function (b) { b.disabled = false; }); if (err) { err.textContent = r.error || 'Could not save. Try again.'; err.hidden = false; } return; }
+      var said = { na: 'No answer logged. Back on your list tomorrow.', vm: 'Voicemail logged. Back on your list tomorrow.', text: 'Text logged. Back on your list tomorrow.', cb: 'Call-back saved for ' + (opts && opts.time) + '.', sold: 'Nice one. Waiting on the payment.', ni: 'Marked not interested.', reopen: 'Back on the call list.' }[act];
+      CZ.data = r; CZ.open = null; CZ.cbFor = null; drawCloser(); msToast('<b>' + esc(o.business) + '</b><span>' + esc(said) + '</span>');
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var el = $('a-closer'); if (!el || !el.contains(e.target) || !CZ.data) return;
+    var v = e.target.closest('[data-czv]'); if (v) { CZ.view = v.dataset.czv; CZ.open = null; CZ.cbFor = null; drawCloser(); return; }
+    if (e.target.closest('[data-czr]')) { loadCloser(); return; }
+    var card = e.target.closest('.cz-card'); if (!card) return;
+    var k = card.dataset.k, o = czFind(k); if (!o) return;
+    var openIt = function () { CZ.open = k; CZ.cbFor = null; drawCloser(); if (o.email && !CZ.mail[o.email]) api('closerLead', { email: o.email }).then(function (r) { CZ.mail[o.email] = (r && r.emails) || []; if (CZ.open === k && CZ.cbFor !== k) drawCloser(); }); };
+    if (e.target.closest('[data-call]')) { if (CZ.open !== k) setTimeout(openIt, 400); return; }
+    if (e.target.closest('[data-open]')) { if (CZ.open === k) { CZ.open = null; CZ.cbFor = null; drawCloser(); } else openIt(); return; }
+    var cp = e.target.closest('[data-copy]'); if (cp) { var w = cp.dataset.copy; czCopy(w === 'text' ? czMsg(o) : o.links[w], w === 'text' ? 'Text for ' + o.business : w === 'client' ? 'Preview link' : w === 'monthly' ? 'Monthly pay link' : 'One-off pay link'); return; }
+    if (e.target.closest('[data-cb]')) { CZ.cbFor = k; drawCloser(); var f0 = el.querySelector('[data-cbform]'); if (f0) f0.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+    if (e.target.closest('[data-cbx]')) { CZ.cbFor = null; drawCloser(); return; }
+    var dy = e.target.closest('[data-day]'); if (dy) { var f1 = dy.closest('form'); f1.elements.d.value = dy.dataset.day; f1.elements.t.focus(); return; }
+    var a = e.target.closest('[data-act]'); if (a) czAct(o, a.dataset.act, {}, card);
+  });
+  document.addEventListener('submit', function (e) {
+    var f = e.target.closest && e.target.closest('[data-cbform]'); if (!f) return; e.preventDefault();
+    var card = f.closest('.cz-card'), o = czFind(card.dataset.k), err = card.querySelector('.cz-err');
+    if (!f.elements.d.value || !f.elements.t.value) { err.textContent = 'Pick the day and time they asked for.'; err.hidden = false; return; }
+    czAct(o, 'cb', { date: f.elements.d.value, time: f.elements.t.value }, card);
+  });
   /* ---------- call-backs calendar ---------- */
   var CB = { list: null, month: null, day: null, edit: null, events: [] };
   var DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -1301,6 +1460,9 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     var b = e.target.closest('button[data-tab]'); if (!b) return;
     Array.prototype.forEach.call(document.querySelectorAll('#tabs button'), function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
     Array.prototype.forEach.call(document.querySelectorAll('[data-pane]'), function (p) { p.hidden = p.getAttribute('data-pane') !== b.dataset.tab; });
+    try { localStorage.setItem('maystone.atab', b.dataset.tab === 'closer' ? 'closer' : ''); } catch (e2) {}
+    document.body.classList.toggle('cz-on', b.dataset.tab === 'closer');
+    if (b.dataset.tab === 'closer') loadCloser(!!CZ.data);
     if (b.dataset.tab === 'myview' && state.me) repHTML(state.me, $('a-myview'));
     if (b.dataset.tab === 'academy' && window.MSAcademy) MSAcademy.mountAdmin($('a-academy'));
   });
@@ -1423,7 +1585,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       pwBanner(m);
       $('who-name').textContent = m.user.name || m.user.email; $('who-role').textContent = m.user.role;
       document.body.classList.toggle('mgr', !!m.manager);
-      if (m.admin) { show('v-admin'); api('adminOverview', {}).then(function (o) { if (o.ok) renderAdmin(o); else say($('admin-msg'), o.error, false); }); }
+      if (m.admin) { show('v-admin'); api('adminOverview', {}).then(function (o) { if (o.ok) renderAdmin(o); else say($('admin-msg'), o.error, false); }); var wantCloser = location.hash === '#closer'; try { wantCloser = wantCloser || localStorage.getItem('maystone.atab') === 'closer'; } catch (e3) {} if (wantCloser) { var cbt = document.querySelector('#tabs [data-tab="closer"]'); if (cbt) cbt.click(); } }
       else { repHTML(m); show('v-rep'); }
     });
   }

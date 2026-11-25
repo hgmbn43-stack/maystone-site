@@ -30,7 +30,7 @@ async function session(b, admin, fn) {
     if (q.action === 'leads') out = { ok: true, tab: 'Test', tabs: [], head: Object.keys(L), editable: [], leads: [L] };
     if (q.action === 'bookNow') { L = Object.assign({}, L, { Outcome: 'Yes – send preview', 'Called (tick)': 'Answered', 'Preview link': LINK }); out = { ok: true, lead: L }; }
     if (q.action === 'saveLead') { L = Object.assign({}, L, q.fields); out = { ok: true, lead: L }; }
-    if (q.action === 'leadSeen') { seen++; out = seen < 2 ? { ok: true, views: 0, lastViewed: 0 } : { ok: true, views: 1, lastViewed: Date.now() - 3000 }; }
+    if (q.action === 'leadSeen') { seen++; out = seen < 2 ? { ok: true, views: 0, lastViewed: 0 } : seen < 3 ? { ok: true, views: 1, lastViewed: Date.now() - 3000 } : { ok: true, views: 1, lastViewed: Date.now() - 3000, liked: Date.now() - 1000 }; }
     if (q.action === 'adminPreviews') out = { ok: true, previews: [] };
     if (q.action === 'closerList') out = { ok: true, now: Date.now(), me: 'Harvey', counts: {}, labels: {}, rows: [] };
     r.fulfill({ contentType: 'application/json', body: JSON.stringify(out) });
@@ -58,6 +58,8 @@ async function openLead(p) {
     check(!!sms && decodeURIComponent(sms).includes('hi its test from maystone') && decodeURIComponent(sms).includes(LINK), 'Text them button has the right text and link');
     await p.waitForTimeout(6500);
     check(/opened it/i.test(await p.locator('[data-seen]').innerText()), '"They\'ve opened it" shows when they open the preview');
+    await p.waitForTimeout(5500);
+    check(/I like it/.test(await p.locator('[data-seen]').innerText()), '"They tapped I like it" shows when they tap the button');
     await p.locator('[data-otc="Opened it on the call"]').click();
     await p.locator('.ms-drawer [type=submit]').nth(1).click(); await p.waitForTimeout(700);
     check(await p.locator('.ms-drawer .ms-err').isVisible(), 'Save asks for their email first');

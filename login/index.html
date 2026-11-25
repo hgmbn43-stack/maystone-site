@@ -1239,7 +1239,10 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
         if (r && r.ok) {
           if (base === null) base = r.views;
           var fresh = r.views > base;
-          if (r.lastViewed && (fresh || Date.now() - r.lastViewed < 10 * 60000)) {
+          if (r.liked && Date.now() - r.liked < 30 * 60000) {
+            el.className = 'pv-seen on'; el.innerHTML = '<b>👍 They tapped "I like it" (' + pvAgo(r.liked) + ')</b> Go for the close.';
+            if (!el.dataset.liked) { el.dataset.liked = '1'; msToast('<b>They like it 👍</b><span>' + esc(l['Business']) + ' just tapped "I like it".</span>', true); try { if (navigator.vibrate) navigator.vibrate([150, 80, 150]); } catch (e) {} }
+          } else if (r.lastViewed && (fresh || Date.now() - r.lastViewed < 10 * 60000)) {
             el.className = 'pv-seen on'; el.innerHTML = '<b>They\'ve opened it (' + pvAgo(r.lastViewed) + ')</b> Walk them through it now.';
             if (fresh && !el.dataset.buzzed) { el.dataset.buzzed = '1'; msToast('<b>They\'ve opened it 👀</b><span>' + esc(l['Business']) + ' is looking at their preview now.</span>', true); try { if (navigator.vibrate) navigator.vibrate(200); } catch (e) {} }
           } else if (r.views) el.textContent = 'Opened before (' + r.views + 'x), last ' + pvAgo(r.lastViewed) + '.';

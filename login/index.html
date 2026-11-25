@@ -548,6 +548,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
 /* ---------- Previews tab: by day ---------- */
 .pv-filters{display:flex;gap:8px;overflow-x:auto;margin:0 0 6px;padding-bottom:4px;scrollbar-width:none}.pv-filters::-webkit-scrollbar{display:none}
 .pv-filters button{flex:none;border:1px solid var(--line-2);background:var(--bg);color:var(--ink);border-radius:999px;padding:9px 14px;font:600 14px var(--body);cursor:pointer;min-height:40px}
+.pv-filters button.act{border-color:var(--accent);color:var(--accent)}
 .pv-filters button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}.pv-filters button b{font-weight:700;opacity:.7;margin-left:4px}
 .pv-day{display:flex;align-items:baseline;gap:8px;margin:22px 2px 8px;font:700 17px var(--head);color:var(--ink)}.pv-day small{font:500 13px var(--body);color:var(--muted)}
 .pv-list{display:grid;gap:8px}
@@ -561,6 +562,24 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
 .pv-acts{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}.pv-acts .btn{min-height:40px;padding:8px 14px;font-size:14px}
 .pv-acts .pv-info{font-size:13px;color:var(--muted);margin-left:auto}
 @media(min-width:900px){.pv-list{grid-template-columns:1fr 1fr}}
+/* ---------- Next call ---------- */
+.cz-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--chip);border-radius:14px;padding:4px;margin-bottom:12px}
+.cz-seg button{border:0;background:transparent;border-radius:10px;min-height:44px;font:700 15px var(--body);color:var(--soft);cursor:pointer}
+.cz-seg button.on{background:var(--bg);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.cz-nx-top{display:flex;justify-content:space-between;align-items:baseline;margin:2px 2px 8px;font-size:14px;color:var(--soft)}.cz-nx-top b{font:700 16px var(--head);color:var(--ink)}
+.cz-nx-card{padding:16px;gap:12px;border-width:2px}.cz-nx-card.red{border-color:var(--bad)}.cz-nx-card.hot{border-color:var(--accent)}
+.cz-nx-why{font:700 15px/1.3 var(--body);color:var(--ink);background:var(--stone);border-radius:12px;padding:10px 12px}
+.cz-nx-why.red{background:var(--bad);color:#fff}.cz-nx-why.hot{background:var(--accent);color:#fff}
+.cz-nx-name{font-size:22px}
+.cz-nx-call{min-height:58px;font-size:18px;display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box}
+.cz-nx-flags{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.cz-nx-flags button{border:1px solid var(--line-2);background:var(--bg);color:var(--soft);border-radius:999px;padding:7px 12px;font:600 13px var(--body);cursor:pointer;min-height:36px}
+.cz-nx-flags button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.cz-nx-res{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cz-nx-res .btn{min-height:54px;font-size:15px;padding:8px;white-space:normal;line-height:1.15}.cz-nx-res .btn.good{background:var(--good);color:#fff;border-color:var(--good)}
+.cz-nx-foot{display:flex;justify-content:space-between;gap:8px}
+.cz-lnk{border:0;background:none;color:var(--soft);font:600 14px var(--body);text-decoration:underline;cursor:pointer;padding:8px 2px;min-height:40px}
+.cz-upnext{display:grid;gap:6px}.cz-upnext>div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:2px}
+.cz-upnext b{font:700 14px var(--head);color:var(--ink)}.cz-upnext span{font-size:13px;color:var(--soft)}.cz-upnext span.red{color:var(--bad);font-weight:700}.cz-upnext span.hot{color:var(--accent);font-weight:700}
 </style>
 <link rel="stylesheet" href="academy.css">
 </head>
@@ -1257,20 +1276,26 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     };
   }
   /* ---------- Closer page (second calls): Admin and Managers ---------- */
-  var CZ = { data: null, view: 'now', open: null, cbFor: null, mail: {}, busy: false };
-  var CZ_TEXT = 'alright mate, {me} from maystone. tried giving you a ring about the website preview we put together for {business}. it\'s here if you\'ve not had a look yet: {link} . give us a shout when you\'re free and i\'ll run you through it';
+  var CZ = { data: null, view: 'next', open: null, cbFor: null, mail: {}, busy: false, skip: {}, flags: { vm: false, text: false }, lockSent: {} };
+  var CZ_TEXT = 'alright mate, {me} from maystone. tried giving you a ring about the website preview we put together for {business}, it\'s here if you\'ve not had a look yet: {link} . give us a shout when you\'re free and i\'ll run you through it. (reply stop if you don\'t want any more texts)';
+  var CZ_TEXT_CHASE = 'alright mate, {me} from maystone. just checking you got the payment link i sent over to get the {business} website live. any questions give us a shout. (reply stop if you don\'t want any more texts)';
   function czKey(o) { return o.tab + '|' + o.id; }
   function czCopy(text, label) {
     var done = function () { msToast('<b>Copied</b><span>' + esc(label) + '</span>'); };
     try { navigator.clipboard.writeText(text).then(done, function () { czCopyOld(text); done(); }); } catch (e) { czCopyOld(text); done(); }
   }
   function czCopyOld(text) { var t = document.createElement('textarea'); t.value = text; t.style.position = 'fixed'; t.style.opacity = '0'; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); }
-  function czMsg(o) { return CZ_TEXT.replace('{me}', String(CZ.data.me || 'harvey').toLowerCase()).replace('{business}', o.business).replace('{link}', o.links.client || ''); }
+  function czMsg(o) { return (o.section === 'chase' || o.section === 'awaiting' ? CZ_TEXT_CHASE : CZ_TEXT).replace('{me}', String(CZ.data.me || 'harvey').toLowerCase()).replace('{business}', o.business).replace('{link}', o.links.client || ''); }
   function loadCloser(quiet) {
     var el = $('a-closer'); if (!el) return;
     if (!CZ.data && !fastGet('closerList', {})) el.innerHTML = '<div class="empty">Loading your calls…</div>';
-    apiFast('closerList', {}, function (r) {
+    apiFast('closerList', {}, function (r, saved) {
       if (!r.ok) { if (!CZ.data) el.innerHTML = '<div class="cz-empty">' + esc(r.error || 'Could not load your calls.') + '</div>'; return; }
+      if (!saved && CZ.data && CZ.data.rows) {   // pop-up when someone opens their preview
+        var before = {}; CZ.data.rows.forEach(function (x) { before[czKey(x)] = x.lastViewed || 0; });
+        var opened = r.rows.filter(function (x) { return x.lastViewed && x.lastViewed > (before[czKey(x)] || 0) && Date.now() - x.lastViewed < 15 * 60000 && x.section !== 'done'; });
+        if (opened.length) msToast('<b>' + esc(opened[0].business) + (opened.length > 1 ? ' + ' + (opened.length - 1) + ' more' : '') + '</b><span>just opened their preview. They\'re at the top of Next call.</span>', true);
+      }
       if (CZ.busy || CZ.cbFor) return;   // don't redraw while a call-back form is open
       if (CZ.data && JSON.stringify(CZ.data.rows) === JSON.stringify(r.rows)) { CZ.data = r; return; }   // nothing changed: leave the screen alone
       CZ.data = r; drawCloser();
@@ -1311,8 +1336,54 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       '<label>Day<input type="date" name="d" required min="' + days[0][0] + '"></label><label>Time<input type="time" name="t" required step="300"></label>' +
       '<button class="btn acc" type="submit">Save call-back</button><button type="button" class="btn out" data-cbx style="grid-column:1/-1;min-height:40px">Cancel</button></form>';
   }
+  /* ---------- Next call: one lead at a time ---------- */
+  function czQueue() {
+    var q = CZ.data.rows.filter(function (o) { return o.due && !o.lockedBy; });
+    var fresh = q.filter(function (o) { return !CZ.skip[czKey(o)]; }), skipped = q.filter(function (o) { return CZ.skip[czKey(o)]; });
+    skipped.sort(function (a, b) { return CZ.skip[czKey(a)] - CZ.skip[czKey(b)]; });
+    return fresh.concat(skipped);
+  }
+  function czTone(o) { return o.section === 'overdue' || o.section === 'chase' ? 'red' : (o.hot && (o.prio === 2 || o.prio === 4)) || o.openedSinceTry ? 'hot' : ''; }
+  function czMore(o) {
+    var mails = CZ.mail[o.email], mobile = /^(\+?44|0)7/.test(telOf(o.phone));
+    return '<div class="cz-more">' +
+      '<div class="cz-note"><small>About this lead</small>Booked by ' + esc(o.bookedBy) + ' · ' + esc(o.id) + (o.views ? ' · opened ' + o.views + '×' + (o.viewedAgo ? ', last ' + esc(o.viewedAgo) : '') : ' · not opened yet') + (o.tries ? ' · tried ' + o.tries + '×' : '') + '</div>' +
+      (o.notes ? '<div class="cz-note"><small>Notes</small>' + esc(o.notes) + '</div>' : '') +
+      (o.email ? '<div class="cz-note"><small>Their emails to us · ' + esc(o.email) + '</small>' + (mails ? (mails.length ? mails.map(function (m) { return '<div class="cz-mail"><b>' + esc(m.when) + '</b> · ' + esc(m.subject) + '<br>' + esc(m.text) + '</div>'; }).join('') : 'Nothing from them yet.') : 'Checking…') + '</div>' : '') +
+      '<div class="cz-lab">Tap to copy a link</div><div class="cz-links">' + (o.links.client ? '<button type="button" class="btn out" data-copy="client">Preview</button>' : '<span></span>') + '<button type="button" class="btn out" data-copy="monthly">Monthly</button><button type="button" class="btn out" data-copy="oneoff">One-off</button></div>' +
+      '<div class="cz-txt">' + (o.links.preview ? '<a class="btn out" href="' + esc(o.links.preview) + '" target="_blank" rel="noopener">Open preview</a>' : '<span></span>') + (mobile ? '<a class="btn out" data-sms href="sms:' + esc(telOf(o.phone)) + '?&body=' + encodeURIComponent(czMsg(o)) + '">Text them</a>' : '<button type="button" class="btn out" data-copy="text">Copy text</button>') + '</div></div>';
+  }
+  function czNextHTML() {
+    var r = CZ.data, c = r.counts, q = czQueue(), o = q[0];
+    var laterToday = r.rows.filter(function (x) { return x.section === 'today' && !x.due && x.time; });
+    var others = r.rows.filter(function (x) { return x.due && x.lockedBy; });
+    var head = '<div class="cz-nx-top"><b>' + (q.length ? q.length + ' to call now' : 'All caught up') + '</b><span>' + (c.doneToday || 0) + ' logged today</span></div>';
+    if (!o) {
+      var nxt = laterToday[0];
+      return head + '<div class="cz-empty"><b>Nothing to ring right now.</b><br>' + (nxt ? 'Next: ' + esc(nxt.time + ' ' + nxt.business) : c.tomorrow ? c.tomorrow + ' booked for tomorrow.' : 'New ones appear here by themselves.') + '</div>' + (others.length ? '<p class="note">' + others.length + ' being called by ' + esc(others[0].lockedBy) + ' right now.</p>' : '');
+    }
+    var k = czKey(o), open = CZ.open === k, tone = czTone(o);
+    var h = head + '<div class="cz-card cz-nx-card ' + tone + '" data-k="' + esc(k) + '">' +
+      '<div class="cz-nx-why ' + tone + '">' + esc(o.why) + '</div>' +
+      '<div class="cz-name cz-nx-name">' + esc(o.business) + '</div><div class="cz-sub">' + esc([o.trade, o.town].filter(function (x) { return x; }).join(' · ')) + '</div>' +
+      '<a class="btn acc cz-nx-call" data-call href="tel:' + esc(telOf(o.phone)) + '">Call ' + esc(o.phone) + '</a>';
+    if (CZ.cbFor === k) h += czCbForm();
+    else h += '<div class="cz-nx-flags"><span>If no answer:</span><button type="button" data-flag="vm" class="' + (CZ.flags.vm ? 'on' : '') + '">left voicemail</button><button type="button" data-flag="text" class="' + (CZ.flags.text ? 'on' : '') + '">sent a text</button></div>' +
+      '<div class="cz-nx-res"><button type="button" class="btn out" data-act="na">No answer</button><button type="button" class="btn out" data-cb>Call back at…</button>' +
+      '<button type="button" class="btn good" data-act="sold">Yes · link sent</button><button type="button" class="btn out" data-act="ni">Not interested</button></div>';
+    h += '<div class="cz-nx-foot"><button type="button" class="cz-lnk" data-skip>Skip for now</button><button type="button" class="cz-lnk" data-open>' + (open ? 'Hide details' : 'Notes, links & text') + '</button></div>' +
+      (open ? czMore(o) : '') + '<p class="cz-err" hidden></p></div>';
+    if (q.length > 1) h += '<div class="cz-h">Up next <small>' + (q.length - 1) + '</small></div><div class="cz-upnext">' + q.slice(1, 6).map(function (x) { return '<div><b>' + esc(x.business) + '</b><span class="' + czTone(x) + '">' + esc(x.why) + '</span></div>'; }).join('') + (q.length > 6 ? '<div class="note">…and ' + (q.length - 6) + ' more</div>' : '') + '</div>';
+    if (laterToday.length) h += '<div class="cz-h">Later today <small>at the time they asked</small></div><div class="cz-upnext">' + laterToday.map(function (x) { return '<div><b>' + esc(x.time + ' · ' + x.business) + '</b></div>'; }).join('') + '</div>';
+    if (others.length) h += '<p class="note">' + others.length + ' being called by ' + esc(others[0].lockedBy) + ' right now, so they\'re left off your list.</p>';
+    if (!CZ.lockSent[k] || Date.now() - CZ.lockSent[k] > 300000) { CZ.lockSent[k] = Date.now(); api('closerLock', { tab: o.tab, id: o.id }); }
+    if (open && o.email && !CZ.mail[o.email]) api('closerLead', { email: o.email }).then(function (m) { CZ.mail[o.email] = (m && m.emails) || []; if (CZ.open === k && CZ.cbFor !== k && CZ.view === 'next') drawCloser(); });
+    return h;
+  }
   function drawCloser() {
     var el = $('a-closer'), r = CZ.data; if (!el || !r) return;
+    var nav = '<div class="cz-seg"><button type="button" data-czv="next" class="' + (CZ.view === 'next' ? 'on' : '') + '">Next call</button><button type="button" data-czv="now" class="' + (CZ.view !== 'next' ? 'on' : '') + '">See everything</button></div>';
+    if (CZ.view === 'next') { el.innerHTML = nav + czNextHTML(); return; }
     var by = function (s) { return r.rows.filter(function (o) { return o.section === s; }); };
     var c = r.counts, callable = ['overdue', 'today', 'tried', 'cold', 'tomorrow', 'later'];
     var hot = r.rows.filter(function (o) { return o.hot && callable.indexOf(o.section) !== -1; });
@@ -1320,13 +1391,13 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     var sec = function (title, rows, note, cls) { return rows.length ? '<div class="cz-h ' + (cls || '') + '">' + title + ' <small>' + rows.length + (note ? ' · ' + note : '') + '</small></div>' + list(rows) : ''; };
     var fold = function (title, rows, note) { var isOpen = rows.some(function (o) { return czKey(o) === CZ.open; }); return rows.length ? '<details class="cz-fold"' + (isOpen ? ' open' : '') + '><summary>' + title + ' (' + rows.length + ')</summary>' + (note ? '<p class="note" style="margin:0 16px 10px">' + note + '</p>' : '') + list(rows) + '</details>' : ''; };
     var today = by('today'), timed = today.filter(function (o) { return o.time; }), any = today.filter(function (o) { return !o.time; }), body = '';
-    if (CZ.view === 'now') body = sec('Overdue', by('overdue'), 'they asked for a time and it passed', 'red') + sec('Agreed times today', timed, 'ring at the time') + sec('Call any time today', any, 'no time agreed · hot ones first') +
-      (!c.overdue && !today.length ? '<div class="cz-empty">Nothing left to call today. Nice one.</div>' : '') + fold('Tried today', by('tried'), 'No answer today. These come back tomorrow.') + fold('Never opened, sent over a week ago', by('cold'), 'Lowest priority. Ring these once the list above is done.') + fold('Waiting on payment', by('awaiting'), 'Said yes and got the pay link. They move to Done by themselves when Stripe shows the payment.');
+    if (CZ.view === 'now') body = sec('Overdue', by('overdue'), 'they asked for a time and it passed', 'red') + sec('Said yes, not paid', by('chase'), 'pay link sent over a day ago', 'red') + sec('Agreed times today', timed, 'ring at the time') + sec('Call any time today', any, 'no time agreed · hot ones first') +
+      (!c.overdue && !today.length ? '<div class="cz-empty">Nothing left to call today. Nice one.</div>' : '') + fold('Waiting for next try', by('tried'), 'No answer. Each one comes back by itself on its next try day (tries are spaced over about 2 weeks).') + fold('Never opened, sent over a week ago', by('cold'), 'Lowest priority. Ring these once the list above is done.') + fold('Waiting on payment', by('awaiting'), 'Said yes and got the pay link. They move to Done by themselves when Stripe shows the payment.');
     if (CZ.view === 'hot') body = list(hot, 'Nobody has opened their preview in the last 2 days.');
     if (CZ.view === 'tomorrow') body = list(by('tomorrow'), 'Nothing booked for tomorrow yet.');
-    if (CZ.view === 'later') body = sec('Later this week and beyond', by('later')) + sec('Waiting on payment', by('awaiting')) + sec('Gone quiet', by('quiet'), '3 tries, no answer') + sec('Preview not sent yet', by('notsent'), 'nothing to call about until it goes') || '<div class="cz-empty">Nothing here.</div>';
-    var sum = [['now', c.overdue + c.today, 'Call now', c.overdue ? 'red' : ''], ['hot', hot.length, 'Hot', 'hot'], ['tomorrow', c.tomorrow, 'Tomorrow', ''], ['later', c.later + c.quiet + c.notsent + c.awaiting, 'Later', '']];
-    el.innerHTML = '<div class="cz-top"><p class="note" style="margin:0">' + (c.overdue ? '<b style="color:var(--bad)">' + c.overdue + ' overdue</b> · ' : '') + c.today + ' to call today · ' + c.tried + ' tried · ' + c.cold + ' cold</p><button class="btn out sm" type="button" data-czr>Refresh</button></div>' +
+    if (CZ.view === 'later') body = sec('Later this week and beyond', by('later')) + sec('Waiting on payment', by('awaiting')) + sec('Gone quiet', by('quiet'), '6 tries, no answer · back on the list if they open the preview') + sec('Preview not sent yet', by('notsent'), 'nothing to call about until it goes') || '<div class="cz-empty">Nothing here.</div>';
+    var sum = [['now', c.overdue + c.today + c.chase, 'Today', c.overdue ? 'red' : ''], ['hot', hot.length, 'Hot', 'hot'], ['tomorrow', c.tomorrow, 'Tomorrow', ''], ['later', c.later + c.quiet + c.notsent + c.awaiting, 'Later', '']];
+    el.innerHTML = nav + '<div class="cz-top"><p class="note" style="margin:0">' + (c.overdue ? '<b style="color:var(--bad)">' + c.overdue + ' overdue</b> · ' : '') + c.today + ' to call today · ' + c.tried + ' tried · ' + c.cold + ' cold</p><button class="btn out sm" type="button" data-czr>Refresh</button></div>' +
       '<div class="cz-sum">' + sum.map(function (s) { return '<button type="button" data-czv="' + s[0] + '" class="' + s[3] + (CZ.view === s[0] ? ' on' : '') + '"><b>' + s[1] + '</b><small>' + s[2] + '</small></button>'; }).join('') + '</div>' + body;
   }
   function czFind(k) { return CZ.data.rows.filter(function (o) { return czKey(o) === k; })[0]; }
@@ -1334,19 +1405,22 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     if (CZ.busy) return; CZ.busy = true;
     var err = card.querySelector('.cz-err'); if (err) err.hidden = true;
     card.querySelectorAll('button').forEach(function (b) { b.disabled = true; });
+    if (act === 'na') opts = Object.assign({ vm: CZ.flags.vm, text: CZ.flags.text }, opts || {});
     api('closerLog', { tab: o.tab, id: o.id, act: act, opts: opts || {} }).then(function (r) {
       CZ.busy = false;
       if (!r.ok) { card.querySelectorAll('button').forEach(function (b) { b.disabled = false; }); if (err) { err.textContent = r.error || 'Could not save. Try again.'; err.hidden = false; } return; }
-      var said = { na: 'No answer logged. Back on your list tomorrow.', vm: 'Voicemail logged. Back on your list tomorrow.', text: 'Text logged. Back on your list tomorrow.', cb: 'Call-back saved for ' + (opts && opts.time) + '.', sold: 'Nice one. Waiting on the payment.', ni: 'Marked not interested.', reopen: 'Back on the call list.' }[act];
-      CZ.data = r; CZ.open = null; CZ.cbFor = null; drawCloser(); msToast('<b>' + esc(o.business) + '</b><span>' + esc(said) + '</span>');
+      var said = { na: 'No answer logged. It comes back on its next try day.', vm: 'Voicemail logged.', text: 'Text logged.', cb: 'Call-back saved for ' + (opts && opts.time) + '.', sold: 'Nice one. If they haven\'t paid in a day it comes back to chase.', ni: 'Marked not interested and do not call.', reopen: 'Back on the call list.' }[act];
+      CZ.data = r; CZ.open = null; CZ.cbFor = null; CZ.flags = { vm: false, text: false }; delete CZ.skip[czKey(o)]; drawCloser(); msToast('<b>' + esc(o.business) + '</b><span>' + esc(said) + '</span>');
     });
   }
   document.addEventListener('click', function (e) {
     var el = $('a-closer'); if (!el || !el.contains(e.target) || !CZ.data) return;
     var v = e.target.closest('[data-czv]'); if (v) { CZ.view = v.dataset.czv; CZ.open = null; CZ.cbFor = null; drawCloser(); return; }
+    var fl = e.target.closest('[data-flag]'); if (fl) { CZ.flags[fl.dataset.flag] = !CZ.flags[fl.dataset.flag]; fl.classList.toggle('on', CZ.flags[fl.dataset.flag]); return; }
     if (e.target.closest('[data-czr]')) { loadCloser(); return; }
     var card = e.target.closest('.cz-card'); if (!card) return;
     var k = card.dataset.k, o = czFind(k); if (!o) return;
+    if (e.target.closest('[data-skip]')) { CZ.skip[k] = Date.now(); CZ.open = null; CZ.cbFor = null; CZ.flags = { vm: false, text: false }; drawCloser(); window.scrollTo({ top: $('a-closer').getBoundingClientRect().top + scrollY - 80 }); return; }
     var openIt = function () { CZ.open = k; CZ.cbFor = null; drawCloser(); if (o.email && !CZ.mail[o.email]) api('closerLead', { email: o.email }).then(function (r) { CZ.mail[o.email] = (r && r.emails) || []; if (CZ.open === k && CZ.cbFor !== k) drawCloser(); }); };
     if (e.target.closest('[data-call]')) { if (CZ.open !== k) setTimeout(openIt, 400); return; }
     if (e.target.closest('[data-open]')) { if (CZ.open === k) { CZ.open = null; CZ.cbFor = null; drawCloser(); } else openIt(); return; }
@@ -1580,21 +1654,28 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     m = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); if (m) return m[3] + '-' + pad(+m[2]) + '-' + pad(+m[1]);
     return '';
   }
+  function pvSentDay(l) {
+    var s = String(l['Sent to client'] || ''), m = s.match(/(\d{4})-(\d{2})-(\d{2})/); if (m) return m[0];
+    m = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return m ? m[3] + '-' + pad(+m[2]) + '-' + pad(+m[1]) : '';
+  }
   function pvStatus(l) {
     var views = Number(l['Views']) || 0;
     if (/^paid/i.test(String(l['Paid'] || ''))) return ['paid', 'Paid'];
     if (!l['Preview link']) return ['make', 'Being made'];
     if (l['Approved (Harvey)'] !== true) return ['todo', 'Needs approving'];
     if (!l['Sent to client']) return ['make', 'Approved · sending'];
-    if (views) return [l['Hot?'] ? 'hot' : 'seen', 'Opened ' + views + '×'];
+    if (views) return [(l._lv || 0) > (l._lt || 0) && !/^(not interested|link sent)/i.test(String(l['CB status'] || '')) ? 'hot' : 'seen', 'Opened ' + views + '×' + ((l._lv || 0) > (l._lt || 0) ? ' · not called' : '')];
     return ['sent', 'Sent · not opened'];
   }
   function drawPreviews() {
-    var all = state.previews || [], now = new Date(), key = function (d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
-    var today = key(now), yest = key(new Date(now.getTime() - 86400000));
-    var filters = [['all', 'All', function () { return true; }], ['todo', 'Needs approving', function (l) { return pvStatus(l)[0] === 'todo'; }], ['seen', 'Opened', function (l) { return (Number(l['Views']) || 0) > 0 && !/^paid/i.test(String(l['Paid'] || '')); }],
-      ['sent', 'Not opened', function (l) { return pvStatus(l)[0] === 'sent'; }], ['paid', 'Paid', function (l) { return pvStatus(l)[0] === 'paid'; }]];
-    $('pv-filters').innerHTML = filters.map(function (f) { return '<button type="button" data-pvf="' + f[0] + '" class="' + (PV.filter === f[0] ? 'on' : '') + '">' + f[1] + '<b>' + all.filter(f[2]).length + '</b></button>'; }).join('');
+    var all = state.previews || [], now = Date.now(), key = function (d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+    var today = key(new Date(now)), yest = key(new Date(now - 86400000));
+    var paid = function (l) { return /^paid/i.test(String(l['Paid'] || '')); };
+    var openedNotCalled = function (l) { return !paid(l) && (Number(l['Views']) || 0) > 0 && (l._lv || 0) > (l._lt || 0) && !/^(not interested|link sent)/i.test(String(l['CB status'] || '')); };
+    var staleSent = function (l) { var d = pvSentDay(l); if (!d || paid(l) || (Number(l['Views']) || 0) > 0) return false; var p = d.split('-'); return now - new Date(+p[0], +p[1] - 1, +p[2]).getTime() >= 2 * 86400000; };
+    var filters = [['all', 'All', function () { return true; }, ''], ['todo', 'Needs approving', function (l) { return pvStatus(l)[0] === 'todo'; }, 'act'], ['opened', 'Opened, not called', openedNotCalled, 'act'],
+      ['stale', 'Not opened 2+ days', staleSent, 'act'], ['paid', 'Paid', paid, '']];
+    $('pv-filters').innerHTML = filters.map(function (f) { var n = all.filter(f[2]).length; return '<button type="button" data-pvf="' + f[0] + '" class="' + (PV.filter === f[0] ? 'on' : '') + (f[3] && n ? ' act' : '') + '">' + f[1] + '<b>' + n + '</b></button>'; }).join('');
     var show = all.filter(filters.filter(function (f) { return f[0] === PV.filter; })[0][2]), days = {}, order = [];
     show.forEach(function (l) { var d = l._day; if (!days[d]) { days[d] = []; order.push(d); } days[d].push(l); });
     order.sort(function (a, b) { return a === b ? 0 : !a ? 1 : !b ? -1 : a < b ? 1 : -1; });
@@ -1632,7 +1713,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     if (document.hidden || !state.me || !state.me.admin || $('v-admin').hidden) return;
     var on = document.querySelector('#tabs [aria-selected="true"]'), tab = on ? on.dataset.tab : '';
     loadPreviews();   // also pops up new previews wherever you are
-    if (tab === 'closer') loadCloser(true);
+    loadCloser(true);   // keeps Next call current and pops up preview opens wherever you are
   }
   setInterval(liveTick, 30000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) liveTick(); });

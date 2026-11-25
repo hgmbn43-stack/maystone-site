@@ -18,27 +18,40 @@
  *   notsent   yes, but the preview has not been sent yet
  *   overdue   they asked for a time and it has passed with nobody trying since
  *   today     they asked for a time today, or no time was agreed (call any time)
- *   tried     tried today, no answer: comes back tomorrow
+ *   chase     said yes and got the pay link 24h+ ago, still not paid: call again
+ *   tried     no answer: next try is spaced out (1, 1, 2, 4, 6 days), so 6 tries cover about 2 weeks
  *   cold      no time agreed, preview sent over a week ago and never opened: lowest priority
  *   tomorrow / later   an agreed time on another day
- *   awaiting  said yes on the second call, pay link sent, not paid yet
- *   quiet     3 tries in a row with no answer
+ *   awaiting  said yes on the second call, pay link sent under 24h ago
+ *   quiet     6 tries in a row with no answer (comes back if they open the preview again)
  *   done      paid, or not interested
+ *
+ * The call queue (o.due, in o.prio order): overdue, agreed time now, opened since we last tried,
+ * unpaid yes, then any-time leads (opened recently first, then fewest tries), then old unopened ones.
+ * Each lead carries o.why: one plain line saying why to call it now.
+ * 25 Nov: 6 tries (was 3), spaced tries, chase, queue + why, "Not interested" ticks Do not call.
  */
 
 var CZ_COLS = ['CB agreed', 'CB tries', 'CB last tried', 'CB last result', 'CB status', 'Last viewed'];
-var CZ_QUIET_TRIES = 3;
+var CZ_QUIET_TRIES = 6;
+var CZ_GAPS_DAYS = [1, 1, 2, 4, 6];   // days to wait after try 1, 2, 3, 4, 5+
+var CZ_CHASE_HOURS = 24;
 var CZ_HOT_HOURS = 48;
 var CZ_TZ = 'Europe/London';
 var CZ_PAY = { monthly: 'https://buy.stripe.com/8x2dR97zO4uwacB7EueQM04', oneoff: 'https://buy.stripe.com/28EdR98DSe56ckJaQGeQM01' };
 var CZ_COLD_DAYS = 7;
-var CZ_ORDER = ['overdue', 'today', 'tried', 'cold', 'awaiting', 'tomorrow', 'later', 'notsent', 'quiet', 'done'];
-var CZ_LABEL = { overdue: 'Overdue', today: 'Today', tried: 'Tried today', cold: 'Never opened (old)', awaiting: 'Waiting on payment', tomorrow: 'Tomorrow', later: 'Later', notsent: 'Preview not sent yet', quiet: 'Gone quiet', done: 'Done' };
+var CZ_ORDER = ['overdue', 'today', 'chase', 'tried', 'cold', 'awaiting', 'tomorrow', 'later', 'notsent', 'quiet', 'done'];
+var CZ_LABEL = { overdue: 'Overdue', today: 'Today', chase: 'Said yes, not paid', tried: 'Next try later', cold: 'Never opened (old)', awaiting: 'Waiting on payment', tomorrow: 'Tomorrow', later: 'Later', notsent: 'Preview not sent yet', quiet: 'Gone quiet', done: 'Done' };
 var CZ_ACTS = { na: 'No answer', vm: 'Voicemail', text: 'Texted', cb: 'Spoke – call back', sold: 'Spoke – said yes, link sent', ni: 'Spoke – not interested', reopen: 'Reopened' };
 
 var CZ_NOT_REP = ['Lead pool', 'Summary', 'Binned', 'Callbacks', 'AI receptionist list', 'Leads'];
 function czRepTabs_(ss) {
-  return ss.getSheets().filter(function (s) { var n = s.getName(); return CZ_NOT_REP.indexOf(n) === -1 && !/^backup/i.test(n) && String(s.getRange(1, 1).getValue()).trim() === 'Lead ID'; });
+  // The list of call-list tabs is remembered for 10 minutes, so we don't check every tab's A1 each time.
+  var all = ss.getSheets(), c = CacheService.getScriptCache(), known = c.get('czTabs');
+  if (known) { try { var names = JSON.parse(known), hit = all.filter(function (s) { return names.indexOf(s.getName()) !== -1; }); if (hit.length === names.length) return hit; } catch (e) {} }
+  var out = all.filter(function (s) { var n = s.getName(); return CZ_NOT_REP.indexOf(n) === -1 && !/^backup/i.test(n) && String(s.getRange(1, 1).getValue()).trim() === 'Lead ID'; });
+  try { c.put('czTabs', JSON.stringify(out.map(function (s) { return s.getName(); })), 600); } catch (e) {}
+  return out;
 }
 function czDay_(ms) { return Utilities.formatDate(new Date(ms), CZ_TZ, 'yyyy-MM-dd'); }
 /** London wall-clock time -> a moment, whatever timezone the script itself runs in. */
@@ -112,23 +125,31 @@ function czRows_(ss, nowMs) {
       // A time that a closer has already tried after is used up.
       if (at && o.lastTried && o.lastTried >= at) at = 0;
       o.at = at; o.day = at ? ymd : ''; o.time = at && hm ? hm : '';
-      var triedToday = o.lastTried && czDay_(o.lastTried) === today && /^(no answer|voicemail|texted)/i.test(o.lastResult);
+      var noAnswer = /^(no answer|voicemail|texted)/i.test(o.lastResult);
+      o.triedToday = !!o.lastTried && czDay_(o.lastTried) === today;
+      o.openedSinceTry = !!o.lastViewed && o.lastViewed > (o.lastTried || 0);
+      var gap = CZ_GAPS_DAYS[Math.min(Math.max(o.tries, 1), CZ_GAPS_DAYS.length) - 1];
+      o.nextTry = o.tries && o.lastTried && noAnswer ? czLondon_(czAddDays_(czDay_(o.lastTried), gap), '08:00') : 0;
       if (o.paid || /^not interested/i.test(o.status)) o.section = 'done';
       else if (!o.sent) o.section = 'notsent';
-      else if (/^link sent/i.test(o.status)) o.section = 'awaiting';
-      else if (o.tries >= CZ_QUIET_TRIES) o.section = 'quiet';
+      else if (/^link sent/i.test(o.status)) o.section = o.lastTried && nowMs - o.lastTried >= CZ_CHASE_HOURS * 3600000 ? 'chase' : 'awaiting';
       else if (at && o.day > tomorrow) o.section = 'later';
       else if (at && o.day === tomorrow) o.section = 'tomorrow';
-      else if (triedToday) o.section = 'tried';
       else if (at && (o.day < today || (o.time && at < nowMs - 3600000))) o.section = 'overdue';
+      else if (o.tries && o.hot && o.openedSinceTry) o.section = 'today';        // they opened it again after we tried: call now
+      else if (o.tries >= CZ_QUIET_TRIES) o.section = 'quiet';
+      else if (!at && o.nextTry && o.nextTry > nowMs) o.section = 'tried';
       else if (!at && !o.views && o.sentAt && nowMs - o.sentAt > CZ_COLD_DAYS * 86400000) o.section = 'cold';
       else o.section = 'today';
+      czWhy_(o, nowMs);
       o.links = { preview: o.preview ? o.preview + (o.preview.indexOf('?') === -1 ? '?me' : '&me') : '', client: o.preview,
         monthly: CZ_PAY.monthly + '?client_reference_id=' + encodeURIComponent(id), oneoff: CZ_PAY.oneoff + '?client_reference_id=' + encodeURIComponent(id) };
       out.push(o);
     }
   });
   out.sort(function (a, b) {
+    if (a.due !== b.due) return a.due ? -1 : 1;
+    if (a.due) return a.prio - b.prio || (a.at || 0) - (b.at || 0) || (b.lastViewed || 0) - (a.lastViewed || 0) || a.tries - b.tries;
     var s = CZ_ORDER.indexOf(a.section) - CZ_ORDER.indexOf(b.section); if (s) return s;
     if (a.section === 'tomorrow' || a.section === 'later') return (a.at || 0) - (b.at || 0);   // other days: plain time order
     if (a.hot !== b.hot) return a.hot ? -1 : 1;
@@ -141,14 +162,48 @@ function czRows_(ss, nowMs) {
 }
 
 function czCount_(rows) {
-  var c = {}; CZ_ORDER.forEach(function (s) { c[s] = 0; }); c.hot = 0;
-  rows.forEach(function (o) { c[o.section]++; if (o.hot && o.section !== 'done') c.hot++; });
+  var c = {}; CZ_ORDER.forEach(function (s) { c[s] = 0; }); c.hot = 0; c.due = 0; c.laterToday = 0; c.doneToday = 0;
+  rows.forEach(function (o) {
+    c[o.section]++; if (o.hot && o.section !== 'done') c.hot++;
+    if (o.due) c.due++; else if (o.section === 'today' && o.time) c.laterToday++;
+    if (o.triedToday) c.doneToday++;
+  });
   return c;
+}
+/** Only the leads to call now, best first. */
+function czQueue_(rows) { return rows.filter(function (o) { return o.due; }); }
+
+/** Sets o.due, o.prio and o.why (one plain line: why call this one now). */
+function czWhy_(o, nowMs) {
+  var hm = function (ms) { return Utilities.formatDate(new Date(ms), CZ_TZ, 'HH:mm'); }, day = function (ms) { return Utilities.formatDate(new Date(ms), CZ_TZ, 'EEE d MMM'); };
+  var ago = function (ms) { var m = Math.round((nowMs - ms) / 60000); return m < 2 ? 'just now' : m < 60 ? m + ' min ago' : czAgo_(ms, nowMs); };
+  o.due = false; o.prio = 9;
+  var s = o.section;
+  if (s === 'overdue') { o.due = true; o.prio = 0; o.why = 'Asked for a call ' + (o.time ? 'at ' + o.time : 'on ' + day(o.at)) + (o.day < czDay_(nowMs) ? ' (' + day(o.at) + ')' : '') + ' – overdue'; return; }
+  if (s === 'chase') { o.due = true; o.prio = 3; o.why = 'Said yes ' + czAgo_(o.lastTried, nowMs) + ', not paid yet'; return; }
+  if (s === 'cold') { o.due = true; o.prio = 6; o.why = 'Preview sent ' + Math.round((nowMs - o.sentAt) / 86400000) + ' days ago, never opened'; return; }
+  if (s === 'today') {
+    if (o.time) { o.due = o.at <= nowMs + 15 * 60000; o.prio = 1; o.why = 'Asked for a call at ' + o.time; return; }
+    o.due = true;
+    if (o.tries && o.openedSinceTry) { o.prio = 2; o.why = 'Opened the preview again ' + ago(o.lastViewed) + ' – ring now'; return; }
+    if (o.hot) { o.prio = o.views && nowMs - o.lastViewed < 3 * 3600000 ? 2 : 4; o.why = 'Opened the preview ' + ago(o.lastViewed) + (o.views > 1 ? ' (' + o.views + ' views)' : ''); return; }
+    o.prio = 5;
+    if (o.tries) { o.why = 'Try ' + (o.tries + 1) + ' of ' + CZ_QUIET_TRIES + ' · last: ' + String(o.lastResult).toLowerCase() + ' ' + czAgo_(o.lastTried, nowMs); return; }
+    if (o.views) { o.why = 'Opened the preview ' + o.views + '×, last ' + czAgo_(o.lastViewed, nowMs); return; }
+    o.why = 'Preview sent' + (o.sentAt ? ' ' + czAgo_(o.sentAt, nowMs).replace(/ \d\d:\d\d$/, '') : '') + ', not opened yet';
+    return;
+  }
+  if (s === 'tried') { o.why = 'Tried ' + o.tries + '× · next try ' + (czDay_(o.nextTry) === czAddDays_(czDay_(nowMs), 1) ? 'tomorrow' : day(o.nextTry)); return; }
+  if (s === 'awaiting') { o.why = 'Pay link sent ' + czAgo_(o.lastTried, nowMs); return; }
+  if (s === 'tomorrow' || s === 'later') { o.why = 'Asked for a call ' + day(o.at) + (o.time ? ' at ' + o.time : ''); return; }
+  if (s === 'quiet') { o.why = 'Tried ' + o.tries + ' times, no answer'; return; }
+  if (s === 'notsent') { o.why = 'Preview not sent yet'; return; }
+  o.why = o.paid ? 'Paid' : 'Not interested';
 }
 
 /** Short plain-English line for a lead: "Wed 25 Nov 17:30" / "any time". */
 function czWhenText_(o) {
-  if (!o.at) return o.section === 'tried' ? 'tried today' : 'any time';
+  if (!o.at) return o.section === 'tried' ? 'next try ' + Utilities.formatDate(new Date(o.nextTry), CZ_TZ, 'EEE d') : 'any time';
   return Utilities.formatDate(new Date(o.at), CZ_TZ, 'EEE d MMM') + (o.time ? ' ' + o.time : '');
 }
 function czAgo_(ms, nowMs) {
@@ -183,7 +238,9 @@ function czLog_(ss, tab, id, act, o, who) {
   var set = function (h, val) { sh.getRange(row, head.indexOf(h) + 1).setValue(val); };
   var now = new Date(), tries = Number(cur[head.indexOf('CB tries')]) || 0;
   if (act === 'reopen') { set('CB status', ''); set('CB tries', 0); set('CB last result', CZ_ACTS.reopen); return { ok: true }; }
-  set('CB last tried', now); set('CB last result', CZ_ACTS[act]);
+  var result = CZ_ACTS[act];
+  if (act === 'na' && (o.vm || o.text)) result += ' (' + [o.vm ? 'left voicemail' : '', o.text ? 'texted' : ''].filter(String).join(', ') + ')';
+  set('CB last tried', now); set('CB last result', result);
   if (act === 'na' || act === 'vm' || act === 'text') set('CB tries', tries + 1);
   else set('CB tries', 0);
   if (act === 'cb') {
@@ -193,7 +250,7 @@ function czLog_(ss, tab, id, act, o, who) {
     set('CB agreed', 'Yes'); set('CB status', '');
   }
   if (act === 'sold') set('CB status', 'Link sent');
-  if (act === 'ni') set('CB status', 'Not interested');
+  if (act === 'ni') { set('CB status', 'Not interested'); var dnc = head.indexOf('Do not call'); if (dnc !== -1) sh.getRange(row, dnc + 1).setValue(true); }
   if (who && !String(cur[head.indexOf('Closer')] || '').trim()) set('Closer', who);
   var note = String(o.note || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 500);
   if (note) {

@@ -288,6 +288,7 @@ body.ms-noscroll{overflow:hidden}
 .ms-lid{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--soft)}.ms-dsub{margin:2px 0 0;color:var(--soft)}.ms-dbox h3{font-size:22px}
 .ms-dbox h4{margin:6px 0 -4px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
 .ms-dact{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pv-ready{background:#FFF4E0;border:1px solid #F2C46D;border-radius:14px;padding:14px;margin:12px 0}.pv-ready,.pv-ready b{color:#142D4C}.pv-ready b{display:block;font-size:17px}.pv-ready p{margin:4px 0 10px;color:#4A5A70}.pv-ready input{width:100%;box-sizing:border-box;font-size:14px;padding:10px;border:1px solid #E4DED3!important;border-radius:10px;background:#fff!important;color:#142D4C!important}.pv-rbtn{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pv-rbtn .ms-btn{flex:1;justify-content:center;text-align:center;text-decoration:none}.pv-ready small{display:block;margin-top:8px;color:#667385}
 .ms-dinfo,.ms-pipe{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#F6F8FB;border-radius:14px;padding:14px}.ms-dinfo:empty,.ms-pipe:empty{display:none}
 .ms-dinfo small,.ms-pipe small{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}.ms-dinfo b,.ms-pipe b{font-size:14px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
 .ms-pipe a{color:var(--accent)}
@@ -1210,6 +1211,20 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       });
     };
   }
+  /* 25 Nov: every lead's preview is built ahead of time. Once the rep clicks Yes, the link shows here to text on the call. */
+  var PV_TEXT = 'hi its {rep} from maystone just in case the email doesnt come through heres your preview {link} hope you enjoy it mate';
+  function pvIsMob(v) { return /^(?:\+?44|0)7\d{9}$/.test(String(v || '').replace(/[\s\-().]/g, '')); }
+  function pvText(l, m) { return PV_TEXT.replace('{rep}', (String((m.user && m.user.name) || '').split(' ')[0] || 'harvey').toLowerCase()).replace('{link}', String(l['Preview link'] || '')); }
+  function pvNumber(l) { return pvIsMob(l['Client email']) ? String(l['Client email']) : pvIsMob(l['Phone']) ? String(l['Phone']) : ''; }
+  function pvBox(l, m) {
+    var link = String(l['Preview link'] || ''); if (!link) return '';
+    var num = pvNumber(l);
+    return '<div class="pv-ready"><b>Their preview is ready</b><p>Text it now and get them to open it while you\'re still on the line.</p>' +
+      '<input readonly value="' + esc(link) + '" onclick="this.select()">' +
+      '<div class="pv-rbtn">' + (num ? '<a class="ms-btn acc" href="sms:' + esc(telOf(num)) + '?&body=' + esc(encodeURIComponent(pvText(l, m))) + '">Text them</a>' : '') +
+      '<button type="button" class="ms-btn ghost" data-pvcopy="link">Copy link</button><button type="button" class="ms-btn ghost" data-pvcopy="text">Copy the text</button></div>' +
+      (num ? '' : '<small>No mobile number for them, so copy the text and send it however you can (WhatsApp, email).</small>') + '</div>';
+  }
   function leadDrawer(el, m, id) {
     var l = LD.data.leads.filter(function (x) { return String(x['Lead ID']) === id; })[0]; if (!l) return;
     var old = document.querySelector('.ms-drawer'); if (old) old.remove();
@@ -1219,7 +1234,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     var info = function (k, v) { return v === '' || v == null || v === false ? '' : '<div><small>' + k + '</small><b>' + v + '</b></div>'; };
     var s = ldStatus(l), maps = String(l['Google Maps'] || ''), prev = String(l['Preview link'] || '');
     ov.innerHTML = '<form class="ms-mbox ms-dbox" novalidate><div class="ms-phd"><div><small class="ms-lid">' + esc(l['Lead ID']) + ' · Priority ' + esc(l['Priority'] || '–') + '</small><h3>' + esc(l['Business']) + '</h3><p class="ms-dsub">' + esc([l['Trade'], l['Town']].filter(String).join(' · ')) + '</p></div><button type="button" class="ms-x" aria-label="Close">×</button></div>' +
-      '<div class="ms-dact">' + (l['Phone'] ? '<a class="ms-btn acc" href="tel:' + esc(telOf(l['Phone'])) + '">Call ' + esc(l['Phone']) + '</a>' : '') + (maps ? '<a class="ms-btn ghost" href="' + esc(maps) + '" target="_blank" rel="noopener">Google Maps</a>' : '') + '<em class="ms-st ' + s + '">' + LSTAT[s] + '</em></div>' +
+      '<div class="ms-dact">' + (l['Phone'] ? '<a class="ms-btn acc" href="tel:' + esc(telOf(l['Phone'])) + '">Call ' + esc(l['Phone']) + '</a>' : '') + (maps ? '<a class="ms-btn ghost" href="' + esc(maps) + '" target="_blank" rel="noopener">Google Maps</a>' : '') + '<em class="ms-st ' + s + '">' + LSTAT[s] + '</em></div>' + pvBox(l, m) +
       '<div class="ms-qa"><button type="button" class="ms-btn acc" data-qa="book">✓ Booked a preview</button><button type="button" class="ms-btn ghost" data-qa="na">No answer</button><button type="button" class="ms-btn ghost" data-qa="ni">Not interested</button><button type="button" class="ms-btn ghost" data-qa="cb">Call back later</button><button type="button" class="ms-btn ghost" data-qa="dead">Number not in service</button></div>' +
       '<div class="ms-bookbox ms-nibox" data-nibox hidden><b>Why weren\'t they interested?</b><p>Tap the closest one. It saves straight away.</p><div class="ms-quick">' + NI_REASONS.map(function (x) { return '<button type="button" class="ms-chip" data-ni="' + esc(x) + '">' + esc(x) + '</button>'; }).join('') + '</div></div>' +
       '<div class="ms-bookbox" hidden><b>Booking the preview</b><p>Get their email (or a mobile). Did they ask for a call back at a set time?</p><div class="cz-book"><div><button type="button" class="ms-btn ghost" data-agreed="Yes">Yes, they gave a time</button><button type="button" class="ms-btn ghost" data-agreed="No">No time agreed</button></div><small>Only put a day and time if they asked for one. If they didn\'t, leave it: Harvey or Fin will ring them.</small></div></div>' +
@@ -1237,6 +1252,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     document.body.appendChild(ov); document.body.classList.add('ms-noscroll');
     var f = ov.querySelector('form'), err = ov.querySelector('.ms-err'), close = function () { ov.remove(); document.body.classList.remove('ms-noscroll'); };
     ov.querySelector('.ms-x').onclick = close; ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    ov.querySelectorAll('[data-pvcopy]').forEach(function (b) { b.onclick = function () { var w = b.dataset.pvcopy; czCopy(w === 'link' ? String(l['Preview link'] || '') : pvText(l, m), w === 'link' ? 'Preview link' : 'Text for ' + l['Business']); }; });
     ov.querySelectorAll('[data-set]').forEach(function (b) { b.onclick = function () { f.elements[b.dataset.set].value = b.dataset.v; ov.querySelectorAll('[data-set="' + b.dataset.set + '"]').forEach(function (x) { x.classList.toggle('on', x === b); }); }; });
     var cbk = function () { var nc = f.elements['Next contact'].value, d = nc ? new Date(nc + 'T10:00') : null; cbForm(el, false, null, d, { name: l['Business'], business: l['Trade'] || '', phone: l['Phone'] || '', note: f.elements['Call notes'].value }); };
     ov.querySelector('[data-cbk]').onclick = cbk;
@@ -1246,7 +1262,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     var setv = function (k, v) { f.elements[k].value = v; ov.querySelectorAll('[data-set="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.dataset.v.toLowerCase() === String(v).toLowerCase()); }); };
     ov.querySelectorAll('[data-qa]').forEach(function (b) { b.onclick = function () {
       var q = b.dataset.qa, go = function () { if (f.requestSubmit) f.requestSubmit(ov.querySelectorAll('[type=submit]')[1]); else ov.querySelectorAll('[type=submit]')[1].click(); };
-      if (q === 'book') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Yes – send preview'); ov.querySelector('.ms-bookbox').hidden = false; var e1 = f.elements['Client email']; e1.scrollIntoView({ block: 'center', behavior: 'smooth' }); e1.focus(); return; }
+      if (q === 'book') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Yes – send preview'); ov.querySelector('.ms-bookbox:not([data-nibox])').hidden = false; var e1 = f.elements['Client email']; e1.scrollIntoView({ block: 'center', behavior: 'smooth' }); e1.focus(); return; }
       if (q === 'na') { setv('Called (tick)', 'No answer'); tryFlag = true; return go(); }
       if (q === 'ni') { var nb = ov.querySelector('[data-nibox]'); nb.hidden = false; nb.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
       if (q === 'dead') { setv('Called (tick)', 'Not in service / not recognised'); setv('Outcome', 'Dead number'); return go(); }
@@ -1259,7 +1275,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       if (niReason) fields['No reason'] = niReason;
       if (!m.admin && /^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''))) {
         var bad = agreed === null ? 'Tap whether they asked for a call back at a set time.' : (agreed === 'Yes' && (!fields['Next contact'] || !fields['Callback time'])) ? 'Add the day and time they asked for, or tap "No time agreed".' : '';
-        if (bad) { ov.querySelector('.ms-bookbox').hidden = false; err.textContent = bad; err.hidden = false; err.scrollIntoView({ block: 'center' }); stay = false; return; }
+        if (bad) { ov.querySelector('.ms-bookbox:not([data-nibox])').hidden = false; err.textContent = bad; err.hidden = false; err.scrollIntoView({ block: 'center' }); stay = false; return; }
         if (agreed === 'No') { fields['Next contact'] = ''; fields['Callback time'] = ''; }
         fields['CB agreed'] = agreed;
       }
@@ -1268,7 +1284,9 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       api('saveLead', { tab: LD.tab, row: l._row, id: l['Lead ID'], fields: fields }).then(function (r) {
         btns.forEach(function (b) { b.disabled = false; }); lab.textContent = was;
         if (!r.ok) { err.textContent = r.error || 'Could not save. Try again.'; err.hidden = false; err.scrollIntoView({ block: 'center' }); stay = false; return; }
-        if (/^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''))) { msConfetti(); msToast('<b>Preview booked 🎉</b><span>Nice one! Harvey or Fin will call them back.</span>', true); }
+        var justBooked = /^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''));
+        if (justBooked) { msConfetti(); msToast(r.lead['Preview link'] ? '<b>Preview booked 🎉</b><span>Their preview is ready: text them the link now.</span>' : '<b>Preview booked 🎉</b><span>Nice one! Harvey or Fin will call them back.</span>', true); }
+        if (justBooked && r.lead['Preview link']) stay = true;   // stay on this lead so the link shows straight away
         var i = LD.data.leads.indexOf(l); LD.data.leads[i] = r.lead;
         var list = ldFiltered(), here = list.map(function (x) { return String(x['Lead ID']); }).indexOf(id);
         var wantCb = /call\s*back/i.test(fields['Outcome']) && !/call\s*back/i.test(String(l['Outcome'] || ''));

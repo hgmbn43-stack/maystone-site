@@ -288,7 +288,7 @@ body.ms-noscroll{overflow:hidden}
 .ms-lid{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--soft)}.ms-dsub{margin:2px 0 0;color:var(--soft)}.ms-dbox h3{font-size:22px}
 .ms-dbox h4{margin:6px 0 -4px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
 .ms-dact{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.pv-ready{background:#FFF4E0;border:1px solid #F2C46D;border-radius:14px;padding:14px;margin:12px 0}.pv-ready,.pv-ready b{color:#142D4C}.pv-ready b{display:block;font-size:17px}.pv-ready p{margin:4px 0 10px;color:#4A5A70}.pv-ready input{width:100%;box-sizing:border-box;font-size:14px;padding:10px;border:1px solid #E4DED3!important;border-radius:10px;background:#fff!important;color:#142D4C!important}.pv-rbtn{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pv-rbtn .ms-btn{flex:1;justify-content:center;text-align:center;text-decoration:none}.pv-ready small{display:block;margin-top:8px;color:#667385}
+.pv-ready{background:#FFF4E0;border:1px solid #F2C46D;border-radius:14px;padding:14px;margin:12px 0}.pv-ready,.pv-ready b{color:#142D4C}.pv-ready b{display:block;font-size:17px}.pv-ready p{margin:4px 0 10px;color:#4A5A70}.pv-ready input{width:100%;box-sizing:border-box;font-size:14px;padding:10px;border:1px solid #E4DED3!important;border-radius:10px;background:#fff!important;color:#142D4C!important}.pv-rbtn{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pv-rbtn .ms-btn{flex:1;justify-content:center;text-align:center;text-decoration:none}.pv-ready small{display:block;margin-top:8px;color:#667385}.pv-seen{margin-top:12px;padding:10px 12px;border-radius:10px;background:#fff;color:#4A5A70;font-size:14px}.pv-seen.on{background:#E8F5E9;color:#1B5E20}.pv-seen.on b{display:inline;font-size:15px;color:#1B5E20}.pv-otc{margin-top:12px}.pv-otc .ms-chip{color:#142D4C;border-color:#E4DED3;background:#fff}.pv-otc .ms-chip.on{background:#142D4C;color:#fff}
 .ms-dinfo,.ms-pipe{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#F6F8FB;border-radius:14px;padding:14px}.ms-dinfo:empty,.ms-pipe:empty{display:none}
 .ms-dinfo small,.ms-pipe small{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}.ms-dinfo b,.ms-pipe b{font-size:14px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
 .ms-pipe a{color:var(--accent)}
@@ -1223,7 +1223,31 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       '<input readonly value="' + esc(link) + '" onclick="this.select()">' +
       '<div class="pv-rbtn">' + (num ? '<a class="ms-btn acc" href="sms:' + esc(telOf(num)) + '?&body=' + esc(encodeURIComponent(pvText(l, m))) + '">Text them</a>' : '') +
       '<button type="button" class="ms-btn ghost" data-pvcopy="link">Copy link</button><button type="button" class="ms-btn ghost" data-pvcopy="text">Copy the text</button></div>' +
-      (num ? '' : '<small>No mobile number for them, so copy the text and send it however you can (WhatsApp, email).</small>') + '</div>';
+      (num ? '' : '<small>No mobile number for them, so copy the text and send it however you can (WhatsApp, email).</small>') +
+      '<div class="pv-seen" data-seen>Not opened yet. Get them to tap the link while you\'re on the phone.</div>' +
+      '<div class="pv-otc"><small>How did it go on the call? (tap one, saves with Save)</small><div class="ms-quick">' + PV_ONCALL.map(function (x) { return '<button type="button" class="ms-chip' + (String(l['On the call'] || '') === x ? ' on' : '') + '" data-otc="' + esc(x) + '">' + esc(x) + '</button>'; }).join('') + '</div></div></div>';
+  }
+  var PV_ONCALL = ['Opened it on the call', 'Paid on the call', 'Call back booked', 'Didn\'t open it'];
+  function pvAgo(ms) { var m = Math.round((Date.now() - ms) / 60000); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : Math.round(m / 60) + 'h ago'; }
+  /* While the card is open: every 5s, has the customer opened the preview? (the view tracker stamps Views / Last viewed) */
+  function pvWatch(ov, get) {
+    var start = Date.now(), base = null;
+    var tick = function () {
+      var el = ov.querySelector('[data-seen]'), l = get();
+      if (!el || !document.body.contains(ov) || Date.now() - start > 20 * 60000) return;
+      api('leadSeen', { tab: LD.tab, row: l._row, id: l['Lead ID'] }).then(function (r) {
+        if (r && r.ok) {
+          if (base === null) base = r.views;
+          var fresh = r.views > base;
+          if (r.lastViewed && (fresh || Date.now() - r.lastViewed < 10 * 60000)) {
+            el.className = 'pv-seen on'; el.innerHTML = '<b>They\'ve opened it (' + pvAgo(r.lastViewed) + ')</b> Walk them through it now.';
+            if (fresh && !el.dataset.buzzed) { el.dataset.buzzed = '1'; msToast('<b>They\'ve opened it 👀</b><span>' + esc(l['Business']) + ' is looking at their preview now.</span>', true); try { if (navigator.vibrate) navigator.vibrate(200); } catch (e) {} }
+          } else if (r.views) el.textContent = 'Opened before (' + r.views + 'x), last ' + pvAgo(r.lastViewed) + '.';
+        }
+        setTimeout(tick, 5000);
+      }, function () { setTimeout(tick, 8000); });
+    };
+    tick();
   }
   function leadDrawer(el, m, id) {
     var l = LD.data.leads.filter(function (x) { return String(x['Lead ID']) === id; })[0]; if (!l) return;
@@ -1252,7 +1276,18 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     document.body.appendChild(ov); document.body.classList.add('ms-noscroll');
     var f = ov.querySelector('form'), err = ov.querySelector('.ms-err'), close = function () { ov.remove(); document.body.classList.remove('ms-noscroll'); };
     ov.querySelector('.ms-x').onclick = close; ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
-    ov.querySelectorAll('[data-pvcopy]').forEach(function (b) { b.onclick = function () { var w = b.dataset.pvcopy; czCopy(w === 'link' ? String(l['Preview link'] || '') : pvText(l, m), w === 'link' ? 'Preview link' : 'Text for ' + l['Business']); }; });
+    var onCall = '', bookedNow = false;
+    var wireReady = function () {
+      ov.querySelectorAll('[data-pvcopy]').forEach(function (b) { b.onclick = function () { var w = b.dataset.pvcopy; czCopy(w === 'link' ? String(l['Preview link'] || '') : pvText(l, m), w === 'link' ? 'Preview link' : 'Text for ' + l['Business']); }; });
+      ov.querySelectorAll('[data-otc]').forEach(function (b) { b.onclick = function () { onCall = b.dataset.otc; ov.querySelectorAll('[data-otc]').forEach(function (x) { x.classList.toggle('on', x === b); }); }; });
+      if (ov.querySelector('[data-seen]')) pvWatch(ov, function () { return l; });
+    };
+    var showReady = function () {
+      var old = ov.querySelector('.pv-ready'); if (old) old.remove();
+      ov.querySelector('.ms-dact').insertAdjacentHTML('afterend', pvBox(l, m)); wireReady();
+      var bx = ov.querySelector('.pv-ready'); if (bx) bx.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    };
+    wireReady();
     ov.querySelectorAll('[data-set]').forEach(function (b) { b.onclick = function () { f.elements[b.dataset.set].value = b.dataset.v; ov.querySelectorAll('[data-set="' + b.dataset.set + '"]').forEach(function (x) { x.classList.toggle('on', x === b); }); }; });
     var cbk = function () { var nc = f.elements['Next contact'].value, d = nc ? new Date(nc + 'T10:00') : null; cbForm(el, false, null, d, { name: l['Business'], business: l['Trade'] || '', phone: l['Phone'] || '', note: f.elements['Call notes'].value }); };
     ov.querySelector('[data-cbk]').onclick = cbk;
@@ -1262,7 +1297,20 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     var setv = function (k, v) { f.elements[k].value = v; ov.querySelectorAll('[data-set="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.dataset.v.toLowerCase() === String(v).toLowerCase()); }); };
     ov.querySelectorAll('[data-qa]').forEach(function (b) { b.onclick = function () {
       var q = b.dataset.qa, go = function () { if (f.requestSubmit) f.requestSubmit(ov.querySelectorAll('[type=submit]')[1]); else ov.querySelectorAll('[type=submit]')[1].click(); };
-      if (q === 'book') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Yes – send preview'); ov.querySelector('.ms-bookbox:not([data-nibox])').hidden = false; var e1 = f.elements['Client email']; e1.scrollIntoView({ block: 'center', behavior: 'smooth' }); e1.focus(); return; }
+      if (q === 'book') {
+        setv('Called (tick)', 'Answered'); setv('Outcome', 'Yes – send preview'); ov.querySelector('.ms-bookbox:not([data-nibox])').hidden = false;
+        if (/^\s*yes/i.test(String(l['Outcome'] || '')) || b.disabled) return;
+        // 25 Nov: one tap books it and shows their ready-made preview straight away; email and call-back time are added after.
+        b.disabled = true; b.textContent = 'Booking…';
+        api('bookNow', { tab: LD.tab, row: l._row, id: l['Lead ID'] }).then(function (r) {
+          b.disabled = false; b.textContent = '✓ Booked a preview';
+          if (!r.ok) { err.textContent = r.error || 'Could not book it. Try again.'; err.hidden = false; return; }
+          var i = LD.data.leads.indexOf(l); l = r.lead; if (i !== -1) LD.data.leads[i] = l; bookedNow = true; msConfetti();
+          if (l['Preview link']) { showReady(); msToast('<b>Preview booked 🎉</b><span>Text them the link now. Add their email below after.</span>', true); }
+          else { msToast('<b>Preview booked 🎉</b><span>Their preview is being made. Add their email below.</span>', true); var e1 = f.elements['Client email']; e1.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+        });
+        return;
+      }
       if (q === 'na') { setv('Called (tick)', 'No answer'); tryFlag = true; return go(); }
       if (q === 'ni') { var nb = ov.querySelector('[data-nibox]'); nb.hidden = false; nb.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
       if (q === 'dead') { setv('Called (tick)', 'Not in service / not recognised'); setv('Outcome', 'Dead number'); return go(); }
@@ -1273,8 +1321,10 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       var fields = {}; ['Called (tick)', 'Outcome', 'Call notes', 'Client email', 'Next contact', 'Callback time', 'Last offer', 'Interested in', 'Details'].forEach(function (k) { fields[k] = f.elements[k].value; });
       if (tryFlag) { fields._try = true; tryFlag = false; }
       if (niReason) fields['No reason'] = niReason;
-      if (!m.admin && /^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''))) {
-        var bad = agreed === null ? 'Tap whether they asked for a call back at a set time.' : (agreed === 'Yes' && (!fields['Next contact'] || !fields['Callback time'])) ? 'Add the day and time they asked for, or tap "No time agreed".' : '';
+      if (onCall) fields['On the call'] = onCall;
+      if (!m.admin && /^\s*yes/i.test(fields['Outcome']) && (bookedNow || !/^\s*yes/i.test(String(l['Outcome'] || '')))) {
+        var em = String(fields['Client email'] || '').trim();
+        var bad = bookedNow && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em) && !pvIsMob(em) ? 'Add their email (or a mobile number) so Harvey can send it properly.' : agreed === null ? 'Tap whether they asked for a call back at a set time.' : (agreed === 'Yes' && (!fields['Next contact'] || !fields['Callback time'])) ? 'Add the day and time they asked for, or tap "No time agreed".' : '';
         if (bad) { ov.querySelector('.ms-bookbox:not([data-nibox])').hidden = false; err.textContent = bad; err.hidden = false; err.scrollIntoView({ block: 'center' }); stay = false; return; }
         if (agreed === 'No') { fields['Next contact'] = ''; fields['Callback time'] = ''; }
         fields['CB agreed'] = agreed;

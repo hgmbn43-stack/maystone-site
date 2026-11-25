@@ -545,6 +545,20 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
 @media(min-width:900px){.cz-list{grid-template-columns:1fr 1fr;align-items:start}}
 @media(max-width:700px){body.cz-on #v-admin .sec-head{display:none}body.cz-on #tabs{flex-wrap:nowrap;overflow-x:auto;margin:6px -16px 12px;padding:0 16px 4px;scrollbar-width:none}body.cz-on #tabs::-webkit-scrollbar{display:none}body.cz-on #tabs button{flex:none}}
 @media(max-width:380px){.cz-links{grid-template-columns:1fr}.cz-res{grid-template-columns:1fr 1fr}.cz-res .btn.wide{grid-column:span 2}}
+/* ---------- Previews tab: by day ---------- */
+.pv-filters{display:flex;gap:8px;overflow-x:auto;margin:0 0 6px;padding-bottom:4px;scrollbar-width:none}.pv-filters::-webkit-scrollbar{display:none}
+.pv-filters button{flex:none;border:1px solid var(--line-2);background:var(--bg);color:var(--ink);border-radius:999px;padding:9px 14px;font:600 14px var(--body);cursor:pointer;min-height:40px}
+.pv-filters button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}.pv-filters button b{font-weight:700;opacity:.7;margin-left:4px}
+.pv-day{display:flex;align-items:baseline;gap:8px;margin:22px 2px 8px;font:700 17px var(--head);color:var(--ink)}.pv-day small{font:500 13px var(--body);color:var(--muted)}
+.pv-list{display:grid;gap:8px}
+.pv-card{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center}
+.pv-card.todo{border-left:5px solid var(--accent)}
+.pv-name{font:700 16px/1.25 var(--head);color:var(--ink);overflow-wrap:anywhere}.pv-sub{font-size:13px;color:var(--soft);margin-top:2px;overflow-wrap:anywhere}
+.pv-st{justify-self:end;font-size:12px;font-weight:700;border-radius:999px;padding:5px 11px;white-space:nowrap;background:var(--chip);color:var(--soft)}
+.pv-st.todo{background:var(--accent);color:#fff}.pv-st.hot{background:var(--accent);color:#fff}.pv-st.paid{background:var(--good);color:#fff}.pv-st.seen{background:var(--ink);color:var(--bg)}
+.pv-acts{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;align-items:center}.pv-acts .btn{min-height:40px;padding:8px 14px;font-size:14px}
+.pv-acts .pv-info{font-size:13px;color:var(--muted);margin-left:auto}
+@media(min-width:900px){.pv-list{grid-template-columns:1fr 1fr}}
 </style>
 <link rel="stylesheet" href="academy.css">
 </head>
@@ -700,8 +714,9 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     </div>
 
     <div data-pane="previews" hidden>
-      <div class="row" style="justify-content:space-between;margin-bottom:12px"><p class="note" style="margin:0">Every preview across all reps. Tick <b>Approve</b> and your preview automation does the rest on its next run (within 5 minutes).</p><button class="btn out sm" type="button" id="pv-refresh">Refresh</button></div>
-      <div class="scroll"><table><thead><tr><th>Lead</th><th>Rep</th><th>Preview</th><th>Approve</th><th>Sent</th><th class="num">Views</th><th>Hot</th><th>Paid</th></tr></thead><tbody id="a-previews"><tr><td colspan="8" class="empty">Open this tab to load previews.</td></tr></tbody></table></div>
+      <div class="row" style="justify-content:space-between;margin-bottom:12px"><p class="note" style="margin:0">Newest first, by the day they were booked. Tap <b>Approve</b> and it sends within 5 minutes.</p><button class="btn out sm" type="button" id="pv-refresh">Refresh</button></div>
+      <div class="pv-filters" id="pv-filters"></div>
+      <div id="a-previews"><div class="cz-empty">Open this tab to load previews.</div></div>
     </div>
 
     <div data-pane="events" hidden>
@@ -1522,25 +1537,60 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     api('adminSaveTraining', { item: { role: $('t-role').value, type: $('t-type').value, title: $('t-title').value, link: $('t-link').value } })
       .then(function (r) { busy(btn, false); adminSay(r); if (r.ok) { $('f-train').reset(); $('d-train').open = false; } });
   });
+  var PV = { filter: 'all' };
+  function pvDay(l) {
+    if (l._booked) { var d = new Date(l._booked); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+    var s = String(l['Sent to client'] || ''), m = s.match(/(\d{4})-(\d{2})-(\d{2})/); if (m) return m[0];
+    m = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); if (m) return m[3] + '-' + pad(+m[2]) + '-' + pad(+m[1]);
+    return '';
+  }
+  function pvStatus(l) {
+    var views = Number(l['Views']) || 0;
+    if (/^paid/i.test(String(l['Paid'] || ''))) return ['paid', 'Paid'];
+    if (!l['Preview link']) return ['make', 'Being made'];
+    if (l['Approved (Harvey)'] !== true) return ['todo', 'Needs approving'];
+    if (!l['Sent to client']) return ['make', 'Approved · sending'];
+    if (views) return [l['Hot?'] ? 'hot' : 'seen', 'Opened ' + views + '×'];
+    return ['sent', 'Sent · not opened'];
+  }
+  function drawPreviews() {
+    var all = state.previews || [], now = new Date(), key = function (d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+    var today = key(now), yest = key(new Date(now.getTime() - 86400000));
+    var filters = [['all', 'All', function () { return true; }], ['todo', 'Needs approving', function (l) { return pvStatus(l)[0] === 'todo'; }], ['seen', 'Opened', function (l) { return (Number(l['Views']) || 0) > 0 && !/^paid/i.test(String(l['Paid'] || '')); }],
+      ['sent', 'Not opened', function (l) { return pvStatus(l)[0] === 'sent'; }], ['paid', 'Paid', function (l) { return pvStatus(l)[0] === 'paid'; }]];
+    $('pv-filters').innerHTML = filters.map(function (f) { return '<button type="button" data-pvf="' + f[0] + '" class="' + (PV.filter === f[0] ? 'on' : '') + '">' + f[1] + '<b>' + all.filter(f[2]).length + '</b></button>'; }).join('');
+    var show = all.filter(filters.filter(function (f) { return f[0] === PV.filter; })[0][2]), days = {}, order = [];
+    show.forEach(function (l) { var d = l._day; if (!days[d]) { days[d] = []; order.push(d); } days[d].push(l); });
+    order.sort(function (a, b) { return a === b ? 0 : !a ? 1 : !b ? -1 : a < b ? 1 : -1; });
+    var name = function (d) { if (!d) return 'Older (no date)'; if (d === today) return 'Today'; if (d === yest) return 'Yesterday'; var p = d.split('-'), x = new Date(+p[0], +p[1] - 1, +p[2]); return DAYS[(x.getDay() + 6) % 7] + ' ' + x.getDate() + ' ' + MONTHS[x.getMonth()]; };
+    $('a-previews').innerHTML = order.map(function (d) {
+      return '<div class="pv-day">' + name(d) + ' <small>' + days[d].length + (days[d].length === 1 ? ' preview' : ' previews') + '</small></div><div class="pv-list">' + days[d].map(function (l) {
+        var st = pvStatus(l), i = all.indexOf(l), t = l._booked ? new Date(l._booked) : null, can = !(state.me && state.me.manager);
+        return '<div class="pv-card ' + (st[0] === 'todo' ? 'todo' : '') + '"><div><div class="pv-name">' + esc(l['Business']) + '</div><div class="pv-sub">' + esc([l['Trade'], l['Town']].filter(function (x) { return x; }).join(' · ')) + '</div></div><span class="pv-st ' + st[0] + '">' + esc(st[1]) + '</span>' +
+          '<div class="pv-acts">' + (l['Preview link'] ? '<a class="btn out" href="' + esc(l['Preview link']) + (String(l['Preview link']).indexOf('?') === -1 ? '?me' : '&me') + '" target="_blank" rel="noopener">Open preview</a>' : '') +
+          (st[0] === 'todo' && can ? '<button type="button" class="btn acc" data-pv="' + i + '">Approve</button>' : '') +
+          '<span class="pv-info">' + esc(l['Booked by'] || l.tab) + (t ? ' · ' + pad(t.getHours()) + ':' + pad(t.getMinutes()) : '') + '</span></div></div>';
+      }).join('') + '</div>';
+    }).join('') || '<div class="cz-empty">' + (all.length ? 'Nothing in this filter.' : 'No previews yet. They appear here when a rep marks a lead "Yes".') + '</div>';
+  }
   function loadPreviews() {
-    $('a-previews').innerHTML = '<tr><td colspan="8" class="empty">Loading previews…</td></tr>';
+    $('a-previews').innerHTML = '<div class="cz-empty">Loading previews…</div>';
     api('adminPreviews', {}).then(function (r) {
-      if (!r.ok) { $('a-previews').innerHTML = '<tr><td colspan="8" class="empty">' + esc(r.error || 'Could not load.') + '</td></tr>'; return; }
-      state.previews = r.previews.sort(function (a, b) { return (b['Hot?'] ? 1 : 0) - (a['Hot?'] ? 1 : 0) || (a['Approved (Harvey)'] === true ? 1 : 0) - (b['Approved (Harvey)'] === true ? 1 : 0) || (Number(b['Views']) || 0) - (Number(a['Views']) || 0); });
-      $('a-previews').innerHTML = state.previews.map(function (l, i) {
-        return '<tr><td><b>' + esc(l['Business']) + '</b><small>' + esc(l['Lead ID']) + ' · ' + esc(l['Phone'] || '') + (l['Client email'] ? ' · ' + esc(l['Client email']) : '') + '</small></td><td>' + esc(l.tab) + '</td><td>' + (l['Preview link'] ? '<a href="' + esc(l['Preview link']) + '" target="_blank" rel="noopener">Open →</a>' : '<span class="note">Being made…</span>') + '</td>' +
-          (state.me && state.me.manager ? '<td>' + (l['Approved (Harvey)'] === true ? 'Approved' : 'Waiting for Harvey') + '</td>' : '<td><label class="pv-ap"><input type="checkbox" data-pv="' + i + '"' + (l['Approved (Harvey)'] === true ? ' checked' : '') + '><span>' + (l['Approved (Harvey)'] === true ? 'Approved' : 'Approve') + '</span></label></td>') + '<td>' + esc(l['Sent to client'] || '–') + '</td><td class="num">' + esc(l['Views'] || 0) + '</td><td>' + (l['Hot?'] ? '<span class="st Active">' + esc(l['Hot?']) + '</span>' : '–') + '</td><td>' + esc(l['Paid'] || '–') + '</td></tr>';
-      }).join('') || '<tr><td colspan="8" class="empty">No previews yet. They appear here when a rep marks a lead "Yes".</td></tr>';
+      if (!r.ok) { $('a-previews').innerHTML = '<div class="cz-empty">' + esc(r.error || 'Could not load.') + '</div>'; return; }
+      r.previews.forEach(function (l) { l._day = pvDay(l); });
+      state.previews = r.previews.sort(function (a, b) { return (b._booked || 0) - (a._booked || 0) || (Number(b._row) || 0) - (Number(a._row) || 0); });
+      drawPreviews();
     });
   }
   $('pv-refresh').addEventListener('click', loadPreviews);
   document.querySelector('[data-tab="previews"]').addEventListener('click', function () { if (!state.previews) loadPreviews(); });
-  $('a-previews').addEventListener('change', function (e) {
-    var c = e.target.closest('[data-pv]'); if (!c) return; var l = state.previews[+c.dataset.pv]; c.disabled = true;
-    api('saveLead', { tab: l.tab, row: l._row, id: l['Lead ID'], fields: { 'Approved (Harvey)': c.checked } }).then(function (r) {
-      c.disabled = false; if (!r.ok) { c.checked = !c.checked; return adminSay(r); }
-      l['Approved (Harvey)'] = c.checked; c.nextSibling.textContent = c.checked ? 'Approved' : 'Approve';
-      adminSay({ ok: true, message: c.checked ? 'Approved. The automation will send it on its next run.' : 'Approval removed.' });
+  $('pv-filters').addEventListener('click', function (e) { var b = e.target.closest('[data-pvf]'); if (!b) return; PV.filter = b.dataset.pvf; drawPreviews(); });
+  $('a-previews').addEventListener('click', function (e) {
+    var c = e.target.closest('[data-pv]'); if (!c) return; var l = state.previews[+c.dataset.pv]; busy(c, true, 'Approving…');
+    api('saveLead', { tab: l.tab, row: l._row, id: l['Lead ID'], fields: { 'Approved (Harvey)': true } }).then(function (r) {
+      if (!r.ok) { busy(c, false); return adminSay(r); }
+      l['Approved (Harvey)'] = true; drawPreviews();
+      msToast('<b>' + esc(l['Business']) + '</b><span>Approved. It sends within 5 minutes.</span>');
     });
   });
   function evPad(n) { return (n < 10 ? '0' : '') + n; }

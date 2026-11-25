@@ -553,6 +553,8 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
 .pv-list{display:grid;gap:8px}
 .pv-card{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center}
 .pv-card.todo{border-left:5px solid var(--accent)}
+.pv-card.new{box-shadow:0 0 0 3px var(--accent);animation:pvIn .6s ease-out}@keyframes pvIn{from{transform:translateY(-6px);opacity:0}to{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.pv-card.new{animation:none}}
 .pv-name{font:700 16px/1.25 var(--head);color:var(--ink);overflow-wrap:anywhere}.pv-sub{font-size:13px;color:var(--soft);margin-top:2px;overflow-wrap:anywhere}
 .pv-st{justify-self:end;font-size:12px;font-weight:700;border-radius:999px;padding:5px 11px;white-space:nowrap;background:var(--chip);color:var(--soft)}
 .pv-st.todo{background:var(--accent);color:#fff}.pv-st.hot{background:var(--accent);color:#fff}.pv-st.paid{background:var(--good);color:#fff}.pv-st.seen{background:var(--ink);color:var(--bg)}
@@ -782,6 +784,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
   function api(action, data) {
     if (API.indexOf('__') === 0) return Promise.resolve({ ok: false, error: 'The login system is being switched on. Try again soon.' });
     var body = Object.assign({ action: action }, data || {});
+    if (FAST_READS.indexOf(action) === -1 && ['verify', 'requestLink', 'loginPassword', 'logout'].indexOf(action) === -1) fastClear(true);
     if (state.session && !body.session) body.session = state.session;
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json(); })
@@ -789,6 +792,37 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       .catch(function () { return { ok: false, error: 'Couldn\'t reach the login system. Check your connection and try again.' }; });
   }
   window.MSBridge = { api: api };
+
+  /* ---------- speed: show the last answer straight away, then refresh quietly (25 Nov) ---------- */
+  var FAST = {}, FAST_KEEP = ['me', 'adminOverview', 'adminPreviews', 'closerList'], FAST_READS = ['me', 'leads', 'callbacks', 'adminOverview', 'adminPreviews', 'closerList', 'closerLead', 'module', 'slide', 'academy', 'academyModule'];
+  function fastSid() { return String(state.session || '').slice(-10); }
+  function fastKey(action, data) { return action + '|' + JSON.stringify(data || {}); }
+  function fastGet(action, data) {
+    var k = fastKey(action, data); if (FAST[k]) return FAST[k];
+    if (FAST_KEEP.indexOf(action) === -1 || !state.session) return null;
+    try { var o = JSON.parse(localStorage.getItem('maystone.c.' + k) || 'null'); if (o && o.sid === fastSid() && Date.now() - o.at < 3 * 86400000) return (FAST[k] = o.r); } catch (e) {}
+    return null;
+  }
+  function fastPut(action, data, r) {
+    var k = fastKey(action, data); FAST[k] = r;
+    if (FAST_KEEP.indexOf(action) === -1) return;
+    try { localStorage.setItem('maystone.c.' + k, JSON.stringify({ sid: fastSid(), at: Date.now(), r: r })); } catch (e) {}
+  }
+  function fastClear(keepMe) {
+    Object.keys(FAST).forEach(function (k) { if (!(keepMe && k.indexOf('me|') === 0)) delete FAST[k]; });
+    try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf('maystone.c.') === 0 && !(keepMe && k.indexOf('maystone.c.me|') === 0)) localStorage.removeItem(k); }); } catch (e) {}
+  }
+  /** Calls onData with the saved answer at once (if there is one), then again with the fresh answer if it changed. */
+  function apiFast(action, data, onData) {
+    var old = fastGet(action, data), oldS = old ? JSON.stringify(old) : '';
+    if (old) { try { onData(old, true); } catch (e) { console.error(e); } }
+    return api(action, data).then(function (r) {
+      if (!r || !r.ok) { if (!old) onData(r || { ok: false }, false); return r; }
+      var str = JSON.stringify(r); fastPut(action, data, r);
+      if (str !== oldS) onData(r, false);
+      return r;
+    });
+  }
   function busy(btn, on, label) { if (!btn) return; if (on) { btn.dataset.label = btn.textContent; btn.textContent = label || 'Working…'; btn.disabled = true; } else { btn.textContent = btn.dataset.label || btn.textContent; btn.disabled = false; } }
 
   /* ---------- login ---------- */
@@ -813,7 +847,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
   });
   function logout(silent) {
     if (!silent && state.session) api('logout', {});
-    state.session = null; state.me = null; state.admin = null; store(null);
+    state.session = null; state.me = null; state.admin = null; store(null); fastClear(false); PV.seen = null; CZ.data = null; state.previews = null; LD.data = null; CB.list = null;
     show('v-login');
     if (silent) say($('login-msg'), 'Your login has ended. Enter your email to get a new link.', false);
   }
@@ -1234,9 +1268,11 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
   function czMsg(o) { return CZ_TEXT.replace('{me}', String(CZ.data.me || 'harvey').toLowerCase()).replace('{business}', o.business).replace('{link}', o.links.client || ''); }
   function loadCloser(quiet) {
     var el = $('a-closer'); if (!el) return;
-    if (!quiet || !CZ.data) el.innerHTML = '<div class="empty">Loading your calls…</div>';
-    api('closerList', {}).then(function (r) {
-      if (!r.ok) { el.innerHTML = '<div class="cz-empty">' + esc(r.error || 'Could not load your calls.') + '</div>'; return; }
+    if (!CZ.data && !fastGet('closerList', {})) el.innerHTML = '<div class="empty">Loading your calls…</div>';
+    apiFast('closerList', {}, function (r) {
+      if (!r.ok) { if (!CZ.data) el.innerHTML = '<div class="cz-empty">' + esc(r.error || 'Could not load your calls.') + '</div>'; return; }
+      if (CZ.busy || CZ.cbFor) return;   // don't redraw while a call-back form is open
+      if (CZ.data && JSON.stringify(CZ.data.rows) === JSON.stringify(r.rows)) { CZ.data = r; return; }   // nothing changed: leave the screen alone
       CZ.data = r; drawCloser();
     });
   }
@@ -1537,7 +1573,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     api('adminSaveTraining', { item: { role: $('t-role').value, type: $('t-type').value, title: $('t-title').value, link: $('t-link').value } })
       .then(function (r) { busy(btn, false); adminSay(r); if (r.ok) { $('f-train').reset(); $('d-train').open = false; } });
   });
-  var PV = { filter: 'all' };
+  var PV = { filter: 'all', seen: null, flash: {} };
   function pvDay(l) {
     if (l._booked) { var d = new Date(l._booked); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
     var s = String(l['Sent to client'] || ''), m = s.match(/(\d{4})-(\d{2})-(\d{2})/); if (m) return m[0];
@@ -1566,7 +1602,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     $('a-previews').innerHTML = order.map(function (d) {
       return '<div class="pv-day">' + name(d) + ' <small>' + days[d].length + (days[d].length === 1 ? ' preview' : ' previews') + '</small></div><div class="pv-list">' + days[d].map(function (l) {
         var st = pvStatus(l), i = all.indexOf(l), t = l._booked ? new Date(l._booked) : null, can = !(state.me && state.me.manager);
-        return '<div class="pv-card ' + (st[0] === 'todo' ? 'todo' : '') + '"><div><div class="pv-name">' + esc(l['Business']) + '</div><div class="pv-sub">' + esc([l['Trade'], l['Town']].filter(function (x) { return x; }).join(' · ')) + '</div></div><span class="pv-st ' + st[0] + '">' + esc(st[1]) + '</span>' +
+        return '<div class="pv-card ' + (st[0] === 'todo' ? 'todo' : '') + (PV.flash[l._key] && Date.now() - PV.flash[l._key] < 120000 ? ' new' : '') + '"><div><div class="pv-name">' + esc(l['Business']) + '</div><div class="pv-sub">' + esc([l['Trade'], l['Town']].filter(function (x) { return x; }).join(' · ')) + '</div></div><span class="pv-st ' + st[0] + '">' + esc(st[1]) + '</span>' +
           '<div class="pv-acts">' + (l['Preview link'] ? '<a class="btn out" href="' + esc(l['Preview link']) + (String(l['Preview link']).indexOf('?') === -1 ? '?me' : '&me') + '" target="_blank" rel="noopener">Open preview</a>' : '') +
           (st[0] === 'todo' && can ? '<button type="button" class="btn acc" data-pv="' + i + '">Approve</button>' : '') +
           '<span class="pv-info">' + esc(l['Booked by'] || l.tab) + (t ? ' · ' + pad(t.getHours()) + ':' + pad(t.getMinutes()) : '') + '</span></div></div>';
@@ -1574,16 +1610,32 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     }).join('') || '<div class="cz-empty">' + (all.length ? 'Nothing in this filter.' : 'No previews yet. They appear here when a rep marks a lead "Yes".') + '</div>';
   }
   function loadPreviews() {
-    $('a-previews').innerHTML = '<div class="cz-empty">Loading previews…</div>';
-    api('adminPreviews', {}).then(function (r) {
-      if (!r.ok) { $('a-previews').innerHTML = '<div class="cz-empty">' + esc(r.error || 'Could not load.') + '</div>'; return; }
-      r.previews.forEach(function (l) { l._day = pvDay(l); });
-      state.previews = r.previews.sort(function (a, b) { return (b._booked || 0) - (a._booked || 0) || (Number(b._row) || 0) - (Number(a._row) || 0); });
-      drawPreviews();
+    if (!state.previews && !fastGet('adminPreviews', {})) $('a-previews').innerHTML = '<div class="cz-empty">Loading previews…</div>';
+    return apiFast('adminPreviews', {}, function (r, saved) {
+      if (!r.ok) { if (!state.previews) $('a-previews').innerHTML = '<div class="cz-empty">' + esc(r.error || 'Could not load.') + '</div>'; return; }
+      var list = JSON.parse(JSON.stringify(r.previews));
+      list.forEach(function (l) { l._day = pvDay(l); l._key = l.tab + '|' + l['Lead ID']; });
+      list.sort(function (a, b) { return (b._booked || 0) - (a._booked || 0) || (Number(b._row) || 0) - (Number(a._row) || 0); });
+      var fresh = [];
+      if (PV.seen && !saved) fresh = list.filter(function (l) { return !PV.seen[l._key]; });
+      if (!saved || !PV.seen) { PV.seen = {}; list.forEach(function (l) { PV.seen[l._key] = 1; }); }
+      fresh.forEach(function (l) { PV.flash[l._key] = Date.now(); });
+      state.previews = list; drawPreviews();
+      if (fresh.length) msToast('<b>' + (fresh.length === 1 ? 'New preview' : fresh.length + ' new previews') + '</b><span>' + esc(fresh.slice(0, 3).map(function (l) { return l['Business'] + (l['Booked by'] ? ' (' + String(l['Booked by']).split(' ')[0] + ')' : ''); }).join(', ')) + '</span>');
     });
   }
-  $('pv-refresh').addEventListener('click', loadPreviews);
-  document.querySelector('[data-tab="previews"]').addEventListener('click', function () { if (!state.previews) loadPreviews(); });
+  $('pv-refresh').addEventListener('click', function () { loadPreviews(); });
+  document.querySelector('[data-tab="previews"]').addEventListener('click', function () { loadPreviews(); });
+
+  /* ---------- live: keep the admin view up to date without refreshing ---------- */
+  function liveTick() {
+    if (document.hidden || !state.me || !state.me.admin || $('v-admin').hidden) return;
+    var on = document.querySelector('#tabs [aria-selected="true"]'), tab = on ? on.dataset.tab : '';
+    loadPreviews();   // also pops up new previews wherever you are
+    if (tab === 'closer') loadCloser(true);
+  }
+  setInterval(liveTick, 30000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) liveTick(); });
   $('pv-filters').addEventListener('click', function (e) { var b = e.target.closest('[data-pvf]'); if (!b) return; PV.filter = b.dataset.pvf; drawPreviews(); });
   $('a-previews').addEventListener('click', function (e) {
     var c = e.target.closest('[data-pv]'); if (!c) return; var l = state.previews[+c.dataset.pv]; busy(c, true, 'Approving…');
@@ -1628,15 +1680,18 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     };
   }
   function load() {
-    show('v-loading');
-    api('me', {}).then(function (m) {
+    var booted = false;
+    if (!fastGet('me', {})) show('v-loading');
+    apiFast('me', {}, function (m) {
       if (!m.ok) { if (m.auth !== false) { logout(true); say($('login-msg'), m.error, false); } return; }
       state.me = m;
+      if (booted) return;   // a fresher copy just replaces the saved one
+      booted = true;
       pwBanner(m);
       $('who-name').textContent = m.user.name || m.user.email; $('who-role').textContent = m.user.role;
       document.body.classList.toggle('mgr', !!m.manager);
-      if (m.admin) { show('v-admin'); api('adminOverview', {}).then(function (o) { if (o.ok) renderAdmin(o); else say($('admin-msg'), o.error, false); }); var wantCloser = location.hash === '#closer'; try { wantCloser = wantCloser || localStorage.getItem('maystone.atab') === 'closer'; } catch (e3) {} if (wantCloser) { var cbt = document.querySelector('#tabs [data-tab="closer"]'); if (cbt) cbt.click(); } }
-      else { repHTML(m); show('v-rep'); }
+      if (m.admin) { show('v-admin'); apiFast('adminOverview', {}, function (o) { if (o.ok) renderAdmin(o); else say($('admin-msg'), o.error, false); }); setTimeout(function () { loadPreviews(true); if (!CZ.data) loadCloser(true); }, 300); var wantCloser = location.hash === '#closer'; try { wantCloser = wantCloser || localStorage.getItem('maystone.atab') === 'closer'; } catch (e3) {} if (wantCloser) { var cbt = document.querySelector('#tabs [data-tab="closer"]'); if (cbt) cbt.click(); } }
+      else { repHTML(m); show('v-rep'); setTimeout(function () { if (!LD.data) api('leads', { tab: LD.tab }).then(function (r) { if (r.ok && !LD.data) { LD.data = r; LD.tab = r.tab; if (!LD.own) LD.own = r.tab; } }); }, 300); }
     });
   }
   function handleHash() {

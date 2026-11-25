@@ -1,0 +1,20 @@
+name: Portal checks
+# 25 Nov 2026: every change to the portal page is tested in a headless phone browser with a fake backend
+# (booking + ready link + Text them, not interested, closer page, no script errors). A failure makes GitHub email
+# the account owner. The site itself still publishes from the branch, so fix or revert a failing commit straight away.
+on:
+  push:
+    paths: ["login/**", "tests/**", ".github/workflows/portal-tests.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm i --no-save playwright@1.49.1 && npx playwright install --with-deps chromium > /dev/null
+      - run: node tests/portal.test.js

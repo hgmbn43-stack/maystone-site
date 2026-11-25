@@ -1143,6 +1143,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
   /* ---------- leads (the rep's call list, worked from the site) ---------- */
   var LD = { data: null, tab: '', q: '', f: 'todo', pri: '', open: null };
   var CALLED = ['No answer', 'Voicemail', 'Answered', 'Busy', 'Not in service / not recognised'];
+  var NI_REASONS = ['Gets calls like this all the time', 'Already has a website', 'Uses Facebook / Instagram', 'Too busy / enough work', 'Retiring / closing down', 'Didn\'t say'];
   var OUTCOMES = ['Yes – send preview', 'Call back', 'Not interested', 'Already has a website', 'Not trading', 'Dead number'];
   var INTEREST = ['Marketing support', 'Google profile', 'Missed-call text-back', 'Photos/video', 'Branding/print', 'Bookkeeping/MTD', 'Other'];
   var OFFERS = ['Website', 'Marketing bundle', 'Google profile', 'Missed-call text-back', 'Other'];
@@ -1220,6 +1221,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     ov.innerHTML = '<form class="ms-mbox ms-dbox" novalidate><div class="ms-phd"><div><small class="ms-lid">' + esc(l['Lead ID']) + ' · Priority ' + esc(l['Priority'] || '–') + '</small><h3>' + esc(l['Business']) + '</h3><p class="ms-dsub">' + esc([l['Trade'], l['Town']].filter(String).join(' · ')) + '</p></div><button type="button" class="ms-x" aria-label="Close">×</button></div>' +
       '<div class="ms-dact">' + (l['Phone'] ? '<a class="ms-btn acc" href="tel:' + esc(telOf(l['Phone'])) + '">Call ' + esc(l['Phone']) + '</a>' : '') + (maps ? '<a class="ms-btn ghost" href="' + esc(maps) + '" target="_blank" rel="noopener">Google Maps</a>' : '') + '<em class="ms-st ' + s + '">' + LSTAT[s] + '</em></div>' +
       '<div class="ms-qa"><button type="button" class="ms-btn acc" data-qa="book">✓ Booked a preview</button><button type="button" class="ms-btn ghost" data-qa="na">No answer</button><button type="button" class="ms-btn ghost" data-qa="ni">Not interested</button><button type="button" class="ms-btn ghost" data-qa="cb">Call back later</button><button type="button" class="ms-btn ghost" data-qa="dead">Number not in service</button></div>' +
+      '<div class="ms-bookbox ms-nibox" data-nibox hidden><b>Why weren\'t they interested?</b><p>Tap the closest one. It saves straight away.</p><div class="ms-quick">' + NI_REASONS.map(function (x) { return '<button type="button" class="ms-chip" data-ni="' + esc(x) + '">' + esc(x) + '</button>'; }).join('') + '</div></div>' +
       '<div class="ms-bookbox" hidden><b>Booking the preview</b><p>Get their email (or a mobile). Did they ask for a call back at a set time?</p><div class="cz-book"><div><button type="button" class="ms-btn ghost" data-agreed="Yes">Yes, they gave a time</button><button type="button" class="ms-btn ghost" data-agreed="No">No time agreed</button></div><small>Only put a day and time if they asked for one. If they didn\'t, leave it: Harvey or Fin will ring them.</small></div></div>' +
       (l['Do not call'] === true ? '<p class="ms-warn">Marked Do not call. Don\'t ring this number.</p>' : '') +
       '<div class="ms-dinfo">' + info('What\'s wrong online', esc(l['What\'s wrong online'])) + info('What to mention', esc(l['What to mention'])) + info('Google', l['Google rating'] ? esc(l['Google rating']) + '★ from ' + esc(l['Google reviews']) + ' reviews' : '') + '</div>' +
@@ -1238,14 +1240,15 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
     ov.querySelectorAll('[data-set]').forEach(function (b) { b.onclick = function () { f.elements[b.dataset.set].value = b.dataset.v; ov.querySelectorAll('[data-set="' + b.dataset.set + '"]').forEach(function (x) { x.classList.toggle('on', x === b); }); }; });
     var cbk = function () { var nc = f.elements['Next contact'].value, d = nc ? new Date(nc + 'T10:00') : null; cbForm(el, false, null, d, { name: l['Business'], business: l['Trade'] || '', phone: l['Phone'] || '', note: f.elements['Call notes'].value }); };
     ov.querySelector('[data-cbk]').onclick = cbk;
-    var stay = false, tryFlag = false, agreed = null; ov.querySelector('[data-stay]').onclick = function () { stay = true; };
+    var stay = false, tryFlag = false, agreed = null, niReason = '';
+    ov.querySelectorAll('[data-ni]').forEach(function (b) { b.onclick = function () { niReason = b.dataset.ni; setv('Called (tick)', 'Answered'); setv('Outcome', niReason === 'Already has a website' ? 'Already has a website' : 'Not interested'); if (f.requestSubmit) f.requestSubmit(ov.querySelectorAll('[type=submit]')[1]); else ov.querySelectorAll('[type=submit]')[1].click(); }; }); ov.querySelector('[data-stay]').onclick = function () { stay = true; };
     ov.querySelectorAll('[data-agreed]').forEach(function (b) { b.onclick = function () { agreed = b.dataset.agreed; ov.querySelectorAll('[data-agreed]').forEach(function (x) { x.classList.toggle('on', x === b); }); if (agreed === 'No') { f.elements['Next contact'].value = ''; f.elements['Callback time'].value = ''; } else { f.elements['Next contact'].scrollIntoView({ block: 'center', behavior: 'smooth' }); f.elements['Next contact'].focus(); } }; });
     var setv = function (k, v) { f.elements[k].value = v; ov.querySelectorAll('[data-set="' + k + '"]').forEach(function (x) { x.classList.toggle('on', x.dataset.v.toLowerCase() === String(v).toLowerCase()); }); };
     ov.querySelectorAll('[data-qa]').forEach(function (b) { b.onclick = function () {
       var q = b.dataset.qa, go = function () { if (f.requestSubmit) f.requestSubmit(ov.querySelectorAll('[type=submit]')[1]); else ov.querySelectorAll('[type=submit]')[1].click(); };
       if (q === 'book') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Yes – send preview'); ov.querySelector('.ms-bookbox').hidden = false; var e1 = f.elements['Client email']; e1.scrollIntoView({ block: 'center', behavior: 'smooth' }); e1.focus(); return; }
       if (q === 'na') { setv('Called (tick)', 'No answer'); tryFlag = true; return go(); }
-      if (q === 'ni') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Not interested'); return go(); }
+      if (q === 'ni') { var nb = ov.querySelector('[data-nibox]'); nb.hidden = false; nb.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
       if (q === 'dead') { setv('Called (tick)', 'Not in service / not recognised'); setv('Outcome', 'Dead number'); return go(); }
       if (q === 'cb') { setv('Called (tick)', 'Answered'); setv('Outcome', 'Call back'); f.elements['Next contact'].focus(); }
     }; });
@@ -1253,6 +1256,7 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
       e.preventDefault(); err.hidden = true;
       var fields = {}; ['Called (tick)', 'Outcome', 'Call notes', 'Client email', 'Next contact', 'Callback time', 'Last offer', 'Interested in', 'Details'].forEach(function (k) { fields[k] = f.elements[k].value; });
       if (tryFlag) { fields._try = true; tryFlag = false; }
+      if (niReason) fields['No reason'] = niReason;
       if (!m.admin && /^\s*yes/i.test(fields['Outcome']) && !/^\s*yes/i.test(String(l['Outcome'] || ''))) {
         var bad = agreed === null ? 'Tap whether they asked for a call back at a set time.' : (agreed === 'Yes' && (!fields['Next contact'] || !fields['Callback time'])) ? 'Add the day and time they asked for, or tap "No time agreed".' : '';
         if (bad) { ov.querySelector('.ms-bookbox').hidden = false; err.textContent = bad; err.hidden = false; err.scrollIntoView({ block: 'center' }); stay = false; return; }

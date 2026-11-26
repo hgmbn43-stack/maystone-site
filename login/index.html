@@ -1792,6 +1792,20 @@ html[data-theme=dark] .dx-mt,html[data-theme=dark] .dx-mix{border-color:#1F334B}
   }
   setInterval(liveTick, 30000);
   document.addEventListener('visibilitychange', function () { if (!document.hidden) liveTick(); });
+  /* 26 Nov: phones keep an old copy of this page open for days. Every 5 min, and whenever the tab comes back,
+     check if a newer version is live; if so, reload (only when no lead card is open, so nothing typed is lost). */
+  (function () {
+    var base = null, h = function (t) { var x = 0; for (var i = 0; i < t.length; i += 7) x = (x * 31 + t.charCodeAt(i)) | 0; return t.length + ':' + x; };
+    var check = function () {
+      fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : null; }).then(function (t) {
+        if (!t) return; var v = h(t);
+        if (base === null) { base = v; return; }
+        if (v !== base && !document.querySelector('.ms-drawer')) location.reload();
+      }).catch(function () {});
+    };
+    check(); setInterval(check, 5 * 60000);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) check(); });
+  })();
   $('pv-filters').addEventListener('click', function (e) { var b = e.target.closest('[data-pvf]'); if (!b) return; PV.filter = b.dataset.pvf; drawPreviews(); });
   $('a-previews').addEventListener('click', function (e) {
     var c = e.target.closest('[data-pv]'); if (!c) return; var l = state.previews[+c.dataset.pv]; busy(c, true, 'Approving…');
